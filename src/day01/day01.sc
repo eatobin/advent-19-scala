@@ -14,7 +14,7 @@ def gas(m: Int): Int =
 
 val answer: Int = gasList.map(m => gas(m)).sum
 
-println(answer)
+println(s"answer: $answer")
 
 // 3337766
 
@@ -35,6 +35,6 @@ def gasPlus(m: Int): Int = {
 
 val answer2: Int = gasList.map(m => gasPlus(m)).sum
 
-println(answer2)
+println(s"answer2: $answer2")
 
 // 5003788
