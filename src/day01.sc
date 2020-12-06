@@ -2,7 +2,7 @@ import scala.annotation.tailrec
 import scala.io.{BufferedSource, Source}
 import scala.math.max
 
-val bufferedSource: BufferedSource = Source.fromFile("day01.txt")
+val bufferedSource: BufferedSource = Source.fromFile("resources/day01.txt")
 val gasList: Seq[Int] = bufferedSource.getLines.toSeq.map((s: String) => s.toInt)
 bufferedSource.close
 
