@@ -1,7 +1,7 @@
-import scala.collection.immutable.ListMap
+import scala.collection.SortedMap
 import scala.io.{BufferedSource, Source}
 
-def makeTV(file: String): ListMap[Int, Int] = {
+def makeTV(file: String): SortedMap[Int, Int] = {
   val bufferedSource: BufferedSource = Source.fromFile(file)
   val stringArray: Array[Int] = {
     bufferedSource
@@ -10,6 +10,6 @@ def makeTV(file: String): ListMap[Int, Int] = {
       .map(_.trim)
       .map(_.toInt)
   }
-  val unSorted: Map[Int, Int] = Iterator.from(0).zip(stringArray).toMap
-  ListMap(unSorted.toSeq.sortBy(_._1): _*)
+  val unSortedMap: Map[Int, Int] = Iterator.from(0).zip(stringArray).toMap
+  SortedMap[Int, Int]() ++ unSortedMap
 }

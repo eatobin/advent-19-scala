@@ -1,5 +1,6 @@
 import $file.intcode
 
-import scala.collection.immutable.ListMap
+import scala.collection.SortedMap
 
-val tv: ListMap[Int, Int] = intcode.makeTV("resources/day02.csv")
+val tv: SortedMap[Int, Int] = intcode.makeTV("resources/day02.csv")
+println(tv)
