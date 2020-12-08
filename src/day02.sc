@@ -1,6 +1,6 @@
 import $file.intcode
 
-import scala.collection.SortedMap
+import scala.collection.immutable.TreeMap
 
-val tv: SortedMap[Int, Int] = intcode.makeTV("resources/day02.csv")
+val tv: TreeMap[Int, Int] = intcode.makeTV("resources/day02.csv")
 println(tv)
