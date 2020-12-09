@@ -1,7 +1,5 @@
-import scala.annotation.tailrec
 import scala.collection.immutable.TreeMap
 import scala.io.{BufferedSource, Source}
-import scala.math.max
 
 def makeTV(file: String): TreeMap[Int, Int] = {
   val bufferedSource: BufferedSource = Source.fromFile(file)
@@ -18,7 +16,19 @@ def makeTV(file: String): TreeMap[Int, Int] = {
 
 // (defn op-code [{:keys [input output phase pointer relative-base memory stopped? recur?]}]
 
-case class IntCode(memory: TreeMap[Int, Int], pointer: Int)
+case class IntCode(pointer: Int, memory: TreeMap[Int, Int])
+
+object IntCode {
+  def opCode(intCode: IntCode): IntCode = intCode.memory(intCode.pointer) match {
+    case 1 =>
+      val added: Int = intCode.memory(intCode.pointer + 1) + intCode.memory(intCode.pointer + 2)
+      val newMemory: TreeMap[Int, Int] = intCode.memory + (intCode.memory(intCode.pointer + 3) -> added)
+      IntCode(intCode.pointer + 4, newMemory)
+  }
+}
+
+val testing: IntCode = IntCode(0, TreeMap(0 -> 1, 1 -> 99, 2 -> 1, 3 -> 4))
+println(IntCode.opCode(testing))
 
 //def gasPlus(m: Int): Int = {
 //  @tailrec
