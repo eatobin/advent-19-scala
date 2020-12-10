@@ -26,11 +26,11 @@ object IntCode {
       case 1 =>
         val added: Int = intCode.memory(intCode.memory(intCode.pointer + 1)) + intCode.memory(intCode.memory(intCode.pointer + 2))
         val newMemory: TreeMap[Int, Int] = intCode.memory + (intCode.memory(intCode.pointer + 3) -> added)
-        recur(IntCode(intCode.pointer + 4, newMemory))
+        recur(IntCode(pointer = intCode.pointer + 4, memory = newMemory))
       case 2 =>
         val multiplied: Int = intCode.memory(intCode.memory(intCode.pointer + 1)) * intCode.memory(intCode.memory(intCode.pointer + 2))
         val newMemory: TreeMap[Int, Int] = intCode.memory + (intCode.memory(intCode.pointer + 3) -> multiplied)
-        recur(IntCode(intCode.pointer + 4, newMemory))
+        recur(IntCode(pointer = intCode.pointer + 4, memory = newMemory))
       case _ => intCode
     }
 
