@@ -20,7 +20,7 @@ def makeMemory(file: String): TreeMap[Int, Int] = {
 case class IntCode(pointer: Int, memory: TreeMap[Int, Int])
 
 object IntCode {
-  def runCode(intCode: IntCode): IntCode = {
+  def ic(intCode: IntCode): IntCode = {
     @tailrec
     def recur(intCode: IntCode): IntCode = intCode.memory(intCode.pointer) match {
       case 1 =>
@@ -37,20 +37,3 @@ object IntCode {
     recur(intCode)
   }
 }
-
-//val testing: IntCode = IntCode(0, TreeMap(0 -> 2, 1 -> 99, 2 -> 2, 3 -> 4))
-//println(IntCode.opCode(testing))
-
-//def gasPlus(m: Int): Int = {
-//  @tailrec
-//  def gasAccumulator(m: Int, accum: Int): Int = {
-//    val newGas: Int = max((m / 3) - 2, 0)
-//    if (newGas > 0) {
-//      gasAccumulator(newGas, accum + newGas)
-//    } else {
-//      accum
-//    }
-//  }
-//
-//  gasAccumulator(m, 0)
-//}
