@@ -24,10 +24,15 @@ object IntCode {
       val added: Int = intCode.memory(intCode.pointer + 1) + intCode.memory(intCode.pointer + 2)
       val newMemory: TreeMap[Int, Int] = intCode.memory + (intCode.memory(intCode.pointer + 3) -> added)
       IntCode(intCode.pointer + 4, newMemory)
+    case 2 =>
+      val multiplied: Int = intCode.memory(intCode.pointer + 1) * intCode.memory(intCode.pointer + 2)
+      val newMemory: TreeMap[Int, Int] = intCode.memory + (intCode.memory(intCode.pointer + 3) -> multiplied)
+      IntCode(intCode.pointer + 4, newMemory)
+    case _ => intCode
   }
 }
 
-val testing: IntCode = IntCode(0, TreeMap(0 -> 1, 1 -> 99, 2 -> 1, 3 -> 4))
+val testing: IntCode = IntCode(0, TreeMap(0 -> 2, 1 -> 99, 2 -> 2, 3 -> 4))
 println(IntCode.opCode(testing))
 
 //def gasPlus(m: Int): Int = {

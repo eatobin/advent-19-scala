@@ -9,7 +9,7 @@ println(tv)
 //println(tester(s = "do you have", x = 8))
 
 def updatedMemory(noun: Int, verb: Int, memory: TreeMap[Int, Int]): TreeMap[Int, Int] = {
-  memory + (1 -> noun, 2 -> verb)
+  memory ++ List(1 -> noun, 2 -> verb)
 }
 
 println(updatedMemory(111, 222, tv))
