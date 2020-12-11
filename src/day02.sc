@@ -2,8 +2,22 @@ import $file.intcode
 
 import scala.collection.immutable.TreeMap
 
+// part A
 val memory: TreeMap[Int, Int] = intcode.makeMemory("resources/day02.csv")
-val updatedMemory: TreeMap[Int, Int] = memory ++ List(1 -> 12, 2 -> 2)
-val ic: intcode.IntCode = intcode.IntCode.ic(intcode.IntCode(pointer = 0, memory = updatedMemory))
+def updatedMemory(noun: Int, verb: Int): TreeMap[Int, Int] = memory ++ List(1 -> noun, 2 -> verb)
+val ic: intcode.IntCode = intcode.IntCode.ic(intcode.IntCode(pointer = 0, memory = updatedMemory(noun = 12, verb = 2)))
 val answer: Int = ic.memory(0)
 println(s"Answer Part A: $answer")
+
+// Answer Part A: 2890696
+
+// part B
+val answer2: Int = (for {noun <- Range.inclusive(0, 99)
+                         verb <- Range.inclusive(0, 99)
+                         candidate: Int = intcode.IntCode.ic(intcode.IntCode(pointer = 0, memory = updatedMemory(noun = noun, verb = verb))).memory(0)
+                         if candidate == 19690720
+                         } yield (100 * noun) + verb).head
+
+println(s"Answer Part B: $answer2")
+
+// Answer Part B: 8226
