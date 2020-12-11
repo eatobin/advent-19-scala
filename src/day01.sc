@@ -1,6 +1,5 @@
 import scala.annotation.tailrec
 import scala.io.{BufferedSource, Source}
-import scala.math.max
 
 val bufferedSource: BufferedSource = Source.fromFile("resources/day01.txt")
 val gasList: Seq[Int] = bufferedSource.getLines.toSeq.map((s: String) => s.toInt)
@@ -19,7 +18,7 @@ println(s"Answer Part A: $answer")
 def gasPlus(m: Int): Int = {
   @tailrec
   def gasAccumulator(m: Int, accum: Int): Int = {
-    val newGas: Int = max((m / 3) - 2, 0)
+    val newGas: Int = gas(m)
     if (newGas > 0) {
       gasAccumulator(m = newGas, accum = accum + newGas)
     } else {
