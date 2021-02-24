@@ -24,12 +24,18 @@ object IntCode {
     @tailrec
     def recur(intCode: IntCode): IntCode = intCode.memory(intCode.pointer) match {
       case 1 =>
-        val added: Int = intCode.memory(intCode.memory(intCode.pointer + 1)) + intCode.memory(intCode.memory(intCode.pointer + 2))
-        val newMemory: TreeMap[Int, Int] = intCode.memory + (intCode.memory(intCode.pointer + 3) -> added)
+        val location1: Int = intCode.memory(intCode.pointer + 1)
+        val location2: Int = intCode.memory(intCode.pointer + 2)
+        val location3: Int = intCode.memory(intCode.pointer + 3)
+        val added: Int = intCode.memory(location1) + intCode.memory(location2)
+        val newMemory: TreeMap[Int, Int] = intCode.memory + (location3 -> added)
         recur(IntCode(pointer = intCode.pointer + 4, memory = newMemory))
       case 2 =>
-        val multiplied: Int = intCode.memory(intCode.memory(intCode.pointer + 1)) * intCode.memory(intCode.memory(intCode.pointer + 2))
-        val newMemory: TreeMap[Int, Int] = intCode.memory + (intCode.memory(intCode.pointer + 3) -> multiplied)
+        val location1: Int = intCode.memory(intCode.pointer + 1)
+        val location2: Int = intCode.memory(intCode.pointer + 2)
+        val location3: Int = intCode.memory(intCode.pointer + 3)
+        val multiplied: Int = intCode.memory(location1) * intCode.memory(location2)
+        val newMemory: TreeMap[Int, Int] = intCode.memory + (location3 -> multiplied)
         recur(IntCode(pointer = intCode.pointer + 4, memory = newMemory))
       case _ => intCode
     }
