@@ -17,16 +17,16 @@ println(s"Answer Part A: $answer")
 // part b
 def gasPlus(m: Int): Int = {
   @tailrec
-  def gasAccumulator(m: Int, accum: Int): Int = {
+  def gasAccumulator(m: Int)(accum: Int): Int = {
     val newGas: Int = gas(m)
     if (newGas > 0) {
-      gasAccumulator(m = newGas, accum = accum + newGas)
+      gasAccumulator(m = newGas)(accum = accum + newGas)
     } else {
       accum
     }
   }
 
-  gasAccumulator(m = m, accum = 0)
+  gasAccumulator(m = m)(accum = 0)
 }
 
 val answer2: Int = gasList.map((m: Int) => gasPlus(m)).sum
