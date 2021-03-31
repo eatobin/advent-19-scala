@@ -16,7 +16,7 @@ def makeMemory(file: String): Vector[Int] = {
 case class IntCode(pointer: Int, memory: Vector[Int])
 
 object IntCode {
-  def ic(intCode: IntCode): IntCode = {
+  def opCode(intCode: IntCode): IntCode = {
     @tailrec
     def recur(intCode: IntCode): IntCode = {
       val location1: Int = intCode.memory(intCode.pointer + 1)
