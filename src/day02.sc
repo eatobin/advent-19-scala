@@ -1,10 +1,11 @@
 import $file.intcode
 
-import scala.collection.immutable.TreeMap
-
 // part A
-val memory: TreeMap[Int, Int] = intcode.makeMemory("resources/day02.csv")
-def updatedMemory(noun: Int)(verb: Int): TreeMap[Int, Int] = memory ++ List(1 -> noun, 2 -> verb)
+val memory: Vector[Int] = intcode.makeMemory("resources/day02.csv")
+def updatedMemory(noun: Int)(verb: Int): Vector[Int] = {
+  val newNoun = memory.updated(1, noun)
+  newNoun.updated(2, verb)
+}
 val ic: intcode.IntCode = intcode.IntCode.ic(intcode.IntCode(pointer = 0, memory = updatedMemory(noun = 12)(verb = 2)))
 val answer: Int = ic.memory(0)
 println(s"Answer Part A: $answer")
