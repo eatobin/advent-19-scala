@@ -2,7 +2,7 @@ import scala.annotation.tailrec
 import scala.io.{BufferedSource, Source}
 
 val bufferedSource: BufferedSource = Source.fromFile("resources/day01.txt")
-val gasList: Seq[Int] = bufferedSource.getLines.toSeq.map((s: String) => s.toInt)
+val gasList: List[Int] = bufferedSource.getLines().toList.map((s: String) => s.toInt)
 bufferedSource.close
 
 // part a
