@@ -32,17 +32,17 @@ object IntCode {
   def opCode(intCode: IntCode): IntCode = {
     @tailrec
     def recur(intCode: IntCode): IntCode = {
-      val cPr: Int = intCode.memory(intCode.memory(intCode.pointer + 1))
-      val bPr: Int = intCode.memory(intCode.memory(intCode.pointer + 2))
-      val aPw: Int = intCode.memory(intCode.pointer + 3)
+      val cP: Int = intCode.memory(intCode.pointer + 1)
+      val bP: Int = intCode.memory(intCode.pointer + 2)
+      val aP: Int = intCode.pointer + 3
       intCode.memory(intCode.pointer) match {
         case 1 =>
-          val added: Int = cPr + bPr
-          val newMemory: Vector[Int] = intCode.memory.updated(aPw, added)
+          val added: Int = intCode.memory(cP) + intCode.memory(bP)
+          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(aP), added)
           recur(IntCode(output = newMemory(0), pointer = intCode.pointer + 4, memory = newMemory))
         case 2 =>
-          val multiplied: Int = cPr * bPr
-          val newMemory: Vector[Int] = intCode.memory.updated(aPw, multiplied)
+          val multiplied: Int = intCode.memory(cP) * intCode.memory(bP)
+          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(aP), multiplied)
           recur(IntCode(output = newMemory(0), pointer = intCode.pointer + 4, memory = newMemory))
         case _ => intCode
       }
