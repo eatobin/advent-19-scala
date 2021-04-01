@@ -1,6 +1,7 @@
 //$ amm --predef foo.sc
 
 import scala.annotation.tailrec
+import scala.collection.immutable.ListMap
 import scala.io.{BufferedSource, Source}
 
 def makeMemory(file: String): Vector[Int] = {
@@ -11,6 +12,12 @@ def makeMemory(file: String): Vector[Int] = {
     .map(_.trim)
     .map(_.toInt)
     .toVector
+}
+
+def pad5(instruction: Int): ListMap[Char, Int] = {
+  val inBytes = "%05d".format(instruction).getBytes.map(_ - 48)
+  val inMap = Array('a', 'b', 'c', 'd', 'e').zip(inBytes).toMap
+  ListMap(inMap.toSeq.sortBy(_._1): _*)
 }
 
 // (defn op-code [{:keys [input output phase pointer relative-base memory stopped? recur?]}]
