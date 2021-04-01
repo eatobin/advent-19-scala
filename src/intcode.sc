@@ -16,7 +16,7 @@ def makeMemory(file: String): Vector[Int] = {
 // P I or R = position, immediate or relative mode
 // r or w = read or write
 
-case class IntCode(pointer: Int, memory: Vector[Int])
+case class IntCode(output: Int, pointer: Int, memory: Vector[Int])
 
 object IntCode {
   def opCode(intCode: IntCode): IntCode = {
@@ -29,11 +29,11 @@ object IntCode {
         case 1 =>
           val added: Int = cPr + bPr
           val newMemory: Vector[Int] = intCode.memory.updated(aIw, added)
-          recur(IntCode(pointer = intCode.pointer + 4, memory = newMemory))
+          recur(IntCode(output = newMemory(0), pointer = intCode.pointer + 4, memory = newMemory))
         case 2 =>
           val multiplied: Int = cPr * bPr
           val newMemory: Vector[Int] = intCode.memory.updated(aIw, multiplied)
-          recur(IntCode(pointer = intCode.pointer + 4, memory = newMemory))
+          recur(IntCode(output = newMemory(0), pointer = intCode.pointer + 4, memory = newMemory))
         case _ => intCode
       }
     }
