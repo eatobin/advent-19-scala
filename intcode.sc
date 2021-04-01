@@ -24,7 +24,6 @@ def pad5(instruction: Int): String = {
 
 // a- b- or c- = left-to-right position after 2 digit opcode
 // -p- -i- or -r- = position, immediate or relative mode
-// -r or -w = read or write
 
 case class IntCode(output: Int = 0, pointer: Int = 0, memory: Vector[Int])
 
