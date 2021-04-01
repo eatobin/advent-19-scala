@@ -1,7 +1,6 @@
 //$ amm --predef foo.sc
 
 import scala.annotation.tailrec
-import scala.collection.immutable.ListMap
 import scala.io.{BufferedSource, Source}
 
 def makeMemory(file: String): Vector[Int] = {
@@ -27,7 +26,7 @@ def pad5(instruction: Int): String = {
 // -p- -i- or -r- = position, immediate or relative mode
 // -r or -w = read or write
 
-case class IntCode(output: Int, pointer: Int, memory: Vector[Int])
+case class IntCode(output: Int = 0, pointer: Int = 0, memory: Vector[Int])
 
 object IntCode {
   def opCode(intCode: IntCode): IntCode = {
