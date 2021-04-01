@@ -43,7 +43,7 @@ object IntCode {
           val multiplied: Int = intCode.memory(cP) * intCode.memory(bP)
           val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(aP), multiplied)
           recur(IntCode(output = newMemory(0), pointer = intCode.pointer + 4, memory = newMemory))
-        case _ => intCode
+        case "00099" => intCode
       }
     }
 
