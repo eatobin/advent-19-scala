@@ -1,3 +1,5 @@
+//$ amm --predef foo.sc
+
 import scala.annotation.tailrec
 import scala.io.{BufferedSource, Source}
 
@@ -12,9 +14,13 @@ def makeMemory(file: String): Vector[Int] = {
 }
 
 // (defn op-code [{:keys [input output phase pointer relative-base memory stopped? recur?]}]
-// a b or c = right-to-left position after 2 digit opcode
-// P I or R = position, immediate or relative mode
-// r or w = read or write
+
+// ABCDE
+// 1002
+
+// a- b- or c- = left-to-right position after 2 digit opcode
+// -p- -i- or -r- = position, immediate or relative mode
+// -r or -w = read or write
 
 case class IntCode(output: Int, pointer: Int, memory: Vector[Int])
 
