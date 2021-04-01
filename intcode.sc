@@ -14,10 +14,8 @@ def makeMemory(file: String): Vector[Int] = {
     .toVector
 }
 
-def pad5(instruction: Int): ListMap[Char, Int] = {
-  val inBytes = "%05d".format(instruction).getBytes.map(_ - 48)
-  val inMap = Array('a', 'b', 'c', 'd', 'e').zip(inBytes).toMap
-  ListMap(inMap.toSeq.sortBy(_._1): _*)
+def pad5(instruction: Int): String = {
+  "%05d".format(instruction).getBytes.map(_ - 48).mkString("")
 }
 
 // (defn op-code [{:keys [input output phase pointer relative-base memory stopped? recur?]}]
@@ -37,15 +35,15 @@ object IntCode {
     def recur(intCode: IntCode): IntCode = {
       val cPr: Int = intCode.memory(intCode.memory(intCode.pointer + 1))
       val bPr: Int = intCode.memory(intCode.memory(intCode.pointer + 2))
-      val aIw: Int = intCode.memory(intCode.pointer + 3)
+      val aPw: Int = intCode.memory(intCode.pointer + 3)
       intCode.memory(intCode.pointer) match {
         case 1 =>
           val added: Int = cPr + bPr
-          val newMemory: Vector[Int] = intCode.memory.updated(aIw, added)
+          val newMemory: Vector[Int] = intCode.memory.updated(aPw, added)
           recur(IntCode(output = newMemory(0), pointer = intCode.pointer + 4, memory = newMemory))
         case 2 =>
           val multiplied: Int = cPr * bPr
-          val newMemory: Vector[Int] = intCode.memory.updated(aIw, multiplied)
+          val newMemory: Vector[Int] = intCode.memory.updated(aPw, multiplied)
           recur(IntCode(output = newMemory(0), pointer = intCode.pointer + 4, memory = newMemory))
         case _ => intCode
       }
