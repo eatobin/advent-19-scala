@@ -20,7 +20,7 @@ def pad5(instruction: Int): String = {
 // (defn op-code [{:keys [input output phase pointer relative-base memory stopped? recur?]}]
 
 // ABCDE
-// 1002
+// 01002
 
 // a- b- or c- = left-to-right position after 2 digit opcode
 // -p- -i- or -r- = position, immediate or relative mode
