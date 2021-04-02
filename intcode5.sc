@@ -33,21 +33,23 @@ object IntCode {
     @tailrec
     def recur(intCode: IntCode): IntCode = {
       val cPr: Int = intCode.memory(intCode.pointer + 1)
-      val cPw: Int = intCode.pointer + 1
+      val cIw: Int = intCode.pointer + 1
       val bPr: Int = intCode.memory(intCode.pointer + 2)
-      val aPw: Int = intCode.pointer + 3
+      val aIw: Int = intCode.pointer + 3
       pad5(intCode.memory(intCode.pointer)) match {
         case "00001" =>
           val added: Int = intCode.memory(cPr) + intCode.memory(bPr)
-          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(aPw), added)
+          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(aIw), added)
           recur(IntCode(input = intCode.input, output = intCode.output, pointer = intCode.pointer + 4, memory = newMemory))
         case "00002" =>
           val multiplied: Int = intCode.memory(cPr) * intCode.memory(bPr)
-          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(aPw), multiplied)
+          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(aIw), multiplied)
           recur(IntCode(input = intCode.input, output = intCode.output, pointer = intCode.pointer + 4, memory = newMemory))
         case "00003" =>
-          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(cPw), intCode.input)
-          recur(IntCode(input = intCode.input, output = intCode.output, pointer = intCode.pointer + 4, memory = newMemory))
+          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(cIw), intCode.input)
+          recur(IntCode(input = intCode.input, output = intCode.output, pointer = intCode.pointer + 2, memory = newMemory))
+        case "00004" =>
+          recur(IntCode(input = intCode.input, output = intCode.memory(cIw), pointer = intCode.pointer + 2, memory = intCode.memory))
         case "00099" => intCode
       }
     }
