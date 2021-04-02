@@ -38,11 +38,11 @@ object IntCode {
         case "00001" =>
           val added: Int = intCode.memory(cP) + intCode.memory(bP)
           val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(aP), added)
-          recur(IntCode(output = newMemory(0), pointer = intCode.pointer + 4, memory = newMemory))
+          recur(IntCode(output = intCode.output, pointer = intCode.pointer + 4, memory = newMemory))
         case "00002" =>
           val multiplied: Int = intCode.memory(cP) * intCode.memory(bP)
           val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(aP), multiplied)
-          recur(IntCode(output = newMemory(0), pointer = intCode.pointer + 4, memory = newMemory))
+          recur(IntCode(output = intCode.output, pointer = intCode.pointer + 4, memory = newMemory))
         case "00099" => intCode
       }
     }

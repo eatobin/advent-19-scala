@@ -7,7 +7,7 @@ def updatedMemory(noun: Int)(verb: Int): Vector[Int] = {
   newNoun.updated(2, verb)
 }
 val ic: intcode.IntCode = intcode.IntCode.opCode(intcode.IntCode(memory = updatedMemory(noun = 12)(verb = 2)))
-val answer: Int = ic.output
+val answer: Int = ic.memory(0)
 println(s"Answer Part A: $answer")
 
 // Answer Part A: 2890696
@@ -15,7 +15,7 @@ println(s"Answer Part A: $answer")
 // part B
 val answer2: Int = (for {noun <- Range.inclusive(0, 99)
                          verb <- Range.inclusive(0, 99)
-                         candidate: Int = intcode.IntCode.opCode(intcode.IntCode(memory = updatedMemory(noun = noun)(verb = verb))).output
+                         candidate: Int = intcode.IntCode.opCode(intcode.IntCode(memory = updatedMemory(noun = noun)(verb = verb))).memory(0)
                          if candidate == 19690720
                          } yield (100 * noun) + verb).head
 
