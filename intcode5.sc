@@ -29,13 +29,10 @@ def pad5(instruction: Int): String = {
 case class IntCode(input: Int = 0, output: Int = 0, pointer: Int = 0, memory: Vector[Int])
 
 object IntCode {
-  def cPr(intCode: IntCode): Int = intCode.memory(intCode.pointer + 1)
-
-  def bPr(intCode: IntCode): Int = intCode.memory(intCode.pointer + 2)
-
   def aPw(intCode: IntCode): Int = intCode.pointer + 3
-
-  def cIw(intCode: IntCode): Int = intCode.pointer + 1
+  def bPr(intCode: IntCode): Int = intCode.memory(intCode.pointer + 2)
+  def cPr(intCode: IntCode): Int = intCode.memory(intCode.pointer + 1)
+  def cPw(intCode: IntCode): Int = intCode.pointer + 1
 
   def opCode(intCode: IntCode): IntCode = {
     @tailrec
@@ -50,7 +47,7 @@ object IntCode {
           val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(aPw(intCode)), multiplied)
           recur(IntCode(input = intCode.input, output = intCode.output, pointer = intCode.pointer + 4, memory = newMemory))
         case "00003" =>
-          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(cIw(intCode)), intCode.input)
+          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(cPw(intCode)), intCode.input)
           recur(IntCode(input = intCode.input, output = intCode.output, pointer = intCode.pointer + 2, memory = newMemory))
         case "00004" =>
           recur(IntCode(input = intCode.input, output = intCode.memory(cPr(intCode)), pointer = intCode.pointer + 2, memory = intCode.memory))
