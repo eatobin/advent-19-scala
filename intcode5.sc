@@ -29,30 +29,31 @@ def pad5(instruction: Int): String = {
 case class IntCode(input: Int = 0, output: Int = 0, pointer: Int = 0, memory: Vector[Int])
 
 object IntCode {
+  def cPr(intCode: IntCode): Int = intCode.memory(intCode.pointer + 1)
+
+  def bPr(intCode: IntCode): Int = intCode.memory(intCode.pointer + 2)
+
+  def aIw(intCode: IntCode): Int = intCode.pointer + 3
+
+  def cIw(intCode: IntCode): Int = intCode.pointer + 1
+
   def opCode(intCode: IntCode): IntCode = {
     @tailrec
     def recur(intCode: IntCode): IntCode = {
-      val aIw: Int = intCode.pointer + 3
       pad5(intCode.memory(intCode.pointer)) match {
         case "00001" =>
-          val cPr: Int = intCode.memory(intCode.pointer + 1)
-          val bPr: Int = intCode.memory(intCode.pointer + 2)
-          val added: Int = intCode.memory(cPr) + intCode.memory(bPr)
-          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(aIw), added)
+          val added: Int = intCode.memory(cPr(intCode)) + intCode.memory(bPr(intCode))
+          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(aIw(intCode)), added)
           recur(IntCode(input = intCode.input, output = intCode.output, pointer = intCode.pointer + 4, memory = newMemory))
         case "00002" =>
-          val cPr: Int = intCode.memory(intCode.pointer + 1)
-          val bPr: Int = intCode.memory(intCode.pointer + 2)
-          val multiplied: Int = intCode.memory(cPr) * intCode.memory(bPr)
-          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(aIw), multiplied)
+          val multiplied: Int = intCode.memory(cPr(intCode)) * intCode.memory(bPr(intCode))
+          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(aIw(intCode)), multiplied)
           recur(IntCode(input = intCode.input, output = intCode.output, pointer = intCode.pointer + 4, memory = newMemory))
         case "00003" =>
-          val cIw: Int = intCode.pointer + 1
-          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(cIw), intCode.input)
+          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(cIw(intCode)), intCode.input)
           recur(IntCode(input = intCode.input, output = intCode.output, pointer = intCode.pointer + 2, memory = newMemory))
         case "00004" =>
-          val cPr: Int = intCode.memory(intCode.pointer + 1)
-          recur(IntCode(input = intCode.input, output = intCode.memory(cPr), pointer = intCode.pointer + 2, memory = intCode.memory))
+          recur(IntCode(input = intCode.input, output = intCode.memory(cPr(intCode)), pointer = intCode.pointer + 2, memory = intCode.memory))
         case "00099" => intCode
       }
     }
