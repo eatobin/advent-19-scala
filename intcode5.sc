@@ -90,7 +90,8 @@ object IntCode {
             output = intCode.memory(paramMakerC(intCode)),
             pointer = intCode.pointer + 2,
             memory = intCode.memory))
-        case Array(_, _, _, 9, 9) => intCode
+        case Array(_, _, _, _, 9) => intCode
+        case _ => IntCode(0, 0, 0, Vector(0))
       }
     }
 
