@@ -33,7 +33,7 @@ object IntCode {
 
   def bPr(intCode: IntCode): Int = intCode.memory(intCode.pointer + 2)
 
-  def aIw(intCode: IntCode): Int = intCode.pointer + 3
+  def aPw(intCode: IntCode): Int = intCode.pointer + 3
 
   def cIw(intCode: IntCode): Int = intCode.pointer + 1
 
@@ -43,11 +43,11 @@ object IntCode {
       pad5(intCode.memory(intCode.pointer)) match {
         case "00001" =>
           val added: Int = intCode.memory(cPr(intCode)) + intCode.memory(bPr(intCode))
-          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(aIw(intCode)), added)
+          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(aPw(intCode)), added)
           recur(IntCode(input = intCode.input, output = intCode.output, pointer = intCode.pointer + 4, memory = newMemory))
         case "00002" =>
           val multiplied: Int = intCode.memory(cPr(intCode)) * intCode.memory(bPr(intCode))
-          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(aIw(intCode)), multiplied)
+          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(aPw(intCode)), multiplied)
           recur(IntCode(input = intCode.input, output = intCode.output, pointer = intCode.pointer + 4, memory = newMemory))
         case "00003" =>
           val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(cIw(intCode)), intCode.input)
