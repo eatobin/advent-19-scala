@@ -9,9 +9,10 @@ type Pointer = Int
 type Memory = TreeMap[Int, Int]
 type RelativeBase = Int
 type Instruction = Array[Int]
-type Address = Int
 type Value = Int
-type AddressAsValue = Int
+type Address = Int
+type xPrxIrAddress = Int
+type xXwxIrAddress = Int
 
 def makeMemory(file: FilePath): Memory = {
   val bufferedSource: BufferedSource = Source.fromFile(file)
@@ -42,22 +43,22 @@ def pad5(rawInstruction: Int): Instruction = {
 case class IntCode(input: Value, output: Value, pointer: Address, memory: Memory)
 
 object IntCode {
-  def aPw(pointer: Pointer)(memory: Memory): AddressAsValue = memory(pointer + 3)
+  def aPw(pointer: Pointer)(memory: Memory): xXwxIrAddress = memory(pointer + 3)
 
-  def bPrbRr(pointer: Pointer)(memory: Memory)(relativeBase: RelativeBase): Value =
+  def bPrbRr(pointer: Pointer)(memory: Memory)(relativeBase: RelativeBase): xPrxIrAddress =
     memory.getOrElse((pointer + 2) + relativeBase, 0)
 
-  def cPrcRr(pointer: Pointer)(memory: Memory)(relativeBase: RelativeBase): Value =
+  def cPrcRr(pointer: Pointer)(memory: Memory)(relativeBase: RelativeBase): xPrxIrAddress =
     memory.getOrElse((pointer + 1) + relativeBase, 0)
 
-  def cPwcIr(pointer: Pointer)(memory: Memory): AddressAsValue = memory(pointer + 1)
+  def cPwcIr(pointer: Pointer)(memory: Memory): xXwxIrAddress = memory(pointer + 1)
 
-  def bIr(pointer: Pointer)(memory: Memory): AddressAsValue = memory(pointer + 2)
+  def bIr(pointer: Pointer)(memory: Memory): xXwxIrAddress = memory(pointer + 2)
 
-  def aRw(pointer: Pointer)(memory: Memory)(relativeBase: RelativeBase): AddressAsValue =
+  def aRw(pointer: Pointer)(memory: Memory)(relativeBase: RelativeBase): xXwxIrAddress =
     memory((pointer + 3) + relativeBase)
 
-  def cRw(pointer: Pointer)(memory: Memory)(relativeBase: RelativeBase): AddressAsValue =
+  def cRw(pointer: Pointer)(memory: Memory)(relativeBase: RelativeBase): xXwxIrAddress =
     memory((pointer + 1) + relativeBase)
 
   //
