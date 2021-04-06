@@ -4,6 +4,7 @@ import scala.annotation.tailrec
 import scala.collection.immutable.TreeMap
 import scala.io.{BufferedSource, Source}
 
+type FilePath = String
 type Pointer = Int
 type Memory = TreeMap[Int, Int]
 type RelativeBase = Int
@@ -12,7 +13,7 @@ type Address = Int
 type Value = Int
 type AddressAsValue = Int
 
-def makeMemory(file: String): Memory = {
+def makeMemory(file: FilePath): Memory = {
   val bufferedSource: BufferedSource = Source.fromFile(file)
   val stringArray: Array[Int] = {
     bufferedSource
