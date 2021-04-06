@@ -2,8 +2,10 @@ import $file.intcode
 
 import scala.collection.immutable.TreeMap
 
+type Memory = TreeMap[Int, Int]
+
 // part A
-val memory: TreeMap[Int, Int] = intcode.makeMemory("resources/day05.csv")
+val memory: Memory = intcode.makeMemory("resources/day05.csv")
 println(memory)
 //val ic: intcode.IntCode = intcode.IntCode.opCode(intcode.IntCode(input = 1, output = 0, pointer = 0, memory = memory))
 //val answer: Int = ic.output
