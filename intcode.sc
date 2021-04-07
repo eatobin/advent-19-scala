@@ -51,14 +51,15 @@ object IntCode {
             output = intCode.output,
             pointer = intCode.pointer + 4,
             memory = intCode.memory.updated(intCode.memory(intCode.pointer + 3),
-              intCode.memory(intCode.memory(intCode.pointer + 1)) + intCode.memory(intCode.memory(intCode.pointer)))))
+              intCode.memory(intCode.memory(intCode.pointer + 1)) + intCode.memory(intCode.memory(intCode.pointer + 2)))))
         case Array(0, 0, 0, 0, 2) =>
           recur(IntCode(
             input = intCode.input,
             output = intCode.output,
             pointer = intCode.pointer + 4,
             memory = intCode.memory.updated(intCode.memory(intCode.pointer + 3),
-              intCode.memory(intCode.memory(intCode.pointer + 1)) * intCode.memory(intCode.memory(intCode.pointer)))))
+              intCode.memory(intCode.memory(intCode.pointer + 1)) * intCode.memory(intCode.memory(intCode.pointer + 2)))))
+        case Array(0, 0, 0, 9, 9) => intCode
       }
     }
 
