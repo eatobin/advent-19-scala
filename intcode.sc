@@ -74,30 +74,22 @@ object IntCode {
     }
   }
 
+  def addressMakerB(intCode: IntCode): Address = {
+    pad5(intCode.memory(intCode.pointer)) match {
+      case Array(_, 0, _, _, _) | Array(_, 2, _, _, _) => bPrbRr(intCode)
+      case Array(_, 1, _, _, _) => bIr(intCode)
+    }
+  }
 
-  //  def paramMakerA(intCode: IntCode): Int = {
-  //    pad5(intCode.memory(intCode.pointer)) match {
-  //      case Array(0, _, _, _, _) => aPw(intCode)
-  //    }
-  //  }
-  //
-  //  def paramMakerB(intCode: IntCode): Int = {
-  //    pad5(intCode.memory(intCode.pointer)) match {
-  //      case Array(_, 0, _, _, _) => bPr(intCode)
-  //      case Array(_, 1, _, _, _) => bIr(intCode)
-  //    }
-  //  }
-  //
-  //  def paramMakerC(intCode: IntCode): Int = {
-  //    pad5(intCode.memory(intCode.pointer)) match {
-  //      case Array(_, _, _, _, 3) => cPwcIr(intCode)
-  //      case _ => pad5(intCode.memory(intCode.pointer)) match {
-  //        case Array(_, _, 0, _, _) => cPr(intCode)
-  //        case Array(_, _, 1, _, _) => cPwcIr(intCode)
-  //      }
-  //    }
-  //  }
-  //
+  def addressMakerA(intCode: IntCode): Address = {
+    pad5(intCode.memory(intCode.pointer)) match {
+      case Array(0, _, _, _, _) => aPw(intCode)
+      case Array(2, _, _, _, _) => aRw(intCode)
+    }
+  }
+
+
+
   //  def opCode(intCode: IntCode): IntCode = {
   //    @tailrec
   //    def recur(intCode: IntCode): IntCode = {
