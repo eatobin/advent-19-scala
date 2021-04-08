@@ -59,6 +59,18 @@ object IntCode {
             pointer = intCode.pointer + 4,
             memory = intCode.memory.updated(intCode.memory(intCode.pointer + 3),
               intCode.memory(intCode.memory(intCode.pointer + 1)) * intCode.memory(intCode.memory(intCode.pointer + 2)))))
+        case Array(0, 0, 0, 0, 3) =>
+          recur(IntCode(
+            input = intCode.input,
+            output = intCode.output,
+            pointer = intCode.pointer + 2,
+            memory = intCode.memory.updated(intCode.memory(intCode.pointer + 1), intCode.input)))
+        case Array(0, 0, 0, 0, 4) =>
+          recur(IntCode(
+            input = intCode.input,
+            output = intCode.memory(intCode.memory(intCode.pointer + 1)),
+            pointer = intCode.pointer + 2,
+            memory = intCode.memory))
         case Array(0, 0, 0, 9, 9) => intCode
       }
     }
@@ -66,32 +78,3 @@ object IntCode {
     recur(intCode)
   }
 }
-
-
-//        case Array(_, _, _, _, 2) =>
-//          recur(IntCode(
-//            input = intCode.input,
-//            output = intCode.output,
-//            pointer = intCode.pointer + 4,
-//            memory = intCode.memory.updated(intCode.memory(paramMakerA(intCode)), intCode.memory(paramMakerC(intCode)) * intCode.memory(paramMakerB(intCode)))))
-//        case Array(_, _, _, _, 3) =>
-//          recur(IntCode(
-//            input = intCode.input,
-//            output = intCode.output,
-//            pointer = intCode.pointer + 2,
-//            memory = intCode.memory.updated(paramMakerC(intCode), intCode.input)))
-//        case Array(_, _, _, _, 4) =>
-//          recur(IntCode(
-//            input = intCode.input,
-//            output = intCode.memory(paramMakerC(intCode)),
-//            pointer = intCode.pointer + 2,
-//            memory = intCode.memory))
-//        case Array(_, _, _, _, 9) => intCode
-//        case _ => IntCode(0, 0, 0, Vector(0))
-//      }
-//      }
-
-//
-//    }
-//  }
-//}
