@@ -4,10 +4,7 @@ import scala.collection.immutable.TreeMap
 
 // part A
 type Memory = TreeMap[Int, Int]
-//type RelativeBase = Int
-//type Instruction = Array[Int]
-//type Value = Int
-//type Address = Int
+
 val memory: Memory = intcode.makeMemory("resources/day02.csv")
 def updatedMemory(noun: Int)(verb: Int): Memory = {
   val newNoun = memory.updated(1, noun)
