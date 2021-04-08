@@ -5,10 +5,10 @@ import scala.collection.immutable.TreeMap
 type Memory = TreeMap[Int, Int]
 
 // part A
-val memory: Memory = intcode.makeMemory("resources/day05.csv")
+val memory: Memory = intcode.makeMemory("resources/day02.csv")
 println(memory)
-//val ic: intcode.IntCode = intcode.IntCode.opCode(intcode.IntCode(input = 1, output = 0, pointer = 0, memory = memory))
-//val answer: Int = ic.output
+//val ic: intcode.IntCode = intcode.IntCode.opCode(intcode.IntCode(input = 0, output = 0, pointer = 0, relativeBase = 0, memory = memory))
+//val answer: Int = ic.memory(0)
 //println(s"Answer Part A: $answer")
 
 // Answer Part A: 9025675
