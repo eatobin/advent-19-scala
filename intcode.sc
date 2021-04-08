@@ -44,14 +44,34 @@ case class IntCode(input: Value, output: Value, pointer: Address, relativeBase: 
 object IntCode {
   def aPw(intCode: IntCode): Address = intCode.memory(intCode.pointer + 3)
 
-  def bPrbRr(intCode: IntCode): Address = intCode.memory.getOrElse(intCode.memory(intCode.pointer + 2) + intCode.relativeBase, 0)
+  def bPrbRr(intCode: IntCode): Address =
+    intCode.memory.getOrElse(intCode.memory(intCode.pointer + 2) + intCode.relativeBase, 0)
 
-  def bIr(intCode: IntCode): Int = intCode.pointer + 2
+  def cPrcRr(intCode: IntCode): Address =
+    intCode.memory.getOrElse(intCode.memory(intCode.pointer + 1) + intCode.relativeBase, 0)
 
-  def cPr(intCode: IntCode): Int = intCode.memory(intCode.pointer + 1)
+  def cPwcIr(intCode: IntCode): Address = intCode.memory(intCode.pointer + 1)
 
-  def cPwcIr(intCode: IntCode): Int = intCode.pointer + 1
+  def bIr(intCode: IntCode): Address = intCode.memory(intCode.pointer + 2)
 
+  def aRw(intCode: IntCode): Address = intCode.memory(intCode.pointer + 3) + intCode.relativeBase
+
+  def cRw(intCode: IntCode): Address = intCode.memory(intCode.pointer + 1) + intCode.relativeBase
+
+  def addressMakerC(intCode: IntCode): Address = {
+    pad5(intCode.memory(intCode.pointer)) match {
+      case Array(_, _, _, _, 3) =>
+        pad5(intCode.memory(intCode.pointer)) match {
+          case Array(_, _, 0, _, _) => 0
+          case Array(_, _, 2, _, _) => 1
+        }
+      case _ => pad5(intCode.memory(intCode.pointer)) match {
+        case Array(_, _, 0, _, _) => 1
+        case Array(_, _, 1, _, _) => 1
+        case Array(_, _, 2, _, _) => 1
+      }
+    }
+  }
   //  def paramMakerA(intCode: IntCode): Int = {
   //    pad5(intCode.memory(intCode.pointer)) match {
   //      case Array(0, _, _, _, _) => aPw(intCode)
