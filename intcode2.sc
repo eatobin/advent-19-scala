@@ -1,20 +1,32 @@
 //$ amm --predef foo.sc
 
 import scala.annotation.tailrec
+import scala.collection.immutable.TreeMap
 import scala.io.{BufferedSource, Source}
 
-def makeMemory(file: String): Vector[Int] = {
+type FilePath = String
+type Pointer = Int
+type Memory = TreeMap[Int, Int]
+type RelativeBase = Int
+type Instruction = Array[Int]
+type Value = Int
+type Address = Int
+
+def makeMemory(file: FilePath): Memory = {
   val bufferedSource: BufferedSource = Source.fromFile(file)
-  bufferedSource
-    .mkString
-    .split(",")
-    .map(_.trim)
-    .map(_.toInt)
-    .toVector
+  val stringArray: Array[Int] = {
+    bufferedSource
+      .mkString
+      .split(",")
+      .map(_.trim)
+      .map(_.toInt)
+  }
+  val unSortedMap: Map[Int, Int] = Iterator.from(0).zip(stringArray).toMap
+  TreeMap[Int, Int]() ++ unSortedMap
 }
 
-def pad5(instruction: Int): String = {
-  "%05d".format(instruction).getBytes.map(_ - 48).mkString("")
+def pad5(rawInstruction: Int): Instruction = {
+  "%05d".format(rawInstruction).getBytes.map(_ - 48)
 }
 
 // (defn op-code [{:keys [input output phase pointer relative-base memory stopped? recur?]}]
@@ -22,28 +34,44 @@ def pad5(instruction: Int): String = {
 // ABCDE
 // 01002
 
-// a- b- or c- = left-to-right position after 2 digit opcode
-// -p- -i- or -r- = position, immediate or relative mode
+// a b or c = left-to-right position after 2 digit opcode
+// P I or R = position, immediate or relative mode
+// r or w = read or write
 
-case class IntCode(output: Int = 0, pointer: Int = 0, memory: Vector[Int])
+case class IntCode(input: Value, output: Value, pointer: Address, memory: Memory)
 
 object IntCode {
   def opCode(intCode: IntCode): IntCode = {
     @tailrec
     def recur(intCode: IntCode): IntCode = {
-      val cP: Int = intCode.memory(intCode.pointer + 1)
-      val bP: Int = intCode.memory(intCode.pointer + 2)
-      val aP: Int = intCode.pointer + 3
       pad5(intCode.memory(intCode.pointer)) match {
-        case "00001" =>
-          val added: Int = intCode.memory(cP) + intCode.memory(bP)
-          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(aP), added)
-          recur(IntCode(output = intCode.output, pointer = intCode.pointer + 4, memory = newMemory))
-        case "00002" =>
-          val multiplied: Int = intCode.memory(cP) * intCode.memory(bP)
-          val newMemory: Vector[Int] = intCode.memory.updated(intCode.memory(aP), multiplied)
-          recur(IntCode(output = intCode.output, pointer = intCode.pointer + 4, memory = newMemory))
-        case "00099" => intCode
+        case Array(0, 0, 0, 0, 1) =>
+          recur(IntCode(
+            input = intCode.input,
+            output = intCode.output,
+            pointer = intCode.pointer + 4,
+            memory = intCode.memory.updated(intCode.memory(intCode.pointer + 3),
+              intCode.memory(intCode.memory(intCode.pointer + 1)) + intCode.memory(intCode.memory(intCode.pointer + 2)))))
+        case Array(0, 0, 0, 0, 2) =>
+          recur(IntCode(
+            input = intCode.input,
+            output = intCode.output,
+            pointer = intCode.pointer + 4,
+            memory = intCode.memory.updated(intCode.memory(intCode.pointer + 3),
+              intCode.memory(intCode.memory(intCode.pointer + 1)) * intCode.memory(intCode.memory(intCode.pointer + 2)))))
+        case Array(0, 0, 0, 0, 3) =>
+          recur(IntCode(
+            input = intCode.input,
+            output = intCode.output,
+            pointer = intCode.pointer + 2,
+            memory = intCode.memory.updated(intCode.memory(intCode.pointer + 1), intCode.input)))
+        case Array(0, 0, 0, 0, 4) =>
+          recur(IntCode(
+            input = intCode.input,
+            output = intCode.memory(intCode.memory(intCode.pointer + 1)),
+            pointer = intCode.pointer + 2,
+            memory = intCode.memory))
+        case Array(0, 0, 0, 9, 9) => intCode
       }
     }
 
