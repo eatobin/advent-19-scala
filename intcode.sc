@@ -1,4 +1,4 @@
-//$ amm --predef foo.sc
+//$ amm --predef intcode.sc
 
 import scala.annotation.tailrec
 import scala.collection.immutable.TreeMap
@@ -43,10 +43,10 @@ case class IntCode(input: Value, output: Value, pointer: Address, relativeBase: 
 object IntCode {
   def aPw(intCode: IntCode): Address = intCode.memory(intCode.pointer + 3)
 
-  def bPrbRr(intCode: IntCode): Address =
+  def bPrbRr(intCode: IntCode): Value =
     intCode.memory.getOrElse(intCode.memory(intCode.pointer + 2) + intCode.relativeBase, 0)
 
-  def cPrcRr(intCode: IntCode): Address =
+  def cPrcRr(intCode: IntCode): Value =
     intCode.memory.getOrElse(intCode.memory(intCode.pointer + 1) + intCode.relativeBase, 0)
 
   def cPwcIr(intCode: IntCode): Address = intCode.memory(intCode.pointer + 1)
@@ -97,14 +97,14 @@ object IntCode {
             output = intCode.output,
             pointer = intCode.pointer + 4,
             relativeBase = intCode.relativeBase,
-            memory = intCode.memory.updated(intCode.memory(addressMakerA(intCode)), intCode.memory(addressMakerC(intCode)) + intCode.memory(addressMakerB(intCode)))))
+            memory = intCode.memory.updated(intCode.memory(addressMakerA(intCode)), addressMakerC(intCode) + addressMakerB(intCode))))
         case Array(_, _, _, _, 2) =>
           recur(IntCode(
             input = intCode.input,
             output = intCode.output,
             pointer = intCode.pointer + 4,
             relativeBase = intCode.relativeBase,
-            memory = intCode.memory.updated(intCode.memory(addressMakerA(intCode)), intCode.memory(addressMakerC(intCode)) * intCode.memory(addressMakerB(intCode)))))
+            memory = intCode.memory.updated(intCode.memory(addressMakerA(intCode)), addressMakerC(intCode) * addressMakerB(intCode))))
         case Array(_, _, _, _, 3) =>
           recur(IntCode(
             input = intCode.input,
