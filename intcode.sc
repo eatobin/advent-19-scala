@@ -60,18 +60,21 @@ object IntCode {
 
   def addressMakerC(intCode: IntCode): Address = {
     pad5(intCode.memory(intCode.pointer)) match {
+      case Array(_, _, _, _, 1) | Array(_, _, _, _, 2) | Array(_, _, _, _, 4) | Array(_, _, _, _, 5) |
+           Array(_, _, _, _, 6) | Array(_, _, _, _, 7) | Array(_, _, _, _, 8) | Array(_, _, _, _, 9) =>
+        pad5(intCode.memory(intCode.pointer)) match {
+          case Array(_, _, 1, _, _) => cPwcIr(intCode)
+          case Array(_, _, 0, _, _) | Array(_, _, 2, _, _) => cPrcRr(intCode)
+        }
       case Array(_, _, _, _, 3) =>
         pad5(intCode.memory(intCode.pointer)) match {
-          case Array(_, _, 0, _, _) => 0
-          case Array(_, _, 2, _, _) => 1
+          case Array(_, _, 0, _, _) => cPwcIr(intCode)
+          case Array(_, _, 2, _, _) => cRw(intCode)
         }
-      case _ => pad5(intCode.memory(intCode.pointer)) match {
-        case Array(_, _, 0, _, _) => 1
-        case Array(_, _, 1, _, _) => 1
-        case Array(_, _, 2, _, _) => 1
-      }
     }
   }
+
+
   //  def paramMakerA(intCode: IntCode): Int = {
   //    pad5(intCode.memory(intCode.pointer)) match {
   //      case Array(0, _, _, _, _) => aPw(intCode)
