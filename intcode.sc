@@ -1,9 +1,7 @@
 //$ amm --predef intcode.sc
 
-//import scala.annotation.tailrec
-
-import scala.collection.immutable.ListMap
-import scala.collection.immutable.TreeMap
+import scala.annotation.tailrec
+import scala.collection.immutable.{ListMap, TreeMap}
 import scala.io.{BufferedSource, Source}
 
 type FilePath = String
@@ -89,42 +87,42 @@ object IntCode {
     }
   }
 
-  //  def opCode(intCode: IntCode): IntCode = {
-  //    @tailrec
-  //    def recur(intCode: IntCode): IntCode = {
-  //      pad5(intCode.memory(intCode.pointer)) match {
-  //        case Array(_, _, _, _, 1) =>
-  //          recur(IntCode(
-  //            input = intCode.input,
-  //            output = intCode.output,
-  //            pointer = intCode.pointer + 4,
-  //            relativeBase = intCode.relativeBase,
-  //            memory = intCode.memory.updated(intCode.memory(addressMakerA(intCode)), addressMakerC(intCode) + addressMakerB(intCode))))
-  //        case Array(_, _, _, _, 2) =>
-  //          recur(IntCode(
-  //            input = intCode.input,
-  //            output = intCode.output,
-  //            pointer = intCode.pointer + 4,
-  //            relativeBase = intCode.relativeBase,
-  //            memory = intCode.memory.updated(intCode.memory(addressMakerA(intCode)), addressMakerC(intCode) * addressMakerB(intCode))))
-  //        case Array(_, _, _, _, 3) =>
-  //          recur(IntCode(
-  //            input = intCode.input,
-  //            output = intCode.output,
-  //            pointer = intCode.pointer + 2,
-  //            relativeBase = intCode.relativeBase,
-  //            memory = intCode.memory.updated(addressMakerC(intCode), intCode.input)))
-  //        case Array(_, _, _, _, 4) =>
-  //          recur(IntCode(
-  //            input = intCode.input,
-  //            output = intCode.memory(addressMakerC(intCode)),
-  //            pointer = intCode.pointer + 2,
-  //            relativeBase = intCode.relativeBase,
-  //            memory = intCode.memory))
-  //        case Array(_, _, _, 9, 9) => intCode
-  //      }
-  //    }
-  //
-  //    recur(intCode)
-  //  }
+  def opCode(intCode: IntCode): IntCode = {
+    @tailrec
+    def recur(intCode: IntCode): IntCode = {
+      pad5(intCode.memory(intCode.pointer))('e') match {
+        case 1 =>
+          recur(IntCode(
+            input = intCode.input,
+            output = intCode.output,
+            pointer = intCode.pointer + 4,
+            relativeBase = intCode.relativeBase,
+            memory = intCode.memory.updated(addressMakerA(intCode), addressMakerC(intCode) + addressMakerB(intCode))))
+        case 2 =>
+          recur(IntCode(
+            input = intCode.input,
+            output = intCode.output,
+            pointer = intCode.pointer + 4,
+            relativeBase = intCode.relativeBase,
+            memory = intCode.memory.updated(addressMakerA(intCode), addressMakerC(intCode) * addressMakerB(intCode))))
+        case 3 =>
+          recur(IntCode(
+            input = intCode.input,
+            output = intCode.output,
+            pointer = intCode.pointer + 2,
+            relativeBase = intCode.relativeBase,
+            memory = intCode.memory.updated(addressMakerC(intCode), intCode.input)))
+        case 4 =>
+          recur(IntCode(
+            input = intCode.input,
+            output = intCode.memory(addressMakerC(intCode)),
+            pointer = intCode.pointer + 2,
+            relativeBase = intCode.relativeBase,
+            memory = intCode.memory))
+        case 9 => intCode
+      }
+    }
+
+    recur(intCode)
+  }
 }
