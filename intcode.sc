@@ -24,6 +24,11 @@ def makeMemory(file: FilePath): Memory = {
   TreeMap[Int, Int]() ++ unSortedMap
 }
 
+def makeShortMemory(coll: Array[Int]): Memory = {
+  val unSortedMap: Map[Int, Int] = Iterator.from(0).zip(coll).toMap
+  TreeMap[Int, Int]() ++ unSortedMap
+}
+
 def pad5(op: Int): Instruction = {
   val inBytes = "%05d".format(op).getBytes.map(_ - 48)
   val inMap = Array('a', 'b', 'c', 'd', 'e').zip(inBytes).toMap
@@ -60,12 +65,12 @@ object IntCode {
 
   def addressMakerC(intCode: IntCode): Address = {
     pad5(intCode.memory(intCode.pointer))('e') match {
-      case 1 | 2 | 4 | 5 | 6 | 7 | 8 | 9 =>
+      case 1 | 2 | 5 | 6 | 7 | 8 | 9 =>
         pad5(intCode.memory(intCode.pointer))('c') match {
           case 1 => cPwcIr(intCode)
           case 0 | 2 => cPrcRr(intCode)
         }
-      case 3 =>
+      case 3 | 4 =>
         pad5(intCode.memory(intCode.pointer))('c') match {
           case 0 => cPwcIr(intCode)
           case 2 => cRw(intCode)
