@@ -7,9 +7,6 @@ import scala.io.{BufferedSource, Source}
 type FilePath = String
 type Memory = TreeMap[Int, Int]
 type Instruction = ListMap[Char, Int]
-type Address = Int
-type Value = Int
-type RelativeBase = Int
 
 def makeMemory(file: FilePath): Memory = {
   val bufferedSource: BufferedSource = Source.fromFile(file)
@@ -44,33 +41,33 @@ def pad5(op: Int): Instruction = {
 // P I or R = position, immediate or relative mode
 // r or w = read or write
 
-case class IntCode(input: Value, output: Value, pointer: Address, relativeBase: RelativeBase, memory: Memory)
+case class IntCode(input: Int, output: Int, pointer: Int, relativeBase: Int, memory: Memory)
 
 object IntCode {
-  def aPw(intCode: IntCode): Address = intCode.memory(intCode.pointer + 3)
+  def aPw(intCode: IntCode): Int = intCode.memory(intCode.pointer + 3)
 
-  def bPrbRr(intCode: IntCode): Value =
+  def bPrbRr(intCode: IntCode): Int =
     intCode.memory.getOrElse(intCode.memory(intCode.pointer + 2) + intCode.relativeBase, 0)
 
-  def cPrcRr(intCode: IntCode): Value =
+  def cPrcRr(intCode: IntCode): Int =
     intCode.memory.getOrElse(intCode.memory(intCode.pointer + 1) + intCode.relativeBase, 0)
 
-  def cPwcIr(intCode: IntCode): Address = intCode.memory(intCode.pointer + 1)
+  def cPwcIr(intCode: IntCode): Int = intCode.memory(intCode.pointer + 1)
 
-  def bIr(intCode: IntCode): Address = intCode.memory(intCode.pointer + 2)
+  def bIr(intCode: IntCode): Int = intCode.memory(intCode.pointer + 2)
 
-  def aRw(intCode: IntCode): Address = intCode.memory(intCode.pointer + 3) + intCode.relativeBase
+  def aRw(intCode: IntCode): Int = intCode.memory(intCode.pointer + 3) + intCode.relativeBase
 
-  def cRw(intCode: IntCode): Address = intCode.memory(intCode.pointer + 1) + intCode.relativeBase
+  def cRw(intCode: IntCode): Int = intCode.memory(intCode.pointer + 1) + intCode.relativeBase
 
-  def addressMakerC(intCode: IntCode): Address = {
+  def addressMakerC(intCode: IntCode): Int = {
     pad5(intCode.memory(intCode.pointer))('e') match {
-      case 1 | 2 | 5 | 6 | 7 | 8 | 9 =>
+      case 1 | 2 | 4 | 5 | 6 | 7 | 8 | 9 =>
         pad5(intCode.memory(intCode.pointer))('c') match {
-          case 1 => cPwcIr(intCode)
           case 0 | 2 => cPrcRr(intCode)
+          case 1 => cPwcIr(intCode)
         }
-      case 3 | 4 =>
+      case 3 =>
         pad5(intCode.memory(intCode.pointer))('c') match {
           case 0 => cPwcIr(intCode)
           case 2 => cRw(intCode)
@@ -78,14 +75,14 @@ object IntCode {
     }
   }
 
-  def addressMakerB(intCode: IntCode): Address = {
+  def addressMakerB(intCode: IntCode): Int = {
     pad5(intCode.memory(intCode.pointer))('b') match {
       case 0 | 2 => bPrbRr(intCode)
       case 1 => bIr(intCode)
     }
   }
 
-  def addressMakerA(intCode: IntCode): Address = {
+  def addressMakerA(intCode: IntCode): Int = {
     pad5(intCode.memory(intCode.pointer))('a') match {
       case 0 => aPw(intCode)
       case 2 => aRw(intCode)
@@ -120,7 +117,7 @@ object IntCode {
         case 4 =>
           recur(IntCode(
             input = intCode.input,
-            output = intCode.memory(addressMakerC(intCode)),
+            output = addressMakerC(intCode),
             pointer = intCode.pointer + 2,
             relativeBase = intCode.relativeBase,
             memory = intCode.memory))
