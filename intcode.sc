@@ -143,6 +143,28 @@ object IntCode {
             },
             relativeBase = intCode.relativeBase,
             memory = intCode.memory))
+        case 7 =>
+          recur(IntCode(
+            input = intCode.input,
+            output = intCode.output,
+            pointer = intCode.pointer + 4,
+            relativeBase = intCode.relativeBase,
+            memory = if (addressMakerC(intCode) < addressMakerB(intCode)) {
+              intCode.memory.updated(addressMakerA(intCode), 1)
+            } else {
+              intCode.memory.updated(addressMakerA(intCode), 0)
+            }))
+        case 8 =>
+          recur(IntCode(
+            input = intCode.input,
+            output = intCode.output,
+            pointer = intCode.pointer + 4,
+            relativeBase = intCode.relativeBase,
+            memory = if (addressMakerC(intCode) == addressMakerB(intCode)) {
+              intCode.memory.updated(addressMakerA(intCode), 1)
+            } else {
+              intCode.memory.updated(addressMakerA(intCode), 0)
+            }))
         case 9 => intCode
       }
     }
