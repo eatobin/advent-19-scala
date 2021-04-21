@@ -96,6 +96,7 @@ object IntCode {
       @tailrec
       def recur(intCode: IntCode): IntCode = {
         pad5(intCode.memory(intCode.pointer))('e') match {
+          case 9 => intCode
           case 1 =>
             recur(IntCode(
               input = intCode.input,
@@ -192,7 +193,6 @@ object IntCode {
               },
               stopped = intCode.stopped,
               recur = intCode.recur))
-          case 9 => intCode
         }
       }
 
