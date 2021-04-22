@@ -96,7 +96,18 @@ object IntCode {
       @tailrec
       def recur(intCode: IntCode): IntCode = {
         pad5(intCode.memory(intCode.pointer))('e') match {
-          case 9 => intCode
+          case 9 => if (pad5(intCode.memory(intCode.pointer))('d') == 9)
+            intCode.copy(stopped = true) else {
+            recur(IntCode(
+              input = intCode.input,
+              output = intCode.output,
+              phase = intCode.phase,
+              pointer = intCode.pointer + 2,
+              relativeBase = addressMakerC(intCode) + intCode.relativeBase,
+              memory = intCode.memory,
+              stopped = intCode.stopped,
+              recur = intCode.recur))
+          }
           case 1 =>
             recur(IntCode(
               input = intCode.input,
