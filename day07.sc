@@ -16,9 +16,12 @@ val possibilities: List[List[Int]] =
         if List(a, b, c, d, e).distinct.size == List(a, b, c, d, e).size)
   yield List(a, b, c, d, e)).toList
 
+def pass(candidate: List[Int])(ic: intcode.IntCode): Int =
+  intcode.IntCode.opCode(intcode.IntCode(input = 1, output = 0, phase = 0, pointer = 0, relativeBase = 0, memory = memory, stopped = false, recur = true))
+
 //val ic: intcode.IntCode = intcode.IntCode.opCode(intcode.IntCode(input = 1, output = 0, phase = 0, pointer = 0, relativeBase = 0, memory = memory, stopped = false, recur = true))
 //val answer: Int = ic.output
-
+println(possibilities.size)
 
 //println(s"Answer Part A: $answer")
 
