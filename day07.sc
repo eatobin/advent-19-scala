@@ -14,7 +14,7 @@ val possibilities: List[Map[Char, Int]] =
         d <- 0 to 4;
         e <- 0 to 4
         if List(a, b, c, d, e).distinct.size == List(a, b, c, d, e).size)
-  yield (List('a', 'b', 'c', 'd', 'e') zip List(a, b, c, d, e)).toMap[Char, Int]).toList
+  yield TreeMap[Char, Int]() ++ (List('a', 'b', 'c', 'd', 'e') zip List(a, b, c, d, e)).toMap).toList
 
 //def pass(candidate: Vector[Int])(ic: intcode.IntCode): Int =
 //  ic.copy(phase = candidate(0))
@@ -22,7 +22,7 @@ val possibilities: List[Map[Char, Int]] =
 
 //val ic: intcode.IntCode = intcode.IntCode.opCode(intcode.IntCode(input = 1, output = 0, phase = 0, pointer = 0, relativeBase = 0, memory = memory, stopped = false, recur = true))
 //val answer: Int = ic.output
-println(possibilities)
+println(possibilities(119)('b'))
 
 //println(s"Answer Part A: $answer")
 
