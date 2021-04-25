@@ -67,6 +67,7 @@ def pass(possible: Map[Char, Int])(memory: Memory): Int = {
 //val ic: intcode.IntCode = intcode.IntCode.opCode(intcode.IntCode(input = 1, output = 0, phase = 0, pointer = 0, relativeBase = 0, memory = memory, stopped = false, recur = true))
 //val answer: Int = ic.output
 //println(possibilities(119)('b'))
+println(pass(possibilities(119))(short))
 
 //println(s"Answer Part A: $answer")
 
