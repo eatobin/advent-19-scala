@@ -16,13 +16,25 @@ val possibilities: List[Map[Char, Int]] =
         if List(a, b, c, d, e).distinct.size == List(a, b, c, d, e).size)
   yield TreeMap[Char, Int]() ++ (List('a', 'b', 'c', 'd', 'e') zip List(a, b, c, d, e)).toMap).toList
 
-def pass(possible: Map[Char, Int])(memory: Memory): Int = ??? //TODO
+val short = intcode.makeShortMemory(Array(3, 15, 3, 16, 1002, 16, 10, 16, 1, 16, 15, 15, 4, 15, 99, 0, 0))
+
+def pass(possible: Map[Char, Int])(memory: Memory): Int = {
+  intcode.IntCode.opCode(intcode.IntCode(
+    input = 1,
+    output = 0,
+    phase = possible('a'),
+    pointer = 0,
+    relativeBase = 0,
+    memory = memory,
+    stopped = false,
+    recur = true)).output
+}
 //  ic.copy(phase = candidate(0))
 //  intcode.IntCode.opCode(intcode.IntCode(input = 1, output = 0, phase = 0, pointer = 0, relativeBase = 0, memory = memory, stopped = false, recur = true))
 
 //val ic: intcode.IntCode = intcode.IntCode.opCode(intcode.IntCode(input = 1, output = 0, phase = 0, pointer = 0, relativeBase = 0, memory = memory, stopped = false, recur = true))
 //val answer: Int = ic.output
-println(possibilities(119)('b'))
+//println(possibilities(119)('b'))
 
 //println(s"Answer Part A: $answer")
 
