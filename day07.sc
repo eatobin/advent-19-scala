@@ -20,9 +20,9 @@ val short = intcode.makeShortMemory(Array(3, 15, 3, 16, 1002, 16, 10, 16, 1, 16,
 
 def pass(possible: Map[Char, Int])(memory: Memory): Int = {
   intcode.IntCode.opCode(intcode.IntCode(
-    input = 1,
+    input = 0,
     output = 0,
-    phase = possible('a'),
+    phase = possible('e'),
     pointer = 0,
     relativeBase = 0,
     memory = memory,
