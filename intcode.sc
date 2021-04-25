@@ -90,11 +90,11 @@ object IntCode {
   }
 
   def opCode(intCode: IntCode): IntCode = {
-    if (intCode.stopped) {
-      intCode
-    } else {
-      @tailrec
-      def recur(intCode: IntCode): IntCode = {
+    @tailrec
+    def recur(intCode: IntCode): IntCode = {
+      if (intCode.stopped) {
+        intCode
+      } else {
         pad5(intCode.memory(intCode.pointer))('e') match {
           case 9 =>
             if (pad5(intCode.memory(intCode.pointer))('d') == 9)
@@ -207,8 +207,8 @@ object IntCode {
               recur = intCode.recur))
         }
       }
-
-      recur(intCode)
     }
+
+    recur(intCode)
   }
 }
