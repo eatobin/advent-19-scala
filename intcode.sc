@@ -140,15 +140,27 @@ object IntCode {
               stopped = intCode.stopped,
               recur = intCode.recur))
           case 4 =>
-            recur(IntCode(
-              input = intCode.input,
-              output = addressMakerC(intCode),
-              phase = intCode.phase,
-              pointer = intCode.pointer + 2,
-              relativeBase = intCode.relativeBase,
-              memory = intCode.memory,
-              stopped = intCode.stopped,
-              recur = intCode.recur))
+            if (intCode.recur) {
+              recur(IntCode(
+                input = intCode.input,
+                output = addressMakerC(intCode),
+                phase = intCode.phase,
+                pointer = intCode.pointer + 2,
+                relativeBase = intCode.relativeBase,
+                memory = intCode.memory,
+                stopped = intCode.stopped,
+                recur = intCode.recur))
+            } else {
+              IntCode(
+                input = intCode.input,
+                output = addressMakerC(intCode),
+                phase = intCode.phase,
+                pointer = intCode.pointer + 2,
+                relativeBase = intCode.relativeBase,
+                memory = intCode.memory,
+                stopped = intCode.stopped,
+                recur = intCode.recur)
+            }
           case 5 =>
             recur(IntCode(
               input = intCode.input,
