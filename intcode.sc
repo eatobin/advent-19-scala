@@ -136,7 +136,16 @@ object IntCode {
               phase = intCode.phase,
               pointer = intCode.pointer + 2,
               relativeBase = intCode.relativeBase,
-              memory = intCode.memory.updated(addressMakerC(intCode), intCode.input),
+              memory =
+                if (intCode.phase >= 0 && intCode.phase <= 4) {
+                  if (intCode.pointer == 0) {
+                    intCode.memory.updated(addressMakerC(intCode), intCode.phase)
+                  } else {
+                    intCode.memory.updated(addressMakerC(intCode), intCode.input)
+                  }
+                } else {
+                  intCode.memory.updated(addressMakerC(intCode), intCode.input)
+                },
               stopped = intCode.stopped,
               recur = intCode.recur))
           case 4 =>
