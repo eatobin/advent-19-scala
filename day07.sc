@@ -69,6 +69,14 @@ println(s"Answer Part A: $answer")
 // Answer Part A: 368584
 
 // part B
+val possibilities2: List[Map[Char, Int]] =
+  (for (a <- 5 to 9;
+        b <- 5 to 9;
+        c <- 5 to 9;
+        d <- 5 to 9;
+        e <- 5 to 9
+        if List(a, b, c, d, e).distinct.size == List(a, b, c, d, e).size)
+  yield TreeMap[Char, Int]() ++ (List('a', 'b', 'c', 'd', 'e') zip List(a, b, c, d, e)).toMap).toList
 //val ic2: intcode.IntCode = intcode.IntCode.opCode(intcode.IntCode(input = 5, output = 0, phase = 0, pointer = 0, relativeBase = 0, memory = memory, stopped = false, recur = true))
 //val answer2: Int = ic2.output
 //println(s"Answer Part B: $answer2")
