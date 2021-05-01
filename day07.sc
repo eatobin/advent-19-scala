@@ -82,11 +82,6 @@ val possibilities2: List[TreeMap[Char, Int]] =
         if List(a, b, c, d, e).distinct.size == List(a, b, c, d, e).size)
   yield TreeMap[Char, Int]() ++ (List('a', 'b', 'c', 'd', 'e') zip List(a, b, c, d, e)).toMap).toList
 
-var fiveAmps: mutable.Map[Int, intcode.IntCode] =
-  mutable.Map(1 -> intcode.IntCode(input = 0, output = 0, phase = 0, pointer = 0, relativeBase = 0, memory = shortMem, stopped = false, recur = false))
-
-
-
 def makeAnAmpPass(possibility: TreeMap[Char, Int])(memory: Memory): mutable.Map[Int, intcode.IntCode] = {
   val fiveAmps: mutable.Map[Int, intcode.IntCode] = mutable.Map(
     1 -> intcode.IntCode(input = 0, output = 0, phase = possibility('a'), pointer = 0, relativeBase = 0, memory = memory, stopped = false, recur = false),
@@ -98,6 +93,9 @@ def makeAnAmpPass(possibility: TreeMap[Char, Int])(memory: Memory): mutable.Map[
   fiveAmps
 }
 
+def toAmpsList(possibilitiesList: List[TreeMap[Char, Int]])(memory: Memory): List[mutable.Map[Int, intcode.IntCode]] = {
+  possibilitiesList.map(makeAnAmpPass(_)(memory))
+}
 
 //val ic2: intcode.IntCode = intcode.IntCode.opCode(intcode.IntCode(input = 5, output = 0, phase = 0, pointer = 0, relativeBase = 0, memory = memory, stopped = false, recur = true))
 //val answer2: Int = ic2.output
