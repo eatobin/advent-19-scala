@@ -1,7 +1,6 @@
 import $file.intcode
 
 import scala.collection.immutable.TreeMap
-import scala.reflect.internal.Phase
 
 type Memory = TreeMap[Int, Int]
 
@@ -113,3 +112,22 @@ def makeAnAmpPass(possibility: Map[Char, Int])(memory: Memory): Unit = {
 //println(s"Answer Part B: $answer2")
 
 // Answer Part B: 11981754
+
+
+//@ var ampses = scala.collection.mutable.Map[Int, intcode.IntCode]()
+//ampses: collection.mutable.Map[Int, intcode.IntCode] = HashMap()
+//
+//@ ampses(1) = intcode.IntCode(input = 0, output = 0, phase = 0, pointer = 0, relativeBase = 0, memory = shortMem, stopped = false, recur = false)
+//
+//@ ampses(2) = intcode.IntCode(input = 2, output = 0, phase = 0, pointer = 0, relativeBase = 0, memory = shortMem, stopped = false, recur = false)
+//
+//
+//@ println(ampses)
+//HashMap(1 -> IntCode(0,0,0,0,0,TreeMap(0 -> 3, 1 -> 15, 2 -> 3, 3 -> 16, 4 -> 1002, 5 -> 16, 6 -> 10, 7 -> 16, 8 -> 1, 9 -> 16, 10 -> 15, 11 -> 15, 12 -> 4, 13 -> 15, 14 -> 99, 15 -> 0, 16 -> 0),false,false), 2 -> IntCode(2,0,0,0,0,TreeMap(0 -> 3, 1 -> 15, 2 -> 3, 3 -> 16, 4 -> 1002, 5 -> 16, 6 -> 10, 7 -> 16, 8 -> 1, 9 -> 16, 10 -> 15, 11 -> 15, 12 -> 4, 13 -> 15, 14 -> 99, 15 -> 0, 16 -> 0),false,false))
+//
+//
+//@ ampses(1) = ampses(1).copy(input = 9)
+//
+//
+//@ println(ampses)
+//HashMap(1 -> IntCode(9,0,0,0,0,TreeMap(0 -> 3, 1 -> 15, 2 -> 3, 3 -> 16, 4 -> 1002, 5 -> 16, 6 -> 10, 7 -> 16, 8 -> 1, 9 -> 16, 10 -> 15, 11 -> 15, 12 -> 4, 13 -> 15, 14 -> 99, 15 -> 0, 16 -> 0),false,false), 2 -> IntCode(2,0,0,0,0,TreeMap(0 -> 3, 1 -> 15, 2 -> 3, 3 -> 16, 4 -> 1002, 5 -> 16, 6 -> 10, 7 -> 16, 8 -> 1, 9 -> 16, 10 -> 15, 11 -> 15, 12 -> 4, 13 -> 15, 14 -> 99, 15 -> 0, 16 -> 0),false,false))
