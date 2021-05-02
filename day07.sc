@@ -11,14 +11,14 @@ val memory: Memory = intcode.makeMemory("resources/day07.csv")
 val shortMem = intcode.makeShortMemory(Array(3, 15, 3, 16, 1002, 16, 10, 16, 1, 16, 15, 15, 4, 15, 99, 0, 0))
 val myMem = intcode.makeShortMemory(Array(3, 15, 3, 16, 1002, 16, 10, 16, 1, 16, 15, 15, 4, 15, 99, 0, 4))
 
-val possibilities: List[TreeMap[Char, Int]] =
-  (for (a <- 0 to 4;
-        b <- 0 to 4;
-        c <- 0 to 4;
-        d <- 0 to 4;
-        e <- 0 to 4
-        if List(a, b, c, d, e).distinct.size == List(a, b, c, d, e).size)
-  yield TreeMap[Char, Int]() ++ (List('a', 'b', 'c', 'd', 'e') zip List(a, b, c, d, e)).toMap).toList
+val possibilities: Seq[TreeMap[Char, Int]] =
+  for (a <- 0 to 4;
+       b <- 0 to 4;
+       c <- 0 to 4;
+       d <- 0 to 4;
+       e <- 0 to 4
+       if List(a, b, c, d, e).distinct.size == List(a, b, c, d, e).size)
+  yield TreeMap[Char, Int]() ++ (List('a', 'b', 'c', 'd', 'e') zip List(a, b, c, d, e)).toMap
 
 def pass(possible: TreeMap[Char, Int])(memory: Memory): Int = {
   intcode.IntCode.opCode(intcode.IntCode(
@@ -64,7 +64,7 @@ def pass(possible: TreeMap[Char, Int])(memory: Memory): Int = {
     recur = true)).output
 }
 
-def passes(memory: Memory): List[Int] = possibilities.map(pass(_)(memory))
+def passes(memory: Memory): Seq[Int] = possibilities.map(pass(_)(memory))
 
 val answer: Int = passes(memory).max
 
@@ -73,14 +73,14 @@ println(s"Answer Part A: $answer")
 // Answer Part A: 368584
 
 // part B
-val possibilities2: List[TreeMap[Char, Int]] =
-  (for (a <- 5 to 9;
-        b <- 5 to 9;
-        c <- 5 to 9;
-        d <- 5 to 9;
-        e <- 5 to 9
-        if List(a, b, c, d, e).distinct.size == List(a, b, c, d, e).size)
-  yield TreeMap[Char, Int]() ++ (List('a', 'b', 'c', 'd', 'e') zip List(a, b, c, d, e)).toMap).toList
+val possibilities2: Seq[TreeMap[Char, Int]] =
+  for (a <- 5 to 9;
+       b <- 5 to 9;
+       c <- 5 to 9;
+       d <- 5 to 9;
+       e <- 5 to 9
+       if List(a, b, c, d, e).distinct.size == List(a, b, c, d, e).size)
+  yield TreeMap[Char, Int]() ++ (List('a', 'b', 'c', 'd', 'e') zip List(a, b, c, d, e)).toMap
 
 def makeAnAmpPass(possibility: TreeMap[Char, Int])(memory: Memory): mutable.Map[Int, intcode.IntCode] = {
   val fiveAmps: mutable.Map[Int, intcode.IntCode] = mutable.Map(
@@ -93,7 +93,7 @@ def makeAnAmpPass(possibility: TreeMap[Char, Int])(memory: Memory): mutable.Map[
   fiveAmps
 }
 
-def toAmpsList(possibilitiesList: List[TreeMap[Char, Int]])(memory: Memory): List[mutable.Map[Int, intcode.IntCode]] = {
+def toAmpsList(possibilitiesList: Seq[TreeMap[Char, Int]])(memory: Memory): Seq[mutable.Map[Int, intcode.IntCode]] = {
   possibilitiesList.map(makeAnAmpPass(_)(memory))
 }
 
