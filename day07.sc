@@ -1,5 +1,6 @@
 import $file.intcode
 
+import scala.annotation.tailrec
 import scala.collection.immutable.TreeMap
 import scala.collection.mutable
 
@@ -96,6 +97,35 @@ def makeAnAmpPass(possibility: TreeMap[Char, Int])(memory: Memory): mutable.Map[
 def toAmpsList(possibilitiesList: Seq[TreeMap[Char, Int]])(memory: Memory): Seq[mutable.Map[Int, intcode.IntCode]] = {
   possibilitiesList.map(makeAnAmpPass(_)(memory))
 }
+
+def runner(fiveAmps: mutable.Map[Int, intcode.IntCode]): Int = {
+  @tailrec
+  def recur(amps: mutable.Map[Int, intcode.IntCode], currentAmpNo: Int): Int = {
+    val nextAmpNo: Int = (currentAmpNo % 5) + 1
+    if (currentAmpNo == 5 && amps(currentAmpNo).stopped) {
+      amps(currentAmpNo).output
+    } else {
+      amps(currentAmpNo) = intcode.IntCode.opCode(amps(currentAmpNo))
+      amps(nextAmpNo) = amps(nextAmpNo).copy(input = amps(currentAmpNo).output)
+      recur()
+    }
+  }
+
+  recur(amps = fiveAmps, currentAmpNo = 1)
+}
+
+//(defn runner [five-amps]
+//  (loop [amps five-amps
+//    current-amp-no 1
+//next-amp-no (+ 1 (mod current-amp-no 5))]
+//(if (and (= 5 current-amp-no) (:stopped? @(amps current-amp-no)))
+//(:output @(amps current-amp-no))
+//(do (swap! (amps current-amp-no) ic/op-code)
+//  (swap! (amps next-amp-no) assoc :input (:output @(amps current-amp-no)))
+//(recur
+//(assoc amps current-amp-no (amps current-amp-no) next-amp-no (amps next-amp-no))
+//  next-amp-no
+//(+ 1 (mod next-amp-no 5)))))))
 
 //val ic2: intcode.IntCode = intcode.IntCode.opCode(intcode.IntCode(input = 5, output = 0, phase = 0, pointer = 0, relativeBase = 0, memory = memory, stopped = false, recur = true))
 //val answer2: Int = ic2.output
