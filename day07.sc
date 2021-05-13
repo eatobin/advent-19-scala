@@ -99,42 +99,25 @@ def toAmpsList(possibilitiesList: Seq[TreeMap[Char, Int]])(memory: Memory): Seq[
 }
 
 def runner(fiveAmps: mutable.Map[Int, intcode.IntCode]): Int = {
+  val currentAmpNo: Int = 1
+  val nextAmpNo: Int = (currentAmpNo % 5) + 1
+
   @tailrec
-  def recur(amps: mutable.Map[Int, intcode.IntCode], currentAmpNo: Int): Int = {
-    val nextAmpNo: Int = (currentAmpNo % 5) + 1
+  def recur(amps: mutable.Map[Int, intcode.IntCode], currentAmpNo: Int, nextAmpNo: Int): Int = {
     if (currentAmpNo == 5 && amps(currentAmpNo).stopped) {
       amps(currentAmpNo).output
     } else {
-      amps(currentAmpNo) = intcode.IntCode.opCode(amps(currentAmpNo))
-      amps(nextAmpNo) = amps(nextAmpNo).copy(input = amps(currentAmpNo).output)
-      recur()
+      val newCurrentAmp: intcode.IntCode = intcode.IntCode.opCode(amps(currentAmpNo))
+      val newNextAmp: intcode.IntCode = amps(nextAmpNo).copy(input = amps(currentAmpNo).output)
+      recur(amps = amps ++= mutable.Map(currentAmpNo -> newCurrentAmp, nextAmpNo -> newNextAmp), currentAmpNo = nextAmpNo, nextAmpNo = (nextAmpNo % 5) + 1)
     }
   }
 
-  recur(amps = fiveAmps, currentAmpNo = 1)
+  recur(amps = fiveAmps, currentAmpNo = 1, nextAmpNo = (nextAmpNo % 5) + 1)
 }
-
-//(defn runner [five-amps]
-//  (loop [amps five-amps
-//    current-amp-no 1
-//next-amp-no (+ 1 (mod current-amp-no 5))]
-//(if (and (= 5 current-amp-no) (:stopped? @(amps current-amp-no)))
-//(:output @(amps current-amp-no))
-//(do (swap! (amps current-amp-no) ic/op-code)
-//  (swap! (amps next-amp-no) assoc :input (:output @(amps current-amp-no)))
-//(recur
-//(assoc amps current-amp-no (amps current-amp-no) next-amp-no (amps next-amp-no))
-//  next-amp-no
-//(+ 1 (mod next-amp-no 5)))))))
 
 //val ic2: intcode.IntCode = intcode.IntCode.opCode(intcode.IntCode(input = 5, output = 0, phase = 0, pointer = 0, relativeBase = 0, memory = memory, stopped = false, recur = true))
 //val answer2: Int = ic2.output
 //println(s"Answer Part B: $answer2")
 
 // Answer Part B: 11981754
-
-//  amp1 = amp1.copy(phase = possibility('a'), memory = memory)
-//  amp2 = amp2.copy(phase = possibility('b'), memory = memory)
-//  amp3 = amp3.copy(phase = possibility('c'), memory = memory)
-//  amp4 = amp4.copy(phase = possibility('d'), memory = memory)
-//  amp5 = amp5.copy(phase = possibility('e'), memory = memory)
