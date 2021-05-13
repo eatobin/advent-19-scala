@@ -113,7 +113,7 @@ def runner(fiveAmps: mutable.Map[Int, intcode.IntCode]): Int = {
     }
   }
 
-  recur(amps = fiveAmps, currentAmpNo = 1, nextAmpNo = (nextAmpNo % 5) + 1)
+  recur(amps = fiveAmps, currentAmpNo = 1, nextAmpNo = 2)
 }
 
 //val ic2: intcode.IntCode = intcode.IntCode.opCode(intcode.IntCode(input = 5, output = 0, phase = 0, pointer = 0, relativeBase = 0, memory = memory, stopped = false, recur = true))
