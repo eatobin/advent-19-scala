@@ -101,9 +101,6 @@ def toAmpsList(possibilitiesList: Seq[TreeMap[Char, Int]])(memory: Memory): Seq[
 }
 
 def runner(fiveAmps: mutable.Map[Int, intcode.IntCode]): Int = {
-  val currentAmpNo: Int = 1
-  val nextAmpNo: Int = (currentAmpNo % 5) + 1
-
   @tailrec
   def recur(amps: mutable.Map[Int, intcode.IntCode], currentAmpNo: Int, nextAmpNo: Int): Int = {
     if (currentAmpNo == 5 && amps(currentAmpNo).stopped) {
