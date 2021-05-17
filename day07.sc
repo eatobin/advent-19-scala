@@ -106,9 +106,9 @@ def runner(fiveAmps: mutable.Map[Int, intcode.IntCode]): Int = {
     if (currentAmpNo == 5 && amps(currentAmpNo).stopped) {
       amps(currentAmpNo).output
     } else {
-      val newCurrentAmp: intcode.IntCode = intcode.IntCode.opCode(amps(currentAmpNo))
-      val newNextAmp: intcode.IntCode = amps(nextAmpNo).copy(input = amps(currentAmpNo).output)
-      recur(amps = amps ++= mutable.Map(currentAmpNo -> newCurrentAmp, nextAmpNo -> newNextAmp), currentAmpNo = nextAmpNo, nextAmpNo = (nextAmpNo % 5) + 1)
+      amps(currentAmpNo) = intcode.IntCode.opCode(amps(currentAmpNo))
+      amps(nextAmpNo) = amps(nextAmpNo).copy(input = amps(currentAmpNo).output)
+      recur(amps = amps, currentAmpNo = nextAmpNo, nextAmpNo = (nextAmpNo % 5) + 1)
     }
   }
 
