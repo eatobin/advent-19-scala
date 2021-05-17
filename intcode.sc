@@ -137,7 +137,7 @@ object IntCode {
               pointer = intCode.pointer + 2,
               relativeBase = intCode.relativeBase,
               memory =
-                if (intCode.phase >= 0 && intCode.phase <= 4) {
+                if (intCode.phase >= 0 && intCode.phase <= 9) {
                   if (intCode.pointer == 0) {
                     intCode.memory.updated(addressMakerC(intCode), intCode.phase)
                   } else {
