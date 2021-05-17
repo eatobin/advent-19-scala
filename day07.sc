@@ -11,9 +11,6 @@ type Memory = TreeMap[Int, Int]
 // part A
 val memory: Memory = intcode.makeMemory("resources/day07.csv")
 
-val shortMem = intcode.makeShortMemory(Array(3, 15, 3, 16, 1002, 16, 10, 16, 1, 16, 15, 15, 4, 15, 99, 0, 0))
-//val myMem =    intcode.makeShortMemory(Array(3, 15, 3, 16, 1002, 16, 10, 16, 1, 16, 15, 15, 4, 15, 99, 0, 4))
-
 val possibilities: Seq[TreeMap[Char, Int]] =
   for (a <- 0 to 4;
        b <- 0 to 4;
