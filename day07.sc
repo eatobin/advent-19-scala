@@ -1,5 +1,7 @@
 //$ amm --predef day07.sc
 
+// amm --predef "day07.sc"
+
 import $file.intcode
 
 import scala.annotation.tailrec
