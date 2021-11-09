@@ -1,6 +1,7 @@
 //$ amm --predef intcode.sc
 
-import scala.annotation.tailrec
+//import scala.annotation.tailrec
+
 import scala.collection.immutable.{ListMap, TreeMap}
 import scala.io.{BufferedSource, Source}
 
@@ -27,8 +28,8 @@ def makeShortMemory(coll: Array[Int]): Memory = {
 }
 
 def pad5(op: Int): Instruction = {
-  val inBytes = "%05d".format(op).getBytes.map(_ - 48)
-  val inMap = Array('a', 'b', 'c', 'd', 'e').zip(inBytes).toMap
+  val inBytes: Array[Int] = "%05d".format(op).getBytes.map(_ - 48)
+  val inMap: Map[Char, Int] = Array('a', 'b', 'c', 'd', 'e').zip(inBytes).toMap
   ListMap(inMap.toSeq.sortBy(_._1): _*)
 }
 
@@ -44,7 +45,21 @@ def pad5(op: Int): Instruction = {
 case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, relativeBase: Int, memory: Memory, stopped: Boolean, recur: Boolean)
 
 object IntCode {
-  def aPw(intCode: IntCode): Int = intCode.memory(intCode.pointer + 3)
+  val offsetC: Int = 1
+  val offsetB: Int = 2
+  val offsetA: Int = 3
+
+  def aParam(instruction: Instruction, intcode: IntCode): Int = {
+    instruction('a') match {
+      // a-p-w
+      case 0 => intcode.memory(intcode.pointer + offsetA)
+      // a-r-w
+      case 2 => intcode.memory(intcode.pointer + offsetA) + intcode.relativeBase
+    }
+  }
+
+  //
+  /*def aPw(intCode: IntCode): Int = intCode.memory(intCode.pointer + 3)
 
   def bPrbRr(intCode: IntCode): Int =
     intCode.memory.getOrElse(intCode.memory(intCode.pointer + 2) + intCode.relativeBase, 0)
@@ -231,5 +246,5 @@ object IntCode {
     }
 
     recur(intCode)
-  }
+  }*/
 }
