@@ -1,7 +1,6 @@
 //$ amm --predef intcode.sc
 
-//import scala.annotation.tailrec
-
+import scala.annotation.tailrec
 import scala.collection.immutable.{ListMap, TreeMap}
 import scala.io.{BufferedSource, Source}
 
@@ -87,51 +86,6 @@ object IntCode {
           // c-r-r
           case 2 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC) + intcode.relativeBase, 0)
         }
-    }
-  }
-
-  /*def aPw(intCode: IntCode): Int = intCode.memory(intCode.pointer + 3)
-
-  def bPrbRr(intCode: IntCode): Int =
-    intCode.memory.getOrElse(intCode.memory(intCode.pointer + 2) + intCode.relativeBase, 0)
-
-  def cPrcRr(intCode: IntCode): Int =
-    intCode.memory.getOrElse(intCode.memory(intCode.pointer + 1) + intCode.relativeBase, 0)
-
-  def cPwcIr(intCode: IntCode): Int = intCode.memory(intCode.pointer + 1)
-
-  def bIr(intCode: IntCode): Int = intCode.memory(intCode.pointer + 2)
-
-  def aRw(intCode: IntCode): Int = intCode.memory(intCode.pointer + 3) + intCode.relativeBase
-
-  def cRw(intCode: IntCode): Int = intCode.memory(intCode.pointer + 1) + intCode.relativeBase
-
-  def addressMakerC(intCode: IntCode): Int = {
-    pad5(intCode.memory(intCode.pointer))('e') match {
-      case 1 | 2 | 4 | 5 | 6 | 7 | 8 | 9 =>
-        pad5(intCode.memory(intCode.pointer))('c') match {
-          case 0 | 2 => cPrcRr(intCode)
-          case 1 => cPwcIr(intCode)
-        }
-      case 3 =>
-        pad5(intCode.memory(intCode.pointer))('c') match {
-          case 0 => cPwcIr(intCode)
-          case 2 => cRw(intCode)
-        }
-    }
-  }
-
-  def addressMakerB(intCode: IntCode): Int = {
-    pad5(intCode.memory(intCode.pointer))('b') match {
-      case 0 | 2 => bPrbRr(intCode)
-      case 1 => bIr(intCode)
-    }
-  }
-
-  def addressMakerA(intCode: IntCode): Int = {
-    pad5(intCode.memory(intCode.pointer))('a') match {
-      case 0 => aPw(intCode)
-      case 2 => aRw(intCode)
     }
   }
 
@@ -277,5 +231,5 @@ object IntCode {
     }
 
     recur(intCode)
-  }*/
+  }
 }
