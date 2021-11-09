@@ -41,7 +41,7 @@ def pad5(op: Int): Instruction = {
 // P I or R = position, immediate or relative mode
 // r or w = read or write
 
-case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, relativeBase: Int, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
+case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, relativeBase: Int, memory: Memory, isStopped: Boolean, recur: Boolean)
 
 object IntCode {
   private val offsetC: Int = 1
@@ -92,13 +92,13 @@ object IntCode {
   def opCode(intCode: IntCode): IntCode = {
     @tailrec
     def recur(intCode: IntCode): IntCode = {
-      if (intCode.stopped) {
+      if (intCode.isStopped) {
         intCode
       } else {
         pad5(intCode.memory(intCode.pointer))('e') match {
           case 9 =>
             if (pad5(intCode.memory(intCode.pointer))('d') == 9)
-              intCode.copy(stopped = true) else {
+              intCode.copy(isStopped = true) else {
               recur(IntCode(
                 input = intCode.input,
                 output = intCode.output,
@@ -106,7 +106,7 @@ object IntCode {
                 pointer = intCode.pointer + 2,
                 relativeBase = addressMakerC(intCode) + intCode.relativeBase,
                 memory = intCode.memory,
-                stopped = intCode.stopped,
+                isStopped = intCode.isStopped,
                 recur = intCode.recur))
             }
           case 1 =>
@@ -117,7 +117,7 @@ object IntCode {
               pointer = intCode.pointer + 4,
               relativeBase = intCode.relativeBase,
               memory = intCode.memory.updated(addressMakerA(intCode), addressMakerC(intCode) + addressMakerB(intCode)),
-              stopped = intCode.stopped,
+              isStopped = intCode.isStopped,
               recur = intCode.recur))
           case 2 =>
             recur(IntCode(
@@ -127,7 +127,7 @@ object IntCode {
               pointer = intCode.pointer + 4,
               relativeBase = intCode.relativeBase,
               memory = intCode.memory.updated(addressMakerA(intCode), addressMakerC(intCode) * addressMakerB(intCode)),
-              stopped = intCode.stopped,
+              isStopped = intCode.isStopped,
               recur = intCode.recur))
           case 3 =>
             recur(IntCode(
@@ -146,7 +146,7 @@ object IntCode {
                 } else {
                   intCode.memory.updated(addressMakerC(intCode), intCode.input)
                 },
-              stopped = intCode.stopped,
+              isStopped = intCode.isStopped,
               recur = intCode.recur))
           case 4 =>
             if (intCode.recur) {
@@ -157,7 +157,7 @@ object IntCode {
                 pointer = intCode.pointer + 2,
                 relativeBase = intCode.relativeBase,
                 memory = intCode.memory,
-                stopped = intCode.stopped,
+                isStopped = intCode.isStopped,
                 recur = intCode.recur))
             } else {
               IntCode(
@@ -167,7 +167,7 @@ object IntCode {
                 pointer = intCode.pointer + 2,
                 relativeBase = intCode.relativeBase,
                 memory = intCode.memory,
-                stopped = intCode.stopped,
+                isStopped = intCode.isStopped,
                 recur = intCode.recur)
             }
           case 5 =>
@@ -182,7 +182,7 @@ object IntCode {
               },
               relativeBase = intCode.relativeBase,
               memory = intCode.memory,
-              stopped = intCode.stopped,
+              isStopped = intCode.isStopped,
               recur = intCode.recur))
           case 6 =>
             recur(IntCode(
@@ -196,7 +196,7 @@ object IntCode {
               },
               relativeBase = intCode.relativeBase,
               memory = intCode.memory,
-              stopped = intCode.stopped,
+              isStopped = intCode.isStopped,
               recur = intCode.recur))
           case 7 =>
             recur(IntCode(
@@ -210,7 +210,7 @@ object IntCode {
               } else {
                 intCode.memory.updated(addressMakerA(intCode), 0)
               },
-              stopped = intCode.stopped,
+              isStopped = intCode.isStopped,
               recur = intCode.recur))
           case 8 =>
             recur(IntCode(
@@ -224,7 +224,7 @@ object IntCode {
               } else {
                 intCode.memory.updated(addressMakerA(intCode), 0)
               },
-              stopped = intCode.stopped,
+              isStopped = intCode.isStopped,
               recur = intCode.recur))
         }
       }
