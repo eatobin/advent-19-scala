@@ -42,12 +42,12 @@ def pad5(op: Int): Instruction = {
 // P I or R = position, immediate or relative mode
 // r or w = read or write
 
-case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, relativeBase: Int, memory: Memory, stopped: Boolean, recur: Boolean)
+case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, relativeBase: Int, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
 
 object IntCode {
-  val offsetC: Int = 1
-  val offsetB: Int = 2
-  val offsetA: Int = 3
+  private val offsetC: Int = 1
+  private val offsetB: Int = 2
+  private val offsetA: Int = 3
 
   def aParam(instruction: Instruction, intcode: IntCode): Int = {
     instruction('a') match {
@@ -58,7 +58,38 @@ object IntCode {
     }
   }
 
-  //
+  def bParam(instruction: Instruction, intcode: IntCode): Int = {
+    instruction('b') match {
+      // b-p-r
+      case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetB), 0)
+      // b-i-r
+      case 1 => intcode.memory(intcode.pointer + offsetB)
+      // b-r-r
+      case 2 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetB) + intcode.relativeBase, 0)
+    }
+  }
+
+  def cParam(instruction: Instruction, intcode: IntCode): Int = {
+    instruction('e') match {
+      case 3 =>
+        instruction('c') match {
+          // c-p-w
+          case 0 => intcode.memory(intcode.pointer + offsetC)
+          // c-r-w
+          case 2 => intcode.memory(intcode.pointer + offsetC) + intcode.relativeBase
+        }
+      case _ =>
+        instruction('c') match {
+          // c-p-r
+          case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC), 0)
+          // c-i-r
+          case 1 => intcode.memory(intcode.pointer + offsetC)
+          // c-r-r
+          case 2 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC) + intcode.relativeBase, 0)
+        }
+    }
+  }
+
   /*def aPw(intCode: IntCode): Int = intCode.memory(intCode.pointer + 3)
 
   def bPrbRr(intCode: IntCode): Int =
