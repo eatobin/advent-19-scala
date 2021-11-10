@@ -98,7 +98,7 @@ object IntCode {
         val instruction: Instruction = pad5(intCode.memory(intCode.pointer))
         instruction('e') match {
           case 9 =>
-            if (pad5(intCode.memory(intCode.pointer))('d') == 9)
+            if (instruction('d') == 9)
               intCode.copy(isStopped = true) else {
               recur(IntCode(
                 input = intCode.input,
