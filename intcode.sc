@@ -41,7 +41,7 @@ def pad5(op: Int): Instruction = {
 // P I or R = position, immediate or relative mode
 // r or w = read or write
 
-case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, relativeBase: Int, memory: Memory, isStopped: Boolean, recur: Boolean)
+case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, relativeBase: Int, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
 
 object IntCode {
   private val offsetC: Int = 1
@@ -95,7 +95,8 @@ object IntCode {
       if (intCode.isStopped) {
         intCode
       } else {
-        pad5(intCode.memory(intCode.pointer))('e') match {
+        val instruction: Instruction = pad5(intCode.memory(intCode.pointer))
+        instruction('e') match {
           case 9 =>
             if (pad5(intCode.memory(intCode.pointer))('d') == 9)
               intCode.copy(isStopped = true) else {
@@ -104,10 +105,10 @@ object IntCode {
                 output = intCode.output,
                 phase = intCode.phase,
                 pointer = intCode.pointer + 2,
-                relativeBase = addressMakerC(intCode) + intCode.relativeBase,
+                relativeBase = cParam(instruction, intCode) + intCode.relativeBase,
                 memory = intCode.memory,
                 isStopped = intCode.isStopped,
-                recur = intCode.recur))
+                doesRecur = intCode.doesRecur))
             }
           case 1 =>
             recur(IntCode(
@@ -116,9 +117,9 @@ object IntCode {
               phase = intCode.phase,
               pointer = intCode.pointer + 4,
               relativeBase = intCode.relativeBase,
-              memory = intCode.memory.updated(addressMakerA(intCode), addressMakerC(intCode) + addressMakerB(intCode)),
+              memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode)),
               isStopped = intCode.isStopped,
-              recur = intCode.recur))
+              doesRecur = intCode.doesRecur))
           case 2 =>
             recur(IntCode(
               input = intCode.input,
@@ -126,9 +127,9 @@ object IntCode {
               phase = intCode.phase,
               pointer = intCode.pointer + 4,
               relativeBase = intCode.relativeBase,
-              memory = intCode.memory.updated(addressMakerA(intCode), addressMakerC(intCode) * addressMakerB(intCode)),
+              memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode)),
               isStopped = intCode.isStopped,
-              recur = intCode.recur))
+              doesRecur = intCode.doesRecur))
           case 3 =>
             recur(IntCode(
               input = intCode.input,
@@ -139,65 +140,65 @@ object IntCode {
               memory =
                 if (intCode.phase >= 0 && intCode.phase <= 9) {
                   if (intCode.pointer == 0) {
-                    intCode.memory.updated(addressMakerC(intCode), intCode.phase)
+                    intCode.memory.updated(cParam(instruction, intCode), intCode.phase)
                   } else {
-                    intCode.memory.updated(addressMakerC(intCode), intCode.input)
+                    intCode.memory.updated(cParam(instruction, intCode), intCode.input)
                   }
                 } else {
-                  intCode.memory.updated(addressMakerC(intCode), intCode.input)
+                  intCode.memory.updated(cParam(instruction, intCode), intCode.input)
                 },
               isStopped = intCode.isStopped,
-              recur = intCode.recur))
+              doesRecur = intCode.doesRecur))
           case 4 =>
-            if (intCode.recur) {
+            if (intCode.doesRecur) {
               recur(IntCode(
                 input = intCode.input,
-                output = addressMakerC(intCode),
+                output = cParam(instruction, intCode),
                 phase = intCode.phase,
                 pointer = intCode.pointer + 2,
                 relativeBase = intCode.relativeBase,
                 memory = intCode.memory,
                 isStopped = intCode.isStopped,
-                recur = intCode.recur))
+                doesRecur = intCode.doesRecur))
             } else {
               IntCode(
                 input = intCode.input,
-                output = addressMakerC(intCode),
+                output = cParam(instruction, intCode),
                 phase = intCode.phase,
                 pointer = intCode.pointer + 2,
                 relativeBase = intCode.relativeBase,
                 memory = intCode.memory,
                 isStopped = intCode.isStopped,
-                recur = intCode.recur)
+                doesRecur = intCode.doesRecur)
             }
           case 5 =>
             recur(IntCode(
               input = intCode.input,
               output = intCode.output,
               phase = intCode.phase,
-              pointer = if (addressMakerC(intCode) == 0) {
+              pointer = if (cParam(instruction, intCode) == 0) {
                 intCode.pointer + 3
               } else {
-                addressMakerB(intCode)
+                bParam(instruction, intCode)
               },
               relativeBase = intCode.relativeBase,
               memory = intCode.memory,
               isStopped = intCode.isStopped,
-              recur = intCode.recur))
+              doesRecur = intCode.doesRecur))
           case 6 =>
             recur(IntCode(
               input = intCode.input,
               output = intCode.output,
               phase = intCode.phase,
-              pointer = if (addressMakerC(intCode) != 0) {
+              pointer = if (cParam(instruction, intCode) != 0) {
                 intCode.pointer + 3
               } else {
-                addressMakerB(intCode)
+                bParam(instruction, intCode)
               },
               relativeBase = intCode.relativeBase,
               memory = intCode.memory,
               isStopped = intCode.isStopped,
-              recur = intCode.recur))
+              doesRecur = intCode.doesRecur))
           case 7 =>
             recur(IntCode(
               input = intCode.input,
@@ -205,13 +206,13 @@ object IntCode {
               phase = intCode.phase,
               pointer = intCode.pointer + 4,
               relativeBase = intCode.relativeBase,
-              memory = if (addressMakerC(intCode) < addressMakerB(intCode)) {
-                intCode.memory.updated(addressMakerA(intCode), 1)
+              memory = if (cParam(instruction, intCode) < bParam(instruction, intCode)) {
+                intCode.memory.updated(aParam(instruction, intCode), 1)
               } else {
-                intCode.memory.updated(addressMakerA(intCode), 0)
+                intCode.memory.updated(aParam(instruction, intCode), 0)
               },
               isStopped = intCode.isStopped,
-              recur = intCode.recur))
+              doesRecur = intCode.doesRecur))
           case 8 =>
             recur(IntCode(
               input = intCode.input,
@@ -219,13 +220,13 @@ object IntCode {
               phase = intCode.phase,
               pointer = intCode.pointer + 4,
               relativeBase = intCode.relativeBase,
-              memory = if (addressMakerC(intCode) == addressMakerB(intCode)) {
-                intCode.memory.updated(addressMakerA(intCode), 1)
+              memory = if (cParam(instruction, intCode) == bParam(instruction, intCode)) {
+                intCode.memory.updated(aParam(instruction, intCode), 1)
               } else {
-                intCode.memory.updated(addressMakerA(intCode), 0)
+                intCode.memory.updated(aParam(instruction, intCode), 0)
               },
               isStopped = intCode.isStopped,
-              recur = intCode.recur))
+              doesRecur = intCode.doesRecur))
         }
       }
     }
