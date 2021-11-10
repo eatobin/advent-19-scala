@@ -34,36 +34,36 @@ def pass(possible: TreeMap[Char, Int])(memory: Memory): Int = {
             pointer = 0,
             relativeBase = 0,
             memory = memory,
-            stopped = false,
-            recur = true)).output,
+            isStopped = false,
+            doesRecur = true)).output,
           output = 0,
           phase = possible('b'),
           pointer = 0,
           relativeBase = 0,
           memory = memory,
-          stopped = false,
-          recur = true)).output,
+          isStopped = false,
+          doesRecur = true)).output,
         output = 0,
         phase = possible('c'),
         pointer = 0,
         relativeBase = 0,
         memory = memory,
-        stopped = false,
-        recur = true)).output,
+        isStopped = false,
+        doesRecur = true)).output,
       output = 0,
       phase = possible('d'),
       pointer = 0,
       relativeBase = 0,
       memory = memory,
-      stopped = false,
-      recur = true)).output,
+      isStopped = false,
+      doesRecur = true)).output,
     output = 0,
     phase = possible('e'),
     pointer = 0,
     relativeBase = 0,
     memory = memory,
-    stopped = false,
-    recur = true)).output
+    isStopped = false,
+    doesRecur = true)).output
 }
 
 def passes(memory: Memory): Seq[Int] = possibilities.map(pass(_)(memory))
@@ -86,11 +86,11 @@ val possibilities2: Seq[TreeMap[Char, Int]] =
 
 def makeAnAmpPass(possibility: TreeMap[Char, Int])(memory: Memory): mutable.Map[Int, intcode.IntCode] = {
   val fiveAmps: mutable.Map[Int, intcode.IntCode] = mutable.Map(
-    1 -> intcode.IntCode(input = 0, output = 0, phase = possibility('a'), pointer = 0, relativeBase = 0, memory = memory, stopped = false, recur = false),
-    2 -> intcode.IntCode(input = 0, output = 0, phase = possibility('b'), pointer = 0, relativeBase = 0, memory = memory, stopped = false, recur = false),
-    3 -> intcode.IntCode(input = 0, output = 0, phase = possibility('c'), pointer = 0, relativeBase = 0, memory = memory, stopped = false, recur = false),
-    4 -> intcode.IntCode(input = 0, output = 0, phase = possibility('d'), pointer = 0, relativeBase = 0, memory = memory, stopped = false, recur = false),
-    5 -> intcode.IntCode(input = 0, output = 0, phase = possibility('e'), pointer = 0, relativeBase = 0, memory = memory, stopped = false, recur = false)
+    1 -> intcode.IntCode(input = 0, output = 0, phase = possibility('a'), pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = false),
+    2 -> intcode.IntCode(input = 0, output = 0, phase = possibility('b'), pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = false),
+    3 -> intcode.IntCode(input = 0, output = 0, phase = possibility('c'), pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = false),
+    4 -> intcode.IntCode(input = 0, output = 0, phase = possibility('d'), pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = false),
+    5 -> intcode.IntCode(input = 0, output = 0, phase = possibility('e'), pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = false)
   )
   fiveAmps
 }
@@ -101,17 +101,17 @@ def toAmpsList(possibilitiesList: Seq[TreeMap[Char, Int]])(memory: Memory): Seq[
 
 def runner(fiveAmps: mutable.Map[Int, intcode.IntCode]): Int = {
   @tailrec
-  def recur(amps: mutable.Map[Int, intcode.IntCode], currentAmpNo: Int, nextAmpNo: Int): Int = {
-    if (currentAmpNo == 5 && amps(currentAmpNo).stopped) {
+  def recurXXX(amps: mutable.Map[Int, intcode.IntCode], currentAmpNo: Int, nextAmpNo: Int): Int = {
+    if (currentAmpNo == 5 && amps(currentAmpNo).isStopped) {
       amps(currentAmpNo).output
     } else {
       amps(currentAmpNo) = intcode.IntCode.opCode(amps(currentAmpNo))
       amps(nextAmpNo) = amps(nextAmpNo).copy(input = amps(currentAmpNo).output)
-      recur(amps = amps, currentAmpNo = nextAmpNo, nextAmpNo = (nextAmpNo % 5) + 1)
+      recurXXX(amps = amps, currentAmpNo = nextAmpNo, nextAmpNo = (nextAmpNo % 5) + 1)
     }
   }
 
-  recur(amps = fiveAmps, currentAmpNo = 1, nextAmpNo = 2)
+  recurXXX(amps = fiveAmps, currentAmpNo = 1, nextAmpNo = 2)
 }
 
 val answer2: Int = toAmpsList(possibilities2)(memory).map(runner).max
