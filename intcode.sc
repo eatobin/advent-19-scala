@@ -1,12 +1,11 @@
 //$ amm --predef intcode.sc
 
 import scala.annotation.tailrec
-import scala.collection.immutable.{ListMap, TreeMap}
 import scala.io.{BufferedSource, Source}
 
 type FilePath = String
 type Memory = Map[Int, Int]
-type Instruction = ListMap[Char, Int]
+type Instruction = Map[Char, Int]
 
 def makeMemory(file: FilePath): Memory = {
   val bufferedSource: BufferedSource = Source.fromFile(file)
@@ -21,14 +20,12 @@ def makeMemory(file: FilePath): Memory = {
 }
 
 def makeShortMemory(coll: Array[Int]): Memory = {
-  val unSortedMap: Map[Int, Int] = Iterator.from(0).zip(coll).toMap
-  TreeMap[Int, Int]() ++ unSortedMap
+  Iterator.from(0).zip(coll).toMap
 }
 
 def pad5(op: Int): Instruction = {
   val inBytes: Array[Int] = "%05d".format(op).getBytes.map(_ - 48)
-  val inMap: Map[Char, Int] = Array('a', 'b', 'c', 'd', 'e').zip(inBytes).toMap
-  ListMap(inMap.toSeq.sortBy(_._1): _*)
+  Array('a', 'b', 'c', 'd', 'e').zip(inBytes).toMap
 }
 
 // (defn op-code [{:keys [input output phase pointer relative-base memory stopped? recur?]}]
