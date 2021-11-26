@@ -30,7 +30,7 @@ def pad5(op: Int): Instruction = {
   Array('a', 'b', 'c', 'd', 'e').zip(inBytes).toMap
 }
 
-case class IntCode(pointer: Int, memory: Memory)
+case class IntCode(pointer: Int, memory: MemoryX)
 
 object IntCode {
   private val offsetC: Int = 1
@@ -80,12 +80,11 @@ object IntCode {
   }
 }
 
-
 // part A
 type Memory = Map[Int, Int]
 
 val memory: MemoryX = makeMemory("resources/day02.csv")
-def updatedMemory(noun: Int)(verb: Int): Memory = {
+def updatedMemory(noun: Int)(verb: Int): MemoryX = {
   val newNoun = memory.updated(1, noun)
   newNoun.updated(2, verb)
 }
@@ -95,13 +94,13 @@ println(s"Answer Part A: $answer")
 
 // Answer Part A: 2890696
 
-//// part B
-//val answer2: Int = (for {noun <- Range.inclusive(0, 99)
-//                         verb <- Range.inclusive(0, 99)
-//                         candidate: Int = intcode.IntCode.opCode(intcode.IntCode(input = 0, output = 0, phase = 999, pointer = 0, relativeBase = 0, memory = updatedMemory(noun = noun)(verb = verb), isStopped = false, doesRecur = true)).memory(0)
-//                         if candidate == 19690720
-//                         } yield (100 * noun) + verb).head
-//
-//println(s"Answer Part B: $answer2")
-//
-//// Answer Part B: 8226
+// part B
+val answer2: Int = (for {noun <- Range.inclusive(0, 99)
+                         verb <- Range.inclusive(0, 99)
+                         candidate: Int = IntCode.opCode(IntCode(pointer = 0, memory = updatedMemory(noun = noun)(verb = verb))).memory(0)
+                         if candidate == 19690720
+                         } yield (100 * noun) + verb).head
+
+println(s"Answer Part B: $answer2")
+
+// Answer Part B: 8226
