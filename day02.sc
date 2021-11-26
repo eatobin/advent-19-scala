@@ -4,10 +4,10 @@ import scala.annotation.tailrec
 import scala.io.{BufferedSource, Source}
 
 type FilePath = String
-type MemoryX = Map[Int, Int]
+type ICMemory = Map[Int, Int]
 type Instruction = Map[Char, Int]
 
-def makeMemory(file: FilePath): MemoryX = {
+def makeMemory(file: FilePath): ICMemory = {
   val bufferedSource: BufferedSource = Source.fromFile(file)
   val stringArray: Array[Int] = {
     bufferedSource
@@ -30,7 +30,7 @@ def pad5(op: Int): Instruction = {
   Array('a', 'b', 'c', 'd', 'e').zip(inBytes).toMap
 }
 
-case class IntCode(pointer: Int, memory: MemoryX)
+case class IntCode(pointer: Int, memory: ICMemory)
 
 object IntCode {
   private val offsetC: Int = 1
@@ -83,8 +83,8 @@ object IntCode {
 // part A
 type Memory = Map[Int, Int]
 
-val memory: MemoryX = makeMemory("resources/day02.csv")
-def updatedMemory(noun: Int)(verb: Int): MemoryX = {
+val memory: ICMemory = makeMemory("resources/day02.csv")
+def updatedMemory(noun: Int)(verb: Int): ICMemory = {
   val newNoun = memory.updated(1, noun)
   newNoun.updated(2, verb)
 }
