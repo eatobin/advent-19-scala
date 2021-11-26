@@ -23,8 +23,14 @@ def makeShortMemory(coll: Array[Int]): Memory = {
   Iterator.from(0).zip(coll).toMap
 }
 
+def charToInt(aChar: Byte): Byte = {
+  if (aChar < 48 || aChar > 57)
+    throw new Exception("Char is not an integer")
+  else (aChar - 48).toByte
+}
+
 def pad5(op: Int): Instruction = {
-  val inBytes: Array[Int] = "%05d".format(op).getBytes.map(_ - 48)
+  val inBytes: Array[Int] = "%05d".format(op).getBytes.map(charToInt)
   Array('a', 'b', 'c', 'd', 'e').zip(inBytes).toMap
 }
 
