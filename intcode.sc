@@ -5,7 +5,7 @@ import scala.collection.immutable.{ListMap, TreeMap}
 import scala.io.{BufferedSource, Source}
 
 type FilePath = String
-type Memory = TreeMap[Int, Int]
+type Memory = Map[Int, Int]
 type Instruction = ListMap[Char, Int]
 
 def makeMemory(file: FilePath): Memory = {
@@ -17,8 +17,7 @@ def makeMemory(file: FilePath): Memory = {
       .map(_.trim)
       .map(_.toInt)
   }
-  val unSortedMap: Map[Int, Int] = Iterator.from(0).zip(stringArray).toMap
-  TreeMap[Int, Int]() ++ unSortedMap
+  Iterator.from(0).zip(stringArray).toMap
 }
 
 def makeShortMemory(coll: Array[Int]): Memory = {

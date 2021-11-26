@@ -1,9 +1,7 @@
 import $file.intcode
 
-import scala.collection.immutable.TreeMap
-
 // part A
-type Memory = TreeMap[Int, Int]
+type Memory = Map[Int, Int]
 
 val memory: Memory = intcode.makeMemory("resources/day02.csv")
 def updatedMemory(noun: Int)(verb: Int): Memory = {
