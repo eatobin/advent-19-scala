@@ -3,11 +3,13 @@
 import scala.annotation.tailrec
 import scala.io.{BufferedSource, Source}
 
-type FilePath = String
+//type FilePath = String
 type Memory = Map[Int, Int]
 type Instruction = Map[Char, Int]
 
-def makeMemory(file: FilePath): Memory = {
+val fp: String = "resources/day02.csv"
+
+def makeMemory(file: String): Memory = {
   val bufferedSource: BufferedSource = Source.fromFile(file)
   val stringArray: Array[Int] = {
     bufferedSource
@@ -81,7 +83,7 @@ object IntCode {
 }
 
 // part A
-val memory: Memory = makeMemory("resources/day02.csv")
+val memory: Memory = makeMemory(fp)
 def updatedMemory(noun: Int)(verb: Int): Memory = {
   val newNoun = memory.updated(1, noun)
   newNoun.updated(2, verb)
