@@ -4,41 +4,47 @@ import scala.annotation.tailrec
 import scala.io.{BufferedSource, Source}
 
 //type FilePath = String
-type Memory = Map[Int, Int]
+type Memory = Array[Int]
 type Instruction = Map[Char, Int]
 
-val fp: String = "resources/day02.csv"
+private val fp: String = "resources/day02.csv"
+private val offsetC: Int = 1
+private val offsetB: Int = 2
+private val offsetA: Int = 3
 
 def makeMemory(file: String): Memory = {
   val bufferedSource: BufferedSource = Source.fromFile(file)
-  val stringArray: Array[Int] = {
+  val stringArray: Array[String] = {
     bufferedSource
       .mkString
       .split(",")
       .map(_.trim)
-      .map(_.toInt)
   }
-  Iterator.from(0).zip(stringArray).toMap
+  stringArray.map(_.toInt)
 }
 
-def charToInt(aChar: Byte): Byte = {
+private def charToInt(aChar: Byte): Byte = {
   if (aChar < 48 || aChar > 57)
     throw new Exception("Char is not an integer")
   else (aChar - 48).toByte
 }
 
-def pad5(op: Int): Instruction = {
+private def pad5(op: Int): Instruction = {
   val inBytes: Array[Int] = "%05d".format(op).getBytes.map(charToInt)
   Array('a', 'b', 'c', 'd', 'e').zip(inBytes).toMap
+}
+
+private def getOrElse(pointer: Int, offsetX: Int, memory: Memory): Int = {
+  if ((pointer + offsetX) > memory.length) {
+    0
+  } else {
+    memory(memory(pointer + offsetX))
+  }
 }
 
 case class IntCode(pointer: Int, memory: Memory)
 
 object IntCode {
-  private val offsetC: Int = 1
-  private val offsetB: Int = 2
-  private val offsetA: Int = 3
-
   def aParam(instruction: Instruction, intcode: IntCode): Int = {
     instruction('a') match {
       // a-p-w
@@ -49,14 +55,14 @@ object IntCode {
   def bParam(instruction: Instruction, intcode: IntCode): Int = {
     instruction('b') match {
       // b-p-r
-      case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetB), 0)
+      case 0 => getOrElse(intcode.pointer, offsetB, intcode.memory)
     }
   }
 
   def cParam(instruction: Instruction, intcode: IntCode): Int = {
     instruction('c') match {
       // c-p-r
-      case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC), 0)
+      case 0 => getOrElse(intcode.pointer, offsetC, intcode.memory)
     }
   }
 
@@ -68,11 +74,13 @@ object IntCode {
         case 1 =>
           recur(IntCode(
             pointer = intCode.pointer + 4,
-            memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode))))
+            memory = intCode.memory.updated(aParam(instruction, intCode),
+              cParam(instruction, intCode) + bParam(instruction, intCode))))
         case 2 =>
           recur(IntCode(
             pointer = intCode.pointer + 4,
-            memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode))))
+            memory = intCode.memory.updated(aParam(instruction, intCode),
+              cParam(instruction, intCode) * bParam(instruction, intCode))))
         case _ =>
           intCode
       }
