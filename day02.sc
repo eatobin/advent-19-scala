@@ -3,89 +3,82 @@
 import scala.annotation.tailrec
 import scala.io.{BufferedSource, Source}
 
-type Memory = Array[Int]
+//type FilePath = String
+type Memory = Map[Int, Int]
 type Instruction = Map[Char, Int]
 
-private val fp: String = "resources/day02.csv"
-private val offsetC: Int = 1
-private val offsetB: Int = 2
-private val offsetA: Int = 3
+val fp: String = "resources/day02.csv"
 
 def makeMemory(file: String): Memory = {
   val bufferedSource: BufferedSource = Source.fromFile(file)
-  val stringArray: Array[String] = {
+  val stringArray: Array[Int] = {
     bufferedSource
       .mkString
       .split(",")
       .map(_.trim)
+      .map(_.toInt)
   }
-  stringArray.map(_.toInt)
+  Iterator.from(0).zip(stringArray).toMap
 }
 
-private def charToInt(aChar: Byte): Byte = {
+def charToInt(aChar: Byte): Byte = {
   if (aChar < 48 || aChar > 57)
     throw new Exception("Char is not an integer")
   else (aChar - 48).toByte
 }
 
-private def pad5(op: Int): Instruction = {
+def pad5(op: Int): Instruction = {
   val inBytes: Array[Int] = "%05d".format(op).getBytes.map(charToInt)
   Array('a', 'b', 'c', 'd', 'e').zip(inBytes).toMap
-}
-
-private def getOrElse(pointer: Int, offsetX: Int, memory: Memory): Int = {
-  if ((pointer + offsetX) > (memory.length - 1)) {
-    0
-  } else {
-    memory(memory(pointer + offsetX))
-  }
 }
 
 case class IntCode(pointer: Int, memory: Memory)
 
 object IntCode {
-  def aParam(instruction: Instruction, ic: IntCode): Int = {
+  private val offsetC: Int = 1
+  private val offsetB: Int = 2
+  private val offsetA: Int = 3
+
+  def aParam(instruction: Instruction, intcode: IntCode): Int = {
     instruction('a') match {
       // a-p-w
-      case 0 => ic.memory(ic.pointer + offsetA)
+      case 0 => intcode.memory(intcode.pointer + offsetA)
     }
   }
 
-  def bParam(instruction: Instruction, ic: IntCode): Int = {
+  def bParam(instruction: Instruction, intcode: IntCode): Int = {
     instruction('b') match {
       // b-p-r
-      case 0 => getOrElse(ic.pointer, offsetB, ic.memory)
+      case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetB), 0)
     }
   }
 
-  def cParam(instruction: Instruction, ic: IntCode): Int = {
+  def cParam(instruction: Instruction, intcode: IntCode): Int = {
     instruction('c') match {
       // c-p-r
-      case 0 => getOrElse(ic.pointer, offsetC, ic.memory)
+      case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC), 0)
     }
   }
 
-  def opCode(ic: IntCode): IntCode = {
+  def opCode(intCode: IntCode): IntCode = {
     @tailrec
-    def recur(ic: IntCode): IntCode = {
-      val instruction: Instruction = pad5(ic.memory(ic.pointer))
+    def recur(intCode: IntCode): IntCode = {
+      val instruction: Instruction = pad5(intCode.memory(intCode.pointer))
       instruction('e') match {
         case 1 =>
           recur(IntCode(
-            pointer = ic.pointer + 4,
-            memory = ic.memory.updated(aParam(instruction, ic),
-              cParam(instruction, ic) + bParam(instruction, ic))))
+            pointer = intCode.pointer + 4,
+            memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode))))
         case 2 =>
           recur(IntCode(
-            pointer = ic.pointer + 4,
-            memory = ic.memory.updated(aParam(instruction, ic),
-              cParam(instruction, ic) * bParam(instruction, ic))))
+            pointer = intCode.pointer + 4,
+            memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode))))
         case _ =>
-          ic
+          intCode
       }
     }
 
-    recur(ic)
+    recur(intCode)
   }
 }
 
