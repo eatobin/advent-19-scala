@@ -7,7 +7,7 @@ import scala.collection.immutable.TreeMap
 type Memory = TreeMap[Int, Int]
 
 // part A
-val memory: Memory = intcode.makeMemory("resources/day09.csv")
+val memory: Memory = intcode.makeMemory("../resources/day09.csv")
 
 
 
