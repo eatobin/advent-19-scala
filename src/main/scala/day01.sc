@@ -34,3 +34,10 @@ val answer2: Int = gasList.map((m: Int) => gasPlus(m)).sum
 println(s"Answer Part B: $answer2")
 
 // 5003788
+
+val nums = (1 to 5).toList
+val nums = List(1, 4, 2, 9, 6)
+val pairs = nums.sliding(2, 1).toList
+val bools = pairs.map(p => p.head < p.last)
+val zs = bools.map(b => if (b) 1 else 0)
+zs.sum
