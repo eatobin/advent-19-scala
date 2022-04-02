@@ -35,9 +35,14 @@ println(s"Answer Part B: $answer2")
 
 // 5003788
 
-val nums = (1 to 5).toList
-val nums = List(1, 4, 2, 9, 6)
-val pairs = nums.sliding(2, 1).toList
-val bools = pairs.map(p => p.head < p.last)
-val zs = bools.map(b => if (b) 1 else 0)
-zs.sum
+val nums = List(199, 200, 208, 210, 200, 207, 240, 269, 260, 263)
+//val pairs = nums.sliding(2, 1).toList
+//val bools = pairs.map(p => p.head < p.last)
+//val zs = bools.map(b => if (b) 1 else 0)
+//zs.sum
+
+nums.sliding(2, 1)
+  .toList
+  .map(p => p.head < p.last)
+  .map(b => if (b) 1 else 0)
+  .sum
