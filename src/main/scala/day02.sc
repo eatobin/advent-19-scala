@@ -10,8 +10,8 @@ type Instruction = Map[Char, Int]
 val fp: String = "../resources/day02.csv"
 
 def makeMemory(file: String): Memory = {
-  val bufferedSource: BufferedSource = Source.fromFile(file)
-  val stringArray: Array[Int] = {
+  val bufferedSource = Source.fromFile(file)
+  val stringArray = {
     bufferedSource
       .mkString
       .split(",")
@@ -63,7 +63,7 @@ object IntCode {
   def opCode(intCode: IntCode): IntCode = {
     @tailrec
     def recur(intCode: IntCode): IntCode = {
-      val instruction: Instruction = pad5(intCode.memory(intCode.pointer))
+      val instruction = pad5(intCode.memory(intCode.pointer))
       instruction('e') match {
         case 1 =>
           recur(IntCode(
@@ -84,22 +84,22 @@ object IntCode {
 
 // part A
 val memory: Memory = makeMemory(fp)
-def updatedMemory(noun: Int)(verb: Int): Memory = {
+def updatedMemory(noun: Int, verb: Int): Memory = {
   val newNoun = memory.updated(1, noun)
   newNoun.updated(2, verb)
 }
-val ic: IntCode = IntCode.opCode(IntCode(pointer = 0, memory = updatedMemory(noun = 12)(verb = 2)))
-val answer: Int = ic.memory(0)
+val ic = IntCode.opCode(IntCode(pointer = 0, memory = updatedMemory(noun = 12, verb = 2)))
+val answer = ic.memory(0)
 println(s"Answer Part A: $answer")
 
 // Answer Part A: 2890696
 
 // part B
-val answer2: Int = (for {noun <- Range.inclusive(0, 99)
-                         verb <- Range.inclusive(0, 99)
-                         candidate: Int = IntCode.opCode(IntCode(pointer = 0, memory = updatedMemory(noun = noun)(verb = verb))).memory(0)
-                         if candidate == 19690720
-                         } yield (100 * noun) + verb).head
+val answer2 = (for {noun <- Range.inclusive(0, 99)
+                    verb <- Range.inclusive(0, 99)
+                    candidate = IntCode.opCode(IntCode(pointer = 0, memory = updatedMemory(noun = noun, verb = verb))).memory(0)
+                    if candidate == 19690720
+                    } yield (100 * noun) + verb).head
 
 println(s"Answer Part B: $answer2")
 
