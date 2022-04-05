@@ -20,10 +20,6 @@ def makeMemory(file: FilePath): Memory = {
   Iterator.from(0).zip(intArray).toMap
 }
 
-//def makeShortMemory(coll: Array[Int]): Memory = {
-//  Iterator.from(0).zip(coll).toMap
-//}
-
 def charToInt(aChar: Byte): Int = {
   if (aChar < 48 || aChar > 57)
     throw new Exception("Char is not an integer")
@@ -35,8 +31,6 @@ def pad5(op: Int): Instruction = {
   Array('a', 'b', 'c', 'd', 'e').zip(inInts).toMap
 }
 
-// (defn op-code [{:keys [input output phase pointer relative-base memory stopped? recur?]}]
-
 // ABCDE
 // 01002
 
@@ -45,6 +39,7 @@ def pad5(op: Int): Instruction = {
 // r or w = read or write
 
 //case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, relativeBase: Int, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
+
 case class IntCode(pointer: Int, memory: Memory)
 
 object IntCode {
@@ -83,7 +78,7 @@ object IntCode {
           recur(IntCode(
             pointer = intCode.pointer + 4,
             memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode))))
-        case 99 =>
+        case 9 =>
           intCode
         case _ =>
           throw new Exception("Unknown opCode")
