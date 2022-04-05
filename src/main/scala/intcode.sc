@@ -1,5 +1,6 @@
 //$ amm --predef intcode.sc
 
+import scala.annotation.tailrec
 import scala.io.Source
 
 type FilePath = String
@@ -43,7 +44,8 @@ def pad5(op: Int): Instruction = {
 // P I or R = position, immediate or relative mode
 // r or w = read or write
 
-case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, relativeBase: Int, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
+//case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, relativeBase: Int, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
+case class IntCode(pointer: Int, memory: Memory)
 
 object IntCode {
   private val offsetC: Int = 1
@@ -53,41 +55,44 @@ object IntCode {
   def aParam(instruction: Instruction, intcode: IntCode): Int = {
     instruction('a') match {
       case 0 => intcode.memory(intcode.pointer + offsetA) // a-p-w
-      // a-r-w
-//      case 2 => intcode.memory(intcode.pointer + offsetA) + intcode.relativeBase
     }
   }
 
   def bParam(instruction: Instruction, intcode: IntCode): Int = {
     instruction('b') match {
       case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetB), 0) // b-p-r
-//      // b-i-r
-//      case 1 => intcode.memory(intcode.pointer + offsetB)
-//      // b-r-r
-//      case 2 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetB) + intcode.relativeBase, 0)
     }
   }
 
   def cParam(instruction: Instruction, intcode: IntCode): Int = {
-    instruction('e') match {
-      case 3 =>
-        instruction('c') match {
-          // c-p-w
-          case 0 => intcode.memory(intcode.pointer + offsetC)
-          // c-r-w
-          case 2 => intcode.memory(intcode.pointer + offsetC) + intcode.relativeBase
-        }
-      case _ =>
-        instruction('c') match {
-          // c-p-r
-          case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC), 0)
-          // c-i-r
-          case 1 => intcode.memory(intcode.pointer + offsetC)
-          // c-r-r
-          case 2 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC) + intcode.relativeBase, 0)
-        }
+    instruction('c') match {
+      case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC), 0) // c-p-r
     }
   }
+
+  def opCode(intCode: IntCode): IntCode = {
+    @tailrec
+    def recur(intCode: IntCode): IntCode = {
+      val instruction: Instruction = pad5(intCode.memory(intCode.pointer))
+      instruction('e') match {
+        case 1 =>
+          recur(IntCode(
+            pointer = intCode.pointer + 4,
+            memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode))))
+        case 2 =>
+          recur(IntCode(
+            pointer = intCode.pointer + 4,
+            memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode))))
+        case 99 =>
+          intCode
+        case _ =>
+          throw new Exception("Unknown opCode")
+      }
+    }
+
+    recur(intCode)
+  }
+}
 
 //  def opCode(intCode: IntCode): IntCode = {
 //    @tailrec
