@@ -4,12 +4,16 @@ import $file.intcode
 
 // part A
 val memory = intcode.makeMemory("../resources/day02.csv")
+
 def updatedMemory(noun: Int, verb: Int): intcode.Memory = {
   val newNoun = memory.updated(1, noun)
   newNoun.updated(2, verb)
 }
+
 val ic = intcode.IntCode.opCode(intcode.IntCode(pointer = 0, memory = updatedMemory(noun = 12, verb = 2)))
+
 val answer = ic.memory(0)
+
 println(s"Answer Part A: $answer")
 
 // Answer Part A: 2890696

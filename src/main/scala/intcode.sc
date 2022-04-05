@@ -68,7 +68,7 @@ object IntCode {
   def opCode(intCode: IntCode): IntCode = {
     @tailrec
     def recur(intCode: IntCode): IntCode = {
-      val instruction: Instruction = pad5(intCode.memory(intCode.pointer))
+      val instruction = pad5(intCode.memory(intCode.pointer))
       instruction('e') match {
         case 1 =>
           recur(IntCode(
