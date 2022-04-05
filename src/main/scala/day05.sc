@@ -1,5 +1,4 @@
 import $file.intcode
-
 import scala.collection.immutable.TreeMap
 
 type Memory = TreeMap[Int, Int]
