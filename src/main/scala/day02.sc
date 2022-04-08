@@ -7,7 +7,7 @@ import scala.io.{BufferedSource, Source}
 type Memory = Map[Int, Int]
 type Instruction = Map[Char, Int]
 
-val fp: String = "resources/day02.csv"
+val fp: String = "../resources/day02.csv"
 
 def makeMemory(file: String): Memory = {
   val bufferedSource: BufferedSource = Source.fromFile(file)
