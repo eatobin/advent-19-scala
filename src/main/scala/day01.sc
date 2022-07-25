@@ -1,7 +1,9 @@
+//$ amm --predef src/main/scala/day01.sc
+
 import scala.annotation.tailrec
 import scala.io.Source
 
-val bufferedSource = Source.fromFile("../resources/day01.txt")
+val bufferedSource = Source.fromFile("/home/eric/scala-projects/advent-19-scala/src/main/resources/day01.txt")
 val gasList = bufferedSource.getLines().toList.map(s => s.toInt)
 bufferedSource.close
 
