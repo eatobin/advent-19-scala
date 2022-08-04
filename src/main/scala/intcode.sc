@@ -40,7 +40,7 @@ def pad5(op: Int): Instruction = {
 
 //case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, relativeBase: Int, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
 
-case class IntCode(pointer: Int, memory: Memory)
+final case class IntCode(pointer: Int, memory: Memory)
 
 object IntCode {
   private val offsetC: Int = 1
@@ -65,19 +65,25 @@ object IntCode {
     }
   }
 
+  def actionAdd(instruction: Instruction, intCode: IntCode): IntCode = {
+    IntCode(pointer = intCode.pointer + 4,
+      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode)))
+  }
+
+  def actionMultiply(instruction: Instruction, intCode: IntCode): IntCode = {
+    IntCode(pointer = intCode.pointer + 4,
+      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode)))
+  }
+
   def opCode(intCode: IntCode): IntCode = {
     @tailrec
-    def recur(intCode: IntCode): IntCode = {
+    def loop(intCode: IntCode): IntCode = {
       val instruction = pad5(intCode.memory(intCode.pointer))
       instruction('e') match {
         case 1 =>
-          recur(IntCode(
-            pointer = intCode.pointer + 4,
-            memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode))))
+          loop(actionAdd(instruction, intCode))
         case 2 =>
-          recur(IntCode(
-            pointer = intCode.pointer + 4,
-            memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode))))
+          loop(actionMultiply(instruction, intCode))
         case 9 =>
           intCode
         case _ =>
@@ -85,7 +91,7 @@ object IntCode {
       }
     }
 
-    recur(intCode)
+    loop(intCode)
   }
 }
 
