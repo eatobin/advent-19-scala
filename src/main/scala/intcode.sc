@@ -60,12 +60,30 @@ object IntCode {
     }
   }
 
+  //  def cParam(instruction: Instruction, intcode: IntCode): Int = {
+  //    instruction('c') match {
+  //      case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC), 0) // c-p-r
+  //      case 1 => intcode.memory(intcode.pointer + offsetC) // c-i-r
+  //    }
+  //  }
+
+
   def cParam(instruction: Instruction, intcode: IntCode): Int = {
-    instruction('c') match {
-      case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC), 0) // c-p-r
-      case 1 => intcode.memory(intcode.pointer + offsetC) // c-i-r
+    instruction('e') match {
+      case 3 =>
+        instruction('c') match {
+          case 0 => intcode.memory(intcode.pointer + offsetC) // c-p-w
+          case 2 => intcode.memory(intcode.pointer + offsetC) + intcode.relativeBase // c-r-w
+        }
+      case _ =>
+        instruction('c') match {
+          case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC), 0) // c-p-r
+          case 1 => intcode.memory(intcode.pointer + offsetC) // c-i-r
+          case 2 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC) + intcode.relativeBase, 0) // c-r-r
+        }
     }
   }
+
 
   def actionAdd(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(

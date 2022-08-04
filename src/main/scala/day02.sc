@@ -10,7 +10,6 @@ def updatedMemory(noun: Int, verb: Int): intcode.Memory = {
   newNoun.updated(2, verb)
 }
 
-//val ic = intcode.IntCode.opCode(intcode.IntCode(pointer = 0, memory = updatedMemory(noun = 12, verb = 2)))
 val ic = intcode.IntCode.opCode(intcode.IntCode(input = 0, output = 0, phase = 999, pointer = 0, relativeBase = 0, memory = updatedMemory(noun = 12, verb = 2), isStopped = false, doesRecur = true))
 val answer = ic.memory(0)
 
