@@ -91,6 +91,30 @@ object IntCode {
       doesRecur = intCode.doesRecur)
   }
 
+  def actionInput(instruction: Instruction, intCode: IntCode): IntCode = {
+    IntCode(
+      input = intCode.input,
+      output = intCode.output,
+      phase = intCode.phase,
+      pointer = intCode.pointer + 2,
+      relativeBase = intCode.relativeBase,
+      memory = intCode.memory.updated(cParam(instruction, intCode), intCode.input),
+      isStopped = intCode.isStopped,
+      doesRecur = intCode.doesRecur)
+  }
+
+  def actionOutput(instruction: Instruction, intCode: IntCode): IntCode = {
+    IntCode(
+      input = intCode.input,
+      output = cParam(instruction, intCode),
+      phase = intCode.phase,
+      pointer = intCode.pointer + 2,
+      relativeBase = intCode.relativeBase,
+      memory = intCode.memory,
+      isStopped = intCode.isStopped,
+      doesRecur = intCode.doesRecur)
+  }
+
   def opCode(intCode: IntCode): IntCode = {
     @tailrec
     def loop(intCode: IntCode): IntCode = {
@@ -100,6 +124,10 @@ object IntCode {
           loop(actionAdd(instruction, intCode))
         case 2 =>
           loop(actionMultiply(instruction, intCode))
+        case 3 =>
+          loop(actionInput(instruction, intCode))
+        case 4 =>
+          loop(actionOutput(instruction, intCode))
         case 9 =>
           intCode
         case _ =>
