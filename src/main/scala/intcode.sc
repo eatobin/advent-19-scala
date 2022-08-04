@@ -38,9 +38,9 @@ def pad5(op: Int): Instruction = {
 // P I or R = position, immediate or relative mode
 // r or w = read or write
 
-//case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, relativeBase: Int, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
+final case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, relativeBase: Int, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
 
-final case class IntCode(pointer: Int, memory: Memory)
+//final case class IntCode(pointer: Int, memory: Memory)
 
 object IntCode {
   private val offsetC: Int = 1
@@ -66,13 +66,27 @@ object IntCode {
   }
 
   def actionAdd(instruction: Instruction, intCode: IntCode): IntCode = {
-    IntCode(pointer = intCode.pointer + 4,
-      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode)))
+    IntCode(
+      input = intCode.input,
+      output = intCode.output,
+      phase = intCode.phase,
+      pointer = intCode.pointer + 4,
+      relativeBase = intCode.relativeBase,
+      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode)),
+      isStopped = intCode.isStopped,
+      doesRecur = intCode.doesRecur)
   }
 
   def actionMultiply(instruction: Instruction, intCode: IntCode): IntCode = {
-    IntCode(pointer = intCode.pointer + 4,
-      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode)))
+    IntCode(
+      input = intCode.input,
+      output = intCode.output,
+      phase = intCode.phase,
+      pointer = intCode.pointer + 4,
+      relativeBase = intCode.relativeBase,
+      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode)),
+      isStopped = intCode.isStopped,
+      doesRecur = intCode.doesRecur)
   }
 
   def opCode(intCode: IntCode): IntCode = {
