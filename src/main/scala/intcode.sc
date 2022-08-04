@@ -56,12 +56,14 @@ object IntCode {
   def bParam(instruction: Instruction, intcode: IntCode): Int = {
     instruction('b') match {
       case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetB), 0) // b-p-r
+      case 1 => intcode.memory(intcode.pointer + offsetB) // b-i-r
     }
   }
 
   def cParam(instruction: Instruction, intcode: IntCode): Int = {
     instruction('c') match {
       case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC), 0) // c-p-r
+      case 1 => intcode.memory(intcode.pointer + offsetC) // c-i-r
     }
   }
 
