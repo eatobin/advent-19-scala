@@ -1,14 +1,15 @@
-import scala.annotation.tailrec
-import scala.io.{BufferedSource, Source}
+//$ amm --predef src/main/scala/day01.sc
 
-val bufferedSource: BufferedSource = Source.fromFile("../resources/day01.txt")
-val gasList: List[Int] = bufferedSource.getLines().toList.map((s: String) => s.toInt)
+import scala.io.Source
+
+val bufferedSource = Source.fromFile("/home/eric/scala-projects/advent-19-scala/src/main/resources/day01.txt")
+val gasList = bufferedSource.getLines().toList.map(s => s.toInt)
 bufferedSource.close
 
 // part a
 def gas(m: Int): Int = (m / 3) - 2
 
-val answer: Int = gasList.map((m: Int) => gas(m)).sum
+val answer: Int = gasList.map(m => gas(m)).sum
 
 println(s"Answer Part A: $answer")
 
@@ -16,20 +17,10 @@ println(s"Answer Part A: $answer")
 
 // part b
 def gasPlus(m: Int): Int = {
-  @tailrec
-  def gasAccumulator(m: Int)(accum: Int): Int = {
-    val newGas: Int = gas(m)
-    if (newGas > 0) {
-      gasAccumulator(m = newGas)(accum = accum + newGas)
-    } else {
-      accum
-    }
-  }
-
-  gasAccumulator(m = m)(accum = 0)
+  (LazyList.iterate(m) { x => gas(x) } takeWhile (y => y >= 0)).tail.sum
 }
 
-val answer2: Int = gasList.map((m: Int) => gasPlus(m)).sum
+val answer2: Int = gasList.map(m => gasPlus(m)).sum
 
 println(s"Answer Part B: $answer2")
 

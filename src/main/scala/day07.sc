@@ -11,7 +11,7 @@ import scala.collection.mutable
 type Memory = TreeMap[Int, Int]
 
 // part A
-val memory: Memory = intcode.makeMemory("resources/day07.csv")
+val memory: Memory = intcode.makeMemory("../resources/day07.csv")
 
 val possibilities: Seq[TreeMap[Char, Int]] =
   for (a <- 0 to 4;
