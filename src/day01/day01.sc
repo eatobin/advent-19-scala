@@ -1,8 +1,15 @@
-//$ amm --predef src/main/scala/day01.sc
+//$ amm --predef day01.sc
+//$ scala-cli clean day01.sc
+//$ scala-cli day01.sc
+//$ scala-cli -S 2.13.8 day01.sc
+//$ rm -rf .bsp/
+//$ scala-cli repl -S 2.13.8
+//$ scala-cli repl
+//$ scala-cli repl --amm
 
 import scala.io.Source
 
-val bufferedSource = Source.fromFile("/home/eric/scala-projects/advent-19-scala/src/main/resources/day01.txt")
+val bufferedSource = Source.fromFile("day01.txt")
 val gasList = bufferedSource.getLines().toList.map(s => s.toInt)
 bufferedSource.close
 
