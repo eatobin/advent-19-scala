@@ -76,6 +76,7 @@ object IntCode {
     }
   }
 
+
   def actionAdd(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
