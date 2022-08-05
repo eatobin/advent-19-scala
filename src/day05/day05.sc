@@ -105,6 +105,54 @@ object IntCode {
       memory = intCode.memory)
   }
 
+  def actionJumpIfTrue(instruction: Instruction, intCode: IntCode): IntCode = {
+    IntCode(
+      input = intCode.input,
+      output = cParam(instruction, intCode),
+      pointer = if (cParam(instruction, intCode) == 0) {
+        intCode.pointer + 3
+      } else {
+        bParam(instruction, intCode)
+      },
+      memory = intCode.memory)
+  }
+
+  def actionJumpIfFalse(instruction: Instruction, intCode: IntCode): IntCode = {
+    IntCode(
+      input = intCode.input,
+      output = cParam(instruction, intCode),
+      pointer = if (cParam(instruction, intCode) != 0) {
+        intCode.pointer + 3
+      } else {
+        bParam(instruction, intCode)
+      },
+      memory = intCode.memory)
+  }
+
+  def actionLessThan(instruction: Instruction, intCode: IntCode): IntCode = {
+    IntCode(
+      input = intCode.input,
+      output = cParam(instruction, intCode),
+      pointer = intCode.pointer + 4,
+      memory = if (cParam(instruction, intCode) < bParam(instruction, intCode)) {
+        intCode.memory.updated(aParam(instruction, intCode), 1)
+      } else {
+        intCode.memory.updated(aParam(instruction, intCode), 0)
+      })
+  }
+
+  def actionEquals(instruction: Instruction, intCode: IntCode): IntCode = {
+    IntCode(
+      input = intCode.input,
+      output = cParam(instruction, intCode),
+      pointer = intCode.pointer + 4,
+      memory = if (cParam(instruction, intCode) == bParam(instruction, intCode)) {
+        intCode.memory.updated(aParam(instruction, intCode), 1)
+      } else {
+        intCode.memory.updated(aParam(instruction, intCode), 0)
+      })
+  }
+
   def opCode(intCode: IntCode): IntCode = {
     @tailrec
     def loop(intCode: IntCode): IntCode = {
@@ -118,6 +166,14 @@ object IntCode {
           loop(actionInput(instruction, intCode))
         case 4 =>
           loop(actionOutput(instruction, intCode))
+        case 5 =>
+          loop(actionJumpIfTrue(instruction, intCode))
+        case 6 =>
+          loop(actionJumpIfFalse(instruction, intCode))
+        case 7 =>
+          loop(actionLessThan(instruction, intCode))
+        case 8 =>
+          loop(actionEquals(instruction, intCode))
         case 9 =>
           intCode
         case _ =>
@@ -139,8 +195,8 @@ println(s"Answer Part A: $answer")
 // Answer Part A: 9025675
 
 // part B
-//val ic2: intcode.IntCode = intcode.IntCode.opCode(intcode.IntCode(input = 5, output = 0, phase = 999, pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = true))
-//val answer2: Int = ic2.output
-//println(s"Answer Part B: $answer2")
+val ic2: IntCode = IntCode.opCode(IntCode(input = 5, output = 0, pointer = 0, memory = memory))
+val answer2: Int = ic2.output
+println(s"Answer Part B: $answer2")
 
 // Answer Part B: 11981754
