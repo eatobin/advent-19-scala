@@ -38,9 +38,7 @@ def pad5(op: Int): Instruction = {
 // P I or R = position, immediate or relative mode
 // r or w = read or write
 
-final case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, relativeBase: Int, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
-
-//final case class IntCode(pointer: Int, memory: Memory)
+final case class IntCode(input: Int, output: Int, pointer: Int, memory: Memory)
 
 object IntCode {
   private val offsetC: Int = 1
@@ -65,13 +63,11 @@ object IntCode {
       case 3 =>
         instruction('c') match {
           case 0 => intcode.memory(intcode.pointer + offsetC) // c-p-w
-          case 2 => intcode.memory(intcode.pointer + offsetC) + intcode.relativeBase // c-r-w
         }
       case _ =>
         instruction('c') match {
           case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC), 0) // c-p-r
           case 1 => intcode.memory(intcode.pointer + offsetC) // c-i-r
-          case 2 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC) + intcode.relativeBase, 0) // c-r-r
         }
     }
   }
@@ -81,48 +77,32 @@ object IntCode {
     IntCode(
       input = intCode.input,
       output = intCode.output,
-      phase = intCode.phase,
       pointer = intCode.pointer + 4,
-      relativeBase = intCode.relativeBase,
-      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode)),
-      isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode)))
   }
 
   def actionMultiply(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
       output = intCode.output,
-      phase = intCode.phase,
       pointer = intCode.pointer + 4,
-      relativeBase = intCode.relativeBase,
-      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode)),
-      isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode)))
   }
 
   def actionInput(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
       output = intCode.output,
-      phase = intCode.phase,
       pointer = intCode.pointer + 2,
-      relativeBase = intCode.relativeBase,
-      memory = intCode.memory.updated(cParam(instruction, intCode), intCode.input),
-      isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      memory = intCode.memory.updated(cParam(instruction, intCode), intCode.input))
   }
 
   def actionOutput(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
       output = cParam(instruction, intCode),
-      phase = intCode.phase,
       pointer = intCode.pointer + 2,
-      relativeBase = intCode.relativeBase,
-      memory = intCode.memory,
-      isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      memory = intCode.memory)
   }
 
   def opCode(intCode: IntCode): IntCode = {
@@ -152,7 +132,7 @@ object IntCode {
 // part A
 val memory = makeMemory("day05.csv")
 
-val ic: IntCode = IntCode.opCode(IntCode(input = 1, output = 0, phase = 999, pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = true))
+val ic: IntCode = IntCode.opCode(IntCode(input = 1, output = 0, pointer = 0, memory = memory))
 val answer: Int = ic.output
 println(s"Answer Part A: $answer")
 
