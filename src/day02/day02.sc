@@ -3,7 +3,7 @@
 import $file.intcode
 
 // part A
-val memory = intcode.makeMemory("/home/eric/scala-projects/advent-19-scala/src/main/resources/day02.csv")
+val memory = intcode.makeMemory("day02.csv")
 
 def updatedMemory(noun: Int, verb: Int): intcode.Memory = {
   val newNoun = memory.updated(1, noun)
