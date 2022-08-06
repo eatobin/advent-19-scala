@@ -109,10 +109,10 @@ object IntCode {
     IntCode(
       input = intCode.input,
       output = cParam(instruction, intCode),
-      pointer = if (cParam(instruction, intCode) == 0) {
-        intCode.pointer + 3
-      } else {
+      pointer = if (cParam(instruction, intCode) != 0) {
         bParam(instruction, intCode)
+      } else {
+        intCode.pointer + 3
       },
       memory = intCode.memory)
   }
@@ -121,10 +121,10 @@ object IntCode {
     IntCode(
       input = intCode.input,
       output = cParam(instruction, intCode),
-      pointer = if (cParam(instruction, intCode) != 0) {
-        intCode.pointer + 3
-      } else {
+      pointer = if (cParam(instruction, intCode) == 0) {
         bParam(instruction, intCode)
+      } else {
+        intCode.pointer + 3
       },
       memory = intCode.memory)
   }
