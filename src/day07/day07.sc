@@ -38,7 +38,7 @@ def pad5(op: Int): Instruction = {
 // P I or R = position, immediate or relative mode
 // r or w = read or write
 
-final case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, relativeBase: Int, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
+final case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
 
 object IntCode {
   private val offsetC: Int = 1
@@ -77,32 +77,53 @@ object IntCode {
     IntCode(
       input = intCode.input,
       output = intCode.output,
+      phase = intCode.phase,
       pointer = intCode.pointer + 4,
-      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode)))
+      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode)),
+      isStopped = intCode.isStopped,
+      doesRecur = intCode.doesRecur)
   }
 
   def actionMultiply(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
       output = intCode.output,
+      phase = intCode.phase,
       pointer = intCode.pointer + 4,
-      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode)))
+      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode)),
+      isStopped = intCode.isStopped,
+      doesRecur = intCode.doesRecur)
   }
 
   def actionInput(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
       output = intCode.output,
+      phase = intCode.phase,
       pointer = intCode.pointer + 2,
-      memory = intCode.memory.updated(cParam(instruction, intCode), intCode.input))
+      memory =
+        if (intCode.phase >= 0 && intCode.phase <= 9) {
+          if (intCode.pointer == 0) {
+            intCode.memory.updated(cParam(instruction, intCode), intCode.phase)
+          } else {
+            intCode.memory.updated(cParam(instruction, intCode), intCode.input)
+          }
+        } else {
+          intCode.memory.updated(cParam(instruction, intCode), intCode.input)
+        },
+      isStopped = intCode.isStopped,
+      doesRecur = intCode.doesRecur)
   }
 
   def actionOutput(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
       output = cParam(instruction, intCode),
+      phase = intCode.phase,
       pointer = intCode.pointer + 2,
-      memory = intCode.memory)
+      memory = intCode.memory,
+      isStopped = intCode.isStopped,
+      doesRecur = intCode.doesRecur)
   }
 
   def actionJumpIfTrue(instruction: Instruction, intCode: IntCode): IntCode = {
