@@ -130,48 +130,60 @@ object IntCode {
     IntCode(
       input = intCode.input,
       output = cParam(instruction, intCode),
+      phase = intCode.phase,
       pointer = if (cParam(instruction, intCode) != 0) {
         bParam(instruction, intCode)
       } else {
         intCode.pointer + 3
       },
-      memory = intCode.memory)
+      memory = intCode.memory,
+      isStopped = intCode.isStopped,
+      doesRecur = intCode.doesRecur)
   }
 
   def actionJumpIfFalse(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
       output = cParam(instruction, intCode),
+      phase = intCode.phase,
       pointer = if (cParam(instruction, intCode) == 0) {
         bParam(instruction, intCode)
       } else {
         intCode.pointer + 3
       },
-      memory = intCode.memory)
+      memory = intCode.memory,
+      isStopped = intCode.isStopped,
+      doesRecur = intCode.doesRecur)
   }
 
   def actionLessThan(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
       output = cParam(instruction, intCode),
+      phase = intCode.phase,
       pointer = intCode.pointer + 4,
       memory = if (cParam(instruction, intCode) < bParam(instruction, intCode)) {
         intCode.memory.updated(aParam(instruction, intCode), 1)
       } else {
         intCode.memory.updated(aParam(instruction, intCode), 0)
-      })
+      },
+      isStopped = intCode.isStopped,
+      doesRecur = intCode.doesRecur)
   }
 
   def actionEquals(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
       output = cParam(instruction, intCode),
+      phase = intCode.phase,
       pointer = intCode.pointer + 4,
       memory = if (cParam(instruction, intCode) == bParam(instruction, intCode)) {
         intCode.memory.updated(aParam(instruction, intCode), 1)
       } else {
         intCode.memory.updated(aParam(instruction, intCode), 0)
-      })
+      },
+      isStopped = intCode.isStopped,
+      doesRecur = intCode.doesRecur)
   }
 
   def opCode(intCode: IntCode): IntCode = {
@@ -186,7 +198,11 @@ object IntCode {
         case 3 =>
           loop(actionInput(instruction, intCode))
         case 4 =>
-          loop(actionOutput(instruction, intCode))
+          if (intCode.doesRecur) {
+            loop(actionOutput(instruction, intCode))
+          } else {
+            intCode
+          }
         case 5 =>
           loop(actionJumpIfTrue(instruction, intCode))
         case 6 =>
