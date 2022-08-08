@@ -304,10 +304,10 @@ def makeAnAmpPass(possibility: TreeMap[Char, Int])(memory: Memory): mutable.Map[
   fiveAmps
 }
 
-//def toAmpsList(possibilitiesList: Seq[TreeMap[Char, Int]])(memory: Memory): Seq[mutable.Map[Int, IntCode]] = {
-//  possibilitiesList.map(makeAnAmpPass(_)(memory))
-//}
-//
+def toAmpsList(possibilitiesList: Seq[TreeMap[Char, Int]])(memory: Memory): Seq[mutable.Map[Int, IntCode]] = {
+  possibilitiesList.map(makeAnAmpPass(_)(memory))
+}
+
 //def runner(fiveAmps: mutable.Map[Int, IntCode]): Int = {
 //  @tailrec
 //  def recurXXX(amps: mutable.Map[Int, IntCode], currentAmpNo: Int, nextAmpNo: Int): Int = {
