@@ -188,35 +188,54 @@ object IntCode {
       doesRecur = intCode.doesRecur)
   }
 
+  def actionHalt(intCode: IntCode): IntCode = {
+    IntCode(
+      input = intCode.input,
+      output = intCode.output,
+      phase = intCode.phase,
+      pointer = intCode.pointer,
+      memory = intCode.memory,
+      isStopped = true,
+      doesRecur = intCode.doesRecur)
+  }
+
   def opCode(intCode: IntCode): IntCode = {
     @tailrec
     def loop(intCode: IntCode): IntCode = {
-      val instruction = pad5(intCode.memory(intCode.pointer))
-      instruction('e') match {
-        case 1 =>
-          loop(actionAdd(instruction, intCode))
-        case 2 =>
-          loop(actionMultiply(instruction, intCode))
-        case 3 =>
-          loop(actionInput(instruction, intCode))
-        case 4 =>
-          if (intCode.doesRecur) {
-            loop(actionOutput(instruction, intCode))
-          } else {
-            intCode
-          }
-        case 5 =>
-          loop(actionJumpIfTrue(instruction, intCode))
-        case 6 =>
-          loop(actionJumpIfFalse(instruction, intCode))
-        case 7 =>
-          loop(actionLessThan(instruction, intCode))
-        case 8 =>
-          loop(actionEquals(instruction, intCode))
-        case 9 =>
-          intCode
-        case _ =>
-          throw new Exception("Unknown opCode")
+      if (intCode.isStopped) {
+        intCode
+      } else {
+        val instruction = pad5(intCode.memory(intCode.pointer))
+        instruction('e') match {
+          case 1 =>
+            loop(actionAdd(instruction, intCode))
+          case 2 =>
+            loop(actionMultiply(instruction, intCode))
+          case 3 =>
+            loop(actionInput(instruction, intCode))
+          case 4 =>
+            if (intCode.doesRecur) {
+              loop(actionOutput(instruction, intCode))
+            } else {
+              intCode
+            }
+          case 5 =>
+            loop(actionJumpIfTrue(instruction, intCode))
+          case 6 =>
+            loop(actionJumpIfFalse(instruction, intCode))
+          case 7 =>
+            loop(actionLessThan(instruction, intCode))
+          case 8 =>
+            loop(actionEquals(instruction, intCode))
+          case 9 =>
+            if (instruction('d') == 9) {
+              loop(actionHalt(intCode))
+            } else {
+              intCode
+            }
+          case _ =>
+            throw new Exception("Unknown opCode")
+        }
       }
     }
 
