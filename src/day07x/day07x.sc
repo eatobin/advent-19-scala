@@ -25,15 +25,15 @@ def makeMemory(file: FilePath): Memory = {
 //  Iterator.from(0).zip(coll).toMap
 //}
 
-def charToInt(aChar: Byte): Byte = {
+def charToInt(aChar: Byte): Int = {
   if (aChar < 48 || aChar > 57)
     throw new Exception("Char is not an integer")
-  else (aChar - 48).toByte
+  else aChar - 48
 }
 
 def pad5(op: Int): Instruction = {
-  val inBytes: Array[Int] = "%05d".format(op).getBytes.map(charToInt)
-  Array('a', 'b', 'c', 'd', 'e').zip(inBytes).toMap
+  val inInts = "%05d".format(op).getBytes.map(charToInt)
+  Array('a', 'b', 'c', 'd', 'e').zip(inInts).toMap
 }
 
 // (defn op-code [{:keys [input output phase pointer relative-base memory stopped? recur?]}]
