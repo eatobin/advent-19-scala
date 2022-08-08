@@ -101,17 +101,8 @@ object IntCode {
         instruction('e') match {
           case 9 =>
             if (instruction('d') == 9)
-              intCode.copy(isStopped = true) else {
-              loop(IntCode(
-                input = intCode.input,
-                output = intCode.output,
-                phase = intCode.phase,
-                pointer = intCode.pointer + 2,
-                relativeBase = cParam(instruction, intCode) + intCode.relativeBase,
-                memory = intCode.memory,
-                isStopped = intCode.isStopped,
-                doesRecur = intCode.doesRecur))
-            }
+              actionHalt(intCode) else
+              actionHalt(intCode)
           case 1 =>
             loop(IntCode(
               input = intCode.input,
