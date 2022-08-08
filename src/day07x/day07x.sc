@@ -45,7 +45,7 @@ def pad5(op: Int): Instruction = {
 // P I or R = position, immediate or relative mode
 // r or w = read or write
 
-case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, relativeBase: Int, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
+case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
 
 object IntCode {
   private val offsetC: Int = 1
@@ -85,7 +85,6 @@ object IntCode {
       output = intCode.output,
       phase = intCode.phase,
       pointer = intCode.pointer,
-      relativeBase = intCode.relativeBase,
       memory = intCode.memory,
       isStopped = true,
       doesRecur = intCode.doesRecur)
@@ -109,7 +108,6 @@ object IntCode {
               output = intCode.output,
               phase = intCode.phase,
               pointer = intCode.pointer + 4,
-              relativeBase = intCode.relativeBase,
               memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode)),
               isStopped = intCode.isStopped,
               doesRecur = intCode.doesRecur))
@@ -119,7 +117,6 @@ object IntCode {
               output = intCode.output,
               phase = intCode.phase,
               pointer = intCode.pointer + 4,
-              relativeBase = intCode.relativeBase,
               memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode)),
               isStopped = intCode.isStopped,
               doesRecur = intCode.doesRecur))
@@ -129,7 +126,6 @@ object IntCode {
               output = intCode.output,
               phase = intCode.phase,
               pointer = intCode.pointer + 2,
-              relativeBase = intCode.relativeBase,
               memory =
                 if (intCode.phase >= 0 && intCode.phase <= 9) {
                   if (intCode.pointer == 0) {
@@ -149,7 +145,6 @@ object IntCode {
                 output = cParam(instruction, intCode),
                 phase = intCode.phase,
                 pointer = intCode.pointer + 2,
-                relativeBase = intCode.relativeBase,
                 memory = intCode.memory,
                 isStopped = intCode.isStopped,
                 doesRecur = intCode.doesRecur))
@@ -159,7 +154,6 @@ object IntCode {
                 output = cParam(instruction, intCode),
                 phase = intCode.phase,
                 pointer = intCode.pointer + 2,
-                relativeBase = intCode.relativeBase,
                 memory = intCode.memory,
                 isStopped = intCode.isStopped,
                 doesRecur = intCode.doesRecur)
@@ -174,7 +168,6 @@ object IntCode {
               } else {
                 bParam(instruction, intCode)
               },
-              relativeBase = intCode.relativeBase,
               memory = intCode.memory,
               isStopped = intCode.isStopped,
               doesRecur = intCode.doesRecur))
@@ -188,7 +181,6 @@ object IntCode {
               } else {
                 bParam(instruction, intCode)
               },
-              relativeBase = intCode.relativeBase,
               memory = intCode.memory,
               isStopped = intCode.isStopped,
               doesRecur = intCode.doesRecur))
@@ -198,7 +190,6 @@ object IntCode {
               output = intCode.output,
               phase = intCode.phase,
               pointer = intCode.pointer + 4,
-              relativeBase = intCode.relativeBase,
               memory = if (cParam(instruction, intCode) < bParam(instruction, intCode)) {
                 intCode.memory.updated(aParam(instruction, intCode), 1)
               } else {
@@ -212,7 +203,6 @@ object IntCode {
               output = intCode.output,
               phase = intCode.phase,
               pointer = intCode.pointer + 4,
-              relativeBase = intCode.relativeBase,
               memory = if (cParam(instruction, intCode) == bParam(instruction, intCode)) {
                 intCode.memory.updated(aParam(instruction, intCode), 1)
               } else {
@@ -251,35 +241,30 @@ def pass(possible: TreeMap[Char, Int])(memory: Memory): Int = {
             output = 0,
             phase = possible('a'),
             pointer = 0,
-            relativeBase = 0,
             memory = memory,
             isStopped = false,
             doesRecur = true)).output,
           output = 0,
           phase = possible('b'),
           pointer = 0,
-          relativeBase = 0,
           memory = memory,
           isStopped = false,
           doesRecur = true)).output,
         output = 0,
         phase = possible('c'),
         pointer = 0,
-        relativeBase = 0,
         memory = memory,
         isStopped = false,
         doesRecur = true)).output,
       output = 0,
       phase = possible('d'),
       pointer = 0,
-      relativeBase = 0,
       memory = memory,
       isStopped = false,
       doesRecur = true)).output,
     output = 0,
     phase = possible('e'),
     pointer = 0,
-    relativeBase = 0,
     memory = memory,
     isStopped = false,
     doesRecur = true)).output
@@ -305,11 +290,11 @@ val possibilities2: Seq[TreeMap[Char, Int]] =
 
 def makeAnAmpPass(possibility: TreeMap[Char, Int])(memory: Memory): mutable.Map[Int, IntCode] = {
   val fiveAmps: mutable.Map[Int, IntCode] = mutable.Map(
-    1 -> IntCode(input = 0, output = 0, phase = possibility('a'), pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = false),
-    2 -> IntCode(input = 0, output = 0, phase = possibility('b'), pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = false),
-    3 -> IntCode(input = 0, output = 0, phase = possibility('c'), pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = false),
-    4 -> IntCode(input = 0, output = 0, phase = possibility('d'), pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = false),
-    5 -> IntCode(input = 0, output = 0, phase = possibility('e'), pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = false)
+    1 -> IntCode(input = 0, output = 0, phase = possibility('a'), pointer = 0, memory = memory, isStopped = false, doesRecur = false),
+    2 -> IntCode(input = 0, output = 0, phase = possibility('b'), pointer = 0, memory = memory, isStopped = false, doesRecur = false),
+    3 -> IntCode(input = 0, output = 0, phase = possibility('c'), pointer = 0, memory = memory, isStopped = false, doesRecur = false),
+    4 -> IntCode(input = 0, output = 0, phase = possibility('d'), pointer = 0, memory = memory, isStopped = false, doesRecur = false),
+    5 -> IntCode(input = 0, output = 0, phase = possibility('e'), pointer = 0, memory = memory, isStopped = false, doesRecur = false)
   )
   fiveAmps
 }
