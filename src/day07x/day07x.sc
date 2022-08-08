@@ -79,6 +79,17 @@ object IntCode {
     }
   }
 
+  def actionAdd(instruction: Instruction, intCode: IntCode): IntCode = {
+    IntCode(
+      input = intCode.input,
+      output = intCode.output,
+      phase = intCode.phase,
+      pointer = intCode.pointer + 4,
+      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode)),
+      isStopped = intCode.isStopped,
+      doesRecur = intCode.doesRecur)
+  }
+
   def actionHalt(intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
@@ -103,14 +114,7 @@ object IntCode {
               actionHalt(intCode) else
               actionHalt(intCode)
           case 1 =>
-            loop(IntCode(
-              input = intCode.input,
-              output = intCode.output,
-              phase = intCode.phase,
-              pointer = intCode.pointer + 4,
-              memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode)),
-              isStopped = intCode.isStopped,
-              doesRecur = intCode.doesRecur))
+            loop(actionAdd(instruction, intCode))
           case 2 =>
             loop(IntCode(
               input = intCode.input,
