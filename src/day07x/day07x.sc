@@ -54,21 +54,14 @@ object IntCode {
 
   def aParam(instruction: Instruction, intcode: IntCode): Int = {
     instruction('a') match {
-      // a-p-w
-      case 0 => intcode.memory(intcode.pointer + offsetA)
-      // a-r-w
-      case 2 => intcode.memory(intcode.pointer + offsetA) + intcode.relativeBase
+      case 0 => intcode.memory(intcode.pointer + offsetA) // a-p-w
     }
   }
 
   def bParam(instruction: Instruction, intcode: IntCode): Int = {
     instruction('b') match {
-      // b-p-r
-      case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetB), 0)
-      // b-i-r
-      case 1 => intcode.memory(intcode.pointer + offsetB)
-      // b-r-r
-      case 2 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetB) + intcode.relativeBase, 0)
+      case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetB), 0) // b-p-r
+      case 1 => intcode.memory(intcode.pointer + offsetB) // b-i-r
     }
   }
 
@@ -76,19 +69,12 @@ object IntCode {
     instruction('e') match {
       case 3 =>
         instruction('c') match {
-          // c-p-w
-          case 0 => intcode.memory(intcode.pointer + offsetC)
-          // c-r-w
-          case 2 => intcode.memory(intcode.pointer + offsetC) + intcode.relativeBase
+          case 0 => intcode.memory(intcode.pointer + offsetC) // c-p-w
         }
       case _ =>
         instruction('c') match {
-          // c-p-r
-          case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC), 0)
-          // c-i-r
-          case 1 => intcode.memory(intcode.pointer + offsetC)
-          // c-r-r
-          case 2 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC) + intcode.relativeBase, 0)
+          case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC), 0) // c-p-r
+          case 1 => intcode.memory(intcode.pointer + offsetC) // c-i-r
         }
     }
   }
