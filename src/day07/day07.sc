@@ -223,7 +223,7 @@ object IntCode {
             if (intCode.doesRecur) {
               loop(actionOutput(instruction, intCode))
             } else {
-              intCode
+              actionOutput(instruction, intCode)
             }
           case 5 =>
             loop(actionJumpIfTrue(instruction, intCode))
@@ -329,27 +329,20 @@ def toAmpsList(possibilitiesList: Seq[TreeMap[Char, Int]])(memory: Memory): Seq[
 
 def runner(fiveAmps: mutable.Map[Int, IntCode]): Int = {
   @tailrec
-  def recurXXX(amps: mutable.Map[Int, IntCode], currentAmpNo: Int, nextAmpNo: Int): Int = {
+  def loop(amps: mutable.Map[Int, IntCode], currentAmpNo: Int, nextAmpNo: Int): Int = {
     if (currentAmpNo == 5 && amps(currentAmpNo).isStopped) {
       amps(currentAmpNo).output
     } else {
       amps(currentAmpNo) = IntCode.opCode(amps(currentAmpNo))
       amps(nextAmpNo) = amps(nextAmpNo).copy(input = amps(currentAmpNo).output)
-      recurXXX(amps = amps, currentAmpNo = nextAmpNo, nextAmpNo = (nextAmpNo % 5) + 1)
+      loop(amps = amps, currentAmpNo = nextAmpNo, nextAmpNo = (nextAmpNo % 5) + 1)
     }
   }
 
-  recurXXX(amps = fiveAmps, currentAmpNo = 1, nextAmpNo = 2)
+  loop(amps = fiveAmps, currentAmpNo = 1, nextAmpNo = 2)
 }
 
 val answer2: Int = toAmpsList(possibilities2)(memory).map(runner).max
 println(s"Answer Part B: $answer2")
 
-//// Answer Part B: 35993240
-//
-////println(memory)
-//val possibility: TreeMap[Char, Int] = TreeMap('a' -> 9, 'b' -> 8, 'c' -> 7, 'd' -> 6, 'e' -> 5)
-////println(possibility)
-////println(makeAnAmpPass(possibility)(memory))
-//val possibilitiesList: Seq[TreeMap[Char, Int]] = Seq(possibility)
-//println(toAmpsList(possibilitiesList)(memory))
+// Answer Part B: 35993240
