@@ -90,6 +90,17 @@ object IntCode {
       doesRecur = intCode.doesRecur)
   }
 
+  def actionMultiply(instruction: Instruction, intCode: IntCode): IntCode = {
+    IntCode(
+      input = intCode.input,
+      output = intCode.output,
+      phase = intCode.phase,
+      pointer = intCode.pointer + 4,
+      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode)),
+      isStopped = intCode.isStopped,
+      doesRecur = intCode.doesRecur)
+  }
+
   def actionHalt(intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
@@ -116,14 +127,7 @@ object IntCode {
           case 1 =>
             loop(actionAdd(instruction, intCode))
           case 2 =>
-            loop(IntCode(
-              input = intCode.input,
-              output = intCode.output,
-              phase = intCode.phase,
-              pointer = intCode.pointer + 4,
-              memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode)),
-              isStopped = intCode.isStopped,
-              doesRecur = intCode.doesRecur))
+            loop(actionMultiply(instruction, intCode))
           case 3 =>
             loop(IntCode(
               input = intCode.input,
