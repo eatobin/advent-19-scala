@@ -3,7 +3,7 @@
 import scala.annotation.tailrec
 import scala.io.Source
 import scala.collection.immutable.TreeMap
-import scala.collection.mutable
+//import scala.collection.mutable
 
 type FilePath = String
 type Memory = Map[Int, Int]
@@ -207,6 +207,12 @@ object IntCode {
       } else {
         val instruction = pad5(intCode.memory(intCode.pointer))
         instruction('e') match {
+          case 9 =>
+            if (instruction('d') == 9) {
+              actionHalt(intCode)
+            } else {
+              actionHalt(intCode)
+            }
           case 1 =>
             loop(actionAdd(instruction, intCode))
           case 2 =>
@@ -227,12 +233,6 @@ object IntCode {
             loop(actionLessThan(instruction, intCode))
           case 8 =>
             loop(actionEquals(instruction, intCode))
-          case 9 =>
-            if (instruction('d') == 9) {
-              loop(actionHalt(intCode))
-            } else {
-              intCode
-            }
           case _ =>
             throw new Exception("Unknown opCode")
         }
@@ -302,31 +302,31 @@ println(s"Answer Part A: $answer")
 
 // Answer Part A: 368584
 
-// part B
-val possibilities2: Seq[TreeMap[Char, Int]] =
-  for (a <- 5 to 9;
-       b <- 5 to 9;
-       c <- 5 to 9;
-       d <- 5 to 9;
-       e <- 5 to 9
-       if List(a, b, c, d, e).distinct.size == List(a, b, c, d, e).size)
-  yield TreeMap[Char, Int]() ++ (List('a', 'b', 'c', 'd', 'e') zip List(a, b, c, d, e)).toMap
-
-def makeAnAmpPass(possibility: TreeMap[Char, Int])(memory: Memory): mutable.Map[Int, IntCode] = {
-  val fiveAmps: mutable.Map[Int, IntCode] = mutable.Map(
-    1 -> IntCode(input = 0, output = 0, phase = possibility('a'), pointer = 0, memory = memory, isStopped = false, doesRecur = false),
-    2 -> IntCode(input = 0, output = 0, phase = possibility('b'), pointer = 0, memory = memory, isStopped = false, doesRecur = false),
-    3 -> IntCode(input = 0, output = 0, phase = possibility('c'), pointer = 0, memory = memory, isStopped = false, doesRecur = false),
-    4 -> IntCode(input = 0, output = 0, phase = possibility('d'), pointer = 0, memory = memory, isStopped = false, doesRecur = false),
-    5 -> IntCode(input = 0, output = 0, phase = possibility('e'), pointer = 0, memory = memory, isStopped = false, doesRecur = false)
-  )
-  fiveAmps
-}
-
-def toAmpsList(possibilitiesList: Seq[TreeMap[Char, Int]])(memory: Memory): Seq[mutable.Map[Int, IntCode]] = {
-  possibilitiesList.map(makeAnAmpPass(_)(memory))
-}
-
+//// part B
+//val possibilities2: Seq[TreeMap[Char, Int]] =
+//  for (a <- 5 to 9;
+//       b <- 5 to 9;
+//       c <- 5 to 9;
+//       d <- 5 to 9;
+//       e <- 5 to 9
+//       if List(a, b, c, d, e).distinct.size == List(a, b, c, d, e).size)
+//  yield TreeMap[Char, Int]() ++ (List('a', 'b', 'c', 'd', 'e') zip List(a, b, c, d, e)).toMap
+//
+//def makeAnAmpPass(possibility: TreeMap[Char, Int])(memory: Memory): mutable.Map[Int, IntCode] = {
+//  val fiveAmps: mutable.Map[Int, IntCode] = mutable.Map(
+//    1 -> IntCode(input = 0, output = 0, phase = possibility('a'), pointer = 0, memory = memory, isStopped = false, doesRecur = false),
+//    2 -> IntCode(input = 0, output = 0, phase = possibility('b'), pointer = 0, memory = memory, isStopped = false, doesRecur = false),
+//    3 -> IntCode(input = 0, output = 0, phase = possibility('c'), pointer = 0, memory = memory, isStopped = false, doesRecur = false),
+//    4 -> IntCode(input = 0, output = 0, phase = possibility('d'), pointer = 0, memory = memory, isStopped = false, doesRecur = false),
+//    5 -> IntCode(input = 0, output = 0, phase = possibility('e'), pointer = 0, memory = memory, isStopped = false, doesRecur = false)
+//  )
+//  fiveAmps
+//}
+//
+//def toAmpsList(possibilitiesList: Seq[TreeMap[Char, Int]])(memory: Memory): Seq[mutable.Map[Int, IntCode]] = {
+//  possibilitiesList.map(makeAnAmpPass(_)(memory))
+//}
+//
 //def runner(fiveAmps: mutable.Map[Int, IntCode]): Int = {
 //  @tailrec
 //  def recurXXX(amps: mutable.Map[Int, IntCode], currentAmpNo: Int, nextAmpNo: Int): Int = {
@@ -344,5 +344,12 @@ def toAmpsList(possibilitiesList: Seq[TreeMap[Char, Int]])(memory: Memory): Seq[
 //
 //val answer2: Int = toAmpsList(possibilities2)(memory).map(runner).max
 //println(s"Answer Part B: $answer2")
-
-// Answer Part B: 35993240
+//
+//// Answer Part B: 35993240
+//
+////println(memory)
+//val possibility: TreeMap[Char, Int] = TreeMap('a' -> 9, 'b' -> 8, 'c' -> 7, 'd' -> 6, 'e' -> 5)
+////println(possibility)
+////println(makeAnAmpPass(possibility)(memory))
+//val possibilitiesList: Seq[TreeMap[Char, Int]] = Seq(possibility)
+//println(toAmpsList(possibilitiesList)(memory))
