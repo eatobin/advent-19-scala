@@ -1,4 +1,4 @@
-//$ amm --predef day07.sc
+//$ amm --predef day07x.sc
 
 import scala.annotation.tailrec
 import scala.collection.immutable.TreeMap
@@ -241,7 +241,7 @@ object IntCode {
 
 
 // part A
-val memory: Memory = makeMemory("day07.csv")
+val memory: Memory = makeMemory("day07x.csv")
 
 val possibilities: Seq[TreeMap[Char, Int]] =
   for (a <- 0 to 4;
