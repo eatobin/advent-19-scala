@@ -79,9 +79,21 @@ object IntCode {
     }
   }
 
+  def actionHalt(intCode: IntCode): IntCode = {
+    IntCode(
+      input = intCode.input,
+      output = intCode.output,
+      phase = intCode.phase,
+      pointer = intCode.pointer,
+      relativeBase = intCode.relativeBase,
+      memory = intCode.memory,
+      isStopped = true,
+      doesRecur = intCode.doesRecur)
+  }
+
   def opCode(intCode: IntCode): IntCode = {
     @tailrec
-    def recur(intCode: IntCode): IntCode = {
+    def loop(intCode: IntCode): IntCode = {
       if (intCode.isStopped) {
         intCode
       } else {
@@ -90,7 +102,7 @@ object IntCode {
           case 9 =>
             if (instruction('d') == 9)
               intCode.copy(isStopped = true) else {
-              recur(IntCode(
+              loop(IntCode(
                 input = intCode.input,
                 output = intCode.output,
                 phase = intCode.phase,
@@ -101,7 +113,7 @@ object IntCode {
                 doesRecur = intCode.doesRecur))
             }
           case 1 =>
-            recur(IntCode(
+            loop(IntCode(
               input = intCode.input,
               output = intCode.output,
               phase = intCode.phase,
@@ -111,7 +123,7 @@ object IntCode {
               isStopped = intCode.isStopped,
               doesRecur = intCode.doesRecur))
           case 2 =>
-            recur(IntCode(
+            loop(IntCode(
               input = intCode.input,
               output = intCode.output,
               phase = intCode.phase,
@@ -121,7 +133,7 @@ object IntCode {
               isStopped = intCode.isStopped,
               doesRecur = intCode.doesRecur))
           case 3 =>
-            recur(IntCode(
+            loop(IntCode(
               input = intCode.input,
               output = intCode.output,
               phase = intCode.phase,
@@ -141,7 +153,7 @@ object IntCode {
               doesRecur = intCode.doesRecur))
           case 4 =>
             if (intCode.doesRecur) {
-              recur(IntCode(
+              loop(IntCode(
                 input = intCode.input,
                 output = cParam(instruction, intCode),
                 phase = intCode.phase,
@@ -162,7 +174,7 @@ object IntCode {
                 doesRecur = intCode.doesRecur)
             }
           case 5 =>
-            recur(IntCode(
+            loop(IntCode(
               input = intCode.input,
               output = intCode.output,
               phase = intCode.phase,
@@ -176,7 +188,7 @@ object IntCode {
               isStopped = intCode.isStopped,
               doesRecur = intCode.doesRecur))
           case 6 =>
-            recur(IntCode(
+            loop(IntCode(
               input = intCode.input,
               output = intCode.output,
               phase = intCode.phase,
@@ -190,7 +202,7 @@ object IntCode {
               isStopped = intCode.isStopped,
               doesRecur = intCode.doesRecur))
           case 7 =>
-            recur(IntCode(
+            loop(IntCode(
               input = intCode.input,
               output = intCode.output,
               phase = intCode.phase,
@@ -204,7 +216,7 @@ object IntCode {
               isStopped = intCode.isStopped,
               doesRecur = intCode.doesRecur))
           case 8 =>
-            recur(IntCode(
+            loop(IntCode(
               input = intCode.input,
               output = intCode.output,
               phase = intCode.phase,
@@ -221,7 +233,7 @@ object IntCode {
       }
     }
 
-    recur(intCode)
+    loop(intCode)
   }
 }
 
