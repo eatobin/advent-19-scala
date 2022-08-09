@@ -83,6 +83,7 @@ object IntCode {
       output = intCode.output,
       phase = intCode.phase,
       pointer = intCode.pointer + 4,
+      relativeBase = intCode.relativeBase,
       memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode)),
       isStopped = intCode.isStopped,
       doesRecur = intCode.doesRecur)
@@ -94,6 +95,7 @@ object IntCode {
       output = intCode.output,
       phase = intCode.phase,
       pointer = intCode.pointer + 4,
+      relativeBase = intCode.relativeBase,
       memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode)),
       isStopped = intCode.isStopped,
       doesRecur = intCode.doesRecur)
@@ -105,6 +107,7 @@ object IntCode {
       output = intCode.output,
       phase = intCode.phase,
       pointer = intCode.pointer + 2,
+      relativeBase = intCode.relativeBase,
       memory =
         if (intCode.phase >= 0 && intCode.phase <= 9) {
           if (intCode.pointer == 0) {
@@ -125,6 +128,7 @@ object IntCode {
       output = cParam(instruction, intCode),
       phase = intCode.phase,
       pointer = intCode.pointer + 2,
+      relativeBase = intCode.relativeBase,
       memory = intCode.memory,
       isStopped = intCode.isStopped,
       doesRecur = intCode.doesRecur)
@@ -140,6 +144,7 @@ object IntCode {
       } else {
         intCode.pointer + 3
       },
+      relativeBase = intCode.relativeBase,
       memory = intCode.memory,
       isStopped = intCode.isStopped,
       doesRecur = intCode.doesRecur)
@@ -155,6 +160,7 @@ object IntCode {
       } else {
         intCode.pointer + 3
       },
+      relativeBase = intCode.relativeBase,
       memory = intCode.memory,
       isStopped = intCode.isStopped,
       doesRecur = intCode.doesRecur)
@@ -166,6 +172,7 @@ object IntCode {
       output = cParam(instruction, intCode),
       phase = intCode.phase,
       pointer = intCode.pointer + 4,
+      relativeBase = intCode.relativeBase,
       memory = if (cParam(instruction, intCode) < bParam(instruction, intCode)) {
         intCode.memory.updated(aParam(instruction, intCode), 1)
       } else {
@@ -181,6 +188,7 @@ object IntCode {
       output = cParam(instruction, intCode),
       phase = intCode.phase,
       pointer = intCode.pointer + 4,
+      relativeBase = intCode.relativeBase,
       memory = if (cParam(instruction, intCode) == bParam(instruction, intCode)) {
         intCode.memory.updated(aParam(instruction, intCode), 1)
       } else {
@@ -196,8 +204,21 @@ object IntCode {
       output = intCode.output,
       phase = intCode.phase,
       pointer = intCode.pointer,
+      relativeBase = intCode.relativeBase,
       memory = intCode.memory,
       isStopped = true,
+      doesRecur = intCode.doesRecur)
+  }
+
+  def actionRelativeBase(instruction: Instruction, intCode: IntCode): IntCode = {
+    IntCode(
+      input = intCode.input,
+      output = intCode.output,
+      phase = intCode.phase,
+      pointer = intCode.pointer + 2,
+      relativeBase = cParam(instruction, intCode) + intCode.relativeBase,
+      memory = intCode.memory,
+      isStopped = intCode.isStopped,
       doesRecur = intCode.doesRecur)
   }
 
@@ -213,7 +234,7 @@ object IntCode {
             if (instruction('d') == 9) {
               actionHalt(intCode)
             } else {
-              actionHalt(intCode)
+              loop(actionRelativeBase(instruction, intCode))
             }
           case 1 =>
             loop(actionAdd(instruction, intCode))
@@ -247,3 +268,11 @@ object IntCode {
 
 // part A
 val memory = makeMemory("day09.csv")
+
+val ic = IntCode.opCode(IntCode(input = 1, output = 0, phase = 999, pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = true))
+val answer = ic
+println(s"Answer Part A: $answer")
+
+// Answer Part A: 3780860499
+
+// part B
