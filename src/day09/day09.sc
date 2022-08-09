@@ -38,7 +38,7 @@ def pad5(op: Int): Instruction = {
 // P I or R = position, immediate or relative mode
 // r or w = read or write
 
-final case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
+final case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, relativeBase: Int, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
 
 object IntCode {
   private val offsetC: Int = 1
@@ -48,6 +48,7 @@ object IntCode {
   def aParam(instruction: Instruction, intcode: IntCode): Int = {
     instruction('a') match {
       case 0 => intcode.memory(intcode.pointer + offsetA) // a-p-w
+      case 2 => intcode.memory(intcode.pointer + offsetA) + intcode.relativeBase // a-r-w
     }
   }
 
@@ -55,6 +56,7 @@ object IntCode {
     instruction('b') match {
       case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetB), 0) // b-p-r
       case 1 => intcode.memory(intcode.pointer + offsetB) // b-i-r
+      case 2 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetB) + intcode.relativeBase, 0) // b-r-r
     }
   }
 
@@ -63,11 +65,13 @@ object IntCode {
       case 3 =>
         instruction('c') match {
           case 0 => intcode.memory(intcode.pointer + offsetC) // c-p-w
+          case 2 => intcode.memory(intcode.pointer + offsetC) + intcode.relativeBase // c-r-w
         }
       case _ =>
         instruction('c') match {
           case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC), 0) // c-p-r
           case 1 => intcode.memory(intcode.pointer + offsetC) // c-i-r
+          case 2 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC) + intcode.relativeBase, 0) // c-r-r
         }
     }
   }
