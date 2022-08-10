@@ -274,3 +274,8 @@ println(s"Answer Part A: $answer")
 // Answer Part A: 3780860499
 
 // part B
+val ic2 = IntCode.opCode(IntCode(input = 2, output = 0, phase = 999, pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = true))
+val answer2 = ic2.output
+println(s"Answer Part B: $answer2")
+
+// Answer Part B: 33343
