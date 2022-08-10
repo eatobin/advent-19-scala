@@ -4,20 +4,20 @@ import scala.annotation.tailrec
 import scala.io.Source
 
 type FilePath = String
-type Memory = Map[Int, Int]
+type Memory = Map[Long, Long]
 type Instruction = Map[Char, Int]
 
 def makeMemory(file: FilePath): Memory = {
   val bufferedSource = Source.fromFile(file)
-  val intArray = {
+  val longArray: Array[Long] = {
     bufferedSource
       .mkString
       .split(",")
       .map(_.trim)
-      .map(_.toInt)
+      .map(_.toLong)
   }
   bufferedSource.close
-  Iterator.from(0).zip(intArray).toMap
+  LazyList.iterate(0L) { x => x + 1 }.zip(longArray).toMap
 }
 
 def charToInt(aChar: Byte): Int = {
@@ -26,7 +26,7 @@ def charToInt(aChar: Byte): Int = {
   else aChar - 48
 }
 
-def pad5(op: Int): Instruction = {
+def pad5(op: Long): Instruction = {
   val inInts = "%05d".format(op).getBytes.map(charToInt)
   Array('a', 'b', 'c', 'd', 'e').zip(inInts).toMap
 }
@@ -38,21 +38,21 @@ def pad5(op: Int): Instruction = {
 // P I or R = position, immediate or relative mode
 // r or w = read or write
 
-final case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, relativeBase: Int, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
+final case class IntCode(input: Long, output: Long, phase: Int, pointer: Long, relativeBase: Long, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
 
 object IntCode {
-  private val offsetC: Int = 1
-  private val offsetB: Int = 2
-  private val offsetA: Int = 3
+  private val offsetC: Long = 1
+  private val offsetB: Long = 2
+  private val offsetA: Long = 3
 
-  def aParam(instruction: Instruction, intcode: IntCode): Int = {
+  def aParam(instruction: Instruction, intcode: IntCode): Long = {
     instruction('a') match {
       case 0 => intcode.memory(intcode.pointer + offsetA) // a-p-w
       case 2 => intcode.memory(intcode.pointer + offsetA) + intcode.relativeBase // a-r-w
     }
   }
 
-  def bParam(instruction: Instruction, intcode: IntCode): Int = {
+  def bParam(instruction: Instruction, intcode: IntCode): Long = {
     instruction('b') match {
       case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetB), 0) // b-p-r
       case 1 => intcode.memory(intcode.pointer + offsetB) // b-i-r
@@ -60,22 +60,20 @@ object IntCode {
     }
   }
 
-  def cParam(instruction: Instruction, intcode: IntCode): Int = {
-    instruction('e') match {
-      case 3 =>
-        instruction('c') match {
-          case 0 => intcode.memory(intcode.pointer + offsetC) // c-p-w
-          case 2 => intcode.memory(intcode.pointer + offsetC) + intcode.relativeBase // c-r-w
-        }
-      case _ =>
-        instruction('c') match {
-          case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC), 0) // c-p-r
-          case 1 => intcode.memory(intcode.pointer + offsetC) // c-i-r
-          case 2 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC) + intcode.relativeBase, 0) // c-r-r
-        }
+  def cParam(instruction: Instruction, intcode: IntCode): Long = {
+    if (instruction('e') == 3) {
+      instruction('c') match {
+        case 0 => intcode.memory(intcode.pointer + offsetC) // c-p-w
+        case 2 => intcode.memory(intcode.pointer + offsetC) + intcode.relativeBase // c-r-w
+      }
+    } else {
+      instruction('c') match {
+        case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC), 0) // c-p-r
+        case 1 => intcode.memory(intcode.pointer + offsetC) // c-i-r
+        case 2 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC) + intcode.relativeBase, 0) // c-r-r
+      }
     }
   }
-
 
   def actionAdd(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
@@ -228,14 +226,8 @@ object IntCode {
       if (intCode.isStopped) {
         intCode
       } else {
-        val instruction = pad5(intCode.memory(intCode.pointer))
+        val instruction: Instruction = pad5(intCode.memory(intCode.pointer))
         instruction('e') match {
-          case 9 =>
-            if (instruction('d') == 9) {
-              actionHalt(intCode)
-            } else {
-              loop(actionRelativeBase(instruction, intCode))
-            }
           case 1 =>
             loop(actionAdd(instruction, intCode))
           case 2 =>
@@ -256,6 +248,12 @@ object IntCode {
             loop(actionLessThan(instruction, intCode))
           case 8 =>
             loop(actionEquals(instruction, intCode))
+          case 9 =>
+            if (instruction('d') == 9) {
+              loop(actionHalt(intCode))
+            } else {
+              loop(actionRelativeBase(instruction, intCode))
+            }
           case _ =>
             throw new Exception("Unknown opCode")
         }
@@ -270,7 +268,7 @@ object IntCode {
 val memory = makeMemory("day09.csv")
 
 val ic = IntCode.opCode(IntCode(input = 1, output = 0, phase = 999, pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = true))
-val answer = ic
+val answer = ic.output
 println(s"Answer Part A: $answer")
 
 // Answer Part A: 3780860499
