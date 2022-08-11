@@ -38,7 +38,7 @@ def pad5(op: Long): Instruction = {
 // P I or R = position, immediate or relative mode
 // r or w = read or write
 
-final case class IntCode(input: Long, output: Long, phase: Int, pointer: Long, relativeBase: Long, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
+final case class IntCode(input: Long, output: Vector[Long], phase: Int, pointer: Long, relativeBase: Long, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
 
 object IntCode {
   private val offsetC: Long = 1
@@ -123,7 +123,7 @@ object IntCode {
   def actionOutput(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
-      output = cParam(instruction, intCode),
+      output = intCode.output :+ cParam(instruction, intCode),
       phase = intCode.phase,
       pointer = intCode.pointer + 2,
       relativeBase = intCode.relativeBase,
@@ -267,15 +267,15 @@ object IntCode {
 // part A
 val memory = makeMemory("day09.csv")
 
-val ic = IntCode.opCode(IntCode(input = 1, output = 0, phase = 999, pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = true))
-val answer = ic.output
-println(s"Answer Part A: $answer")
+val ic = IntCode.opCode(IntCode(input = 1, output = Vector(), phase = 999, pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = true))
+val answer = ic.output.lastOption
+println(s"Answer Part A: ${answer.get}")
 
 // Answer Part A: 3780860499
 
 // part B
-val ic2 = IntCode.opCode(IntCode(input = 2, output = 0, phase = 999, pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = true))
-val answer2 = ic2.output
-println(s"Answer Part B: $answer2")
+val ic2 = IntCode.opCode(IntCode(input = 2, output = Vector(), phase = 999, pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = true))
+val answer2 = ic2.output.lastOption
+println(s"Answer Part B: ${answer2.get}")
 
 // Answer Part B: 33343
