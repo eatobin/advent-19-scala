@@ -108,7 +108,7 @@ object IntCode {
   def actionJumpIfTrue(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
-      output = cParam(instruction, intCode),
+      output = intCode.output,
       pointer = if (cParam(instruction, intCode) != 0) {
         bParam(instruction, intCode)
       } else {
@@ -120,7 +120,7 @@ object IntCode {
   def actionJumpIfFalse(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
-      output = cParam(instruction, intCode),
+      output = intCode.output,
       pointer = if (cParam(instruction, intCode) == 0) {
         bParam(instruction, intCode)
       } else {
@@ -132,7 +132,7 @@ object IntCode {
   def actionLessThan(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
-      output = cParam(instruction, intCode),
+      output = intCode.output,
       pointer = intCode.pointer + 4,
       memory = if (cParam(instruction, intCode) < bParam(instruction, intCode)) {
         intCode.memory.updated(aParam(instruction, intCode), 1)
@@ -144,7 +144,7 @@ object IntCode {
   def actionEquals(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
-      output = cParam(instruction, intCode),
+      output = intCode.output,
       pointer = intCode.pointer + 4,
       memory = if (cParam(instruction, intCode) == bParam(instruction, intCode)) {
         intCode.memory.updated(aParam(instruction, intCode), 1)
