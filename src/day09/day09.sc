@@ -38,7 +38,7 @@ def pad5(op: Long): Instruction = {
 // P I or R = position, immediate or relative mode
 // r or w = read or write
 
-final case class IntCode(input: Long, output: Vector[Long], phase: Int, pointer: Long, relativeBase: Long, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
+final case class IntCode(input: Long, output: Vector[Long], phase: Long, pointer: Long, relativeBase: Long, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
 
 object IntCode {
   private val offsetC: Long = 1
