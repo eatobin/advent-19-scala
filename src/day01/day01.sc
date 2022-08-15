@@ -7,6 +7,7 @@
 //$ scala-cli repl
 //$ scala-cli repl --amm
 
+import scala.annotation.tailrec
 import scala.io.Source
 
 val bufferedSource = Source.fromFile("day01.txt")
@@ -30,5 +31,26 @@ def gasPlus(m: Int): Int = {
 val answer2: Int = gasList.map(m => gasPlus(m)).sum
 
 println(s"Answer Part B: $answer2")
+
+// 5003788
+
+// part c (really b)
+def gasPlus2(m: Int): Int = {
+  @tailrec
+  def gasAccumulator(m: Int, accum: Int): Int = {
+    val newGas: Int = gas(m)
+    if (newGas > 0) {
+      gasAccumulator(m = newGas, accum = accum + newGas)
+    } else {
+      accum
+    }
+  }
+
+  gasAccumulator(m = m, accum = 0)
+}
+
+val answer3: Int = gasList.map((m: Int) => gasPlus2(m)).sum
+
+println(s"Answer Part C: $answer3")
 
 // 5003788
