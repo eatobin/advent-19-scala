@@ -27,7 +27,7 @@ def charToInt(aChar: Byte): Int = {
 }
 
 def pad5(op: Long): Instruction = {
-  val inInts = "%05d".format(op).getBytes.map(charToInt)
+  val inInts: Array[Int] = "%05d".format(op).getBytes.map(charToInt)
   Array('a', 'b', 'c', 'd', 'e').zip(inInts).toMap
 }
 
@@ -268,14 +268,14 @@ object IntCode {
 val memory = makeMemory("day09.csv")
 
 val ic = IntCode.opCode(IntCode(input = 1, output = Vector(), phase = 999, pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = true))
-val answer = ic.output.lastOption
-println(s"Answer Part A: ${answer.get}")
+val answer = ic.output
+println(s"Answer Part A: $answer")
 
 // Answer Part A: 3780860499
 
 // part B
 val ic2 = IntCode.opCode(IntCode(input = 2, output = Vector(), phase = 999, pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = true))
-val answer2 = ic2.output.lastOption
-println(s"Answer Part B: ${answer2.get}")
+val answer2 = ic2.output
+println(s"Answer Part B: $answer2")
 
 // Answer Part B: 33343
