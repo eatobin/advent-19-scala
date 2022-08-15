@@ -264,12 +264,17 @@ object IntCode {
   }
 }
 
-// part A
-val memory = makeMemory("day13.csv")
+def isBlock(v: Vector[Long]): Int = {
+  if (v(2) == 2) 1 else 0
+}
 
-val ic = IntCode.opCode(IntCode(input = 0, output = Vector(), phase = 999, pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = true))
-val answer = ic.output
+// part A
+val memory: Memory = makeMemory("day13.csv")
+
+val ic: IntCode = IntCode.opCode(IntCode(input = 0, output = Vector(), phase = 999, pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = true))
+val blocks: Vector[Vector[Long]] = ic.output.grouped(3).toVector
+val answer: Int = blocks.map(isBlock).sum
 println(s"Answer Part A: $answer")
 
-// Answer Part A: 3780860499
+// Answer Part A: 412
 
