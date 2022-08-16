@@ -264,9 +264,8 @@ object IntCode {
   }
 }
 
-def isBlock(v: Vector[Long]): Int = {
+def isBlock(v: Vector[Long]): Int =
   if (v(2) == 2) 1 else 0
-}
 
 // part A
 val memory: Memory = makeMemory("day13.csv")
