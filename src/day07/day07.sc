@@ -1,5 +1,7 @@
 //$ amm --predef day07.sc
 
+//> using scala "2.13.8"
+
 import scala.annotation.tailrec
 import scala.collection.immutable.TreeMap
 import scala.collection.mutable
