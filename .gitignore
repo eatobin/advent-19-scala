@@ -2,9 +2,4 @@
 /logs/
 /target/
 /project/target/
-/src/day01/.scala-build/
-/src/day02/.scala-build/
-/src/day05/.scala-build/
-/src/day07/.scala-build/
-/src/day09/.scala-build/
-/src/day13/.scala-build/
+.scala-build/
