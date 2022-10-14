@@ -1,6 +1,6 @@
 //$ amm --predef day09.sc
 
-//> using scala "2.13.9"
+//> using scala "2.13.10"
 
 import scala.annotation.tailrec
 import scala.io.Source
