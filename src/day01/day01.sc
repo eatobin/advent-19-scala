@@ -1,13 +1,4 @@
 //$ amm --predef day01.sc
-//$ scala-cli clean day01.sc
-//$ scala-cli day01.sc
-//$ scala-cli -S 2.13.9 day01.sc
-//$ rm -rf .bsp/
-//$ scala-cli repl -S 2.13.9
-//$ scala-cli repl
-//$ scala-cli repl --amm
-
-//> using scala "2.13.10"
 
 import scala.annotation.tailrec
 import scala.io.Source

@@ -13,7 +13,6 @@ lazy val root = (project in file("."))
     scalacOptions += "-deprecation"
   )
 
-// sourceGenerators in Test += Def.task {
 Test / sourceGenerators += Def.task {
   val file = (Test / sourceManaged).value / "amm.scala"
   IO.write(file, """object amm extends App { ammonite.AmmoniteMain.main(args) }""")

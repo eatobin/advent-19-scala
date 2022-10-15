@@ -1,7 +1,5 @@
 //$ amm --predef day02.sc
 
-//> using scala "2.13.10"
-
 import scala.annotation.tailrec
 import scala.io.Source
 
