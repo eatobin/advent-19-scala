@@ -3,3 +3,8 @@
 /target/
 /project/target/
 .scala-build/
+.metals/
+.bloop/
+.ammonite/
+metals.sbt
+.vscode/
