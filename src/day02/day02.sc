@@ -10,8 +10,7 @@ type Instruction = Map[Char, Int]
 def makeMemory(file: FilePath): Memory = {
   val bufferedSource = Source.fromFile(file)
   val intArray = {
-    bufferedSource
-      .mkString
+    bufferedSource.mkString
       .split(",")
       .map(_.trim)
       .map(_.toInt)
@@ -53,26 +52,42 @@ object IntCode {
 
   def bParam(instruction: Instruction, intcode: IntCode): Int = {
     instruction('b') match {
-      case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetB), 0) // b-p-r
+      case 0 =>
+        intcode.memory.getOrElse(
+          intcode.memory(intcode.pointer + offsetB),
+          0
+        ) // b-p-r
     }
   }
 
   def cParam(instruction: Instruction, intcode: IntCode): Int = {
     instruction('c') match {
-      case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC), 0) // c-p-r
+      case 0 =>
+        intcode.memory.getOrElse(
+          intcode.memory(intcode.pointer + offsetC),
+          0
+        ) // c-p-r
     }
   }
 
   def actionAdd(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       pointer = intCode.pointer + 4,
-      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode)))
+      memory = intCode.memory.updated(
+        aParam(instruction, intCode),
+        cParam(instruction, intCode) + bParam(instruction, intCode)
+      )
+    )
   }
 
   def actionMultiply(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       pointer = intCode.pointer + 4,
-      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode)))
+      memory = intCode.memory.updated(
+        aParam(instruction, intCode),
+        cParam(instruction, intCode) * bParam(instruction, intCode)
+      )
+    )
   }
 
   def opCode(intCode: IntCode): IntCode = {
@@ -103,7 +118,9 @@ def updatedMemory(noun: Int, verb: Int): Memory = {
   newNoun.updated(2, verb)
 }
 
-val ic = IntCode.opCode(IntCode(pointer = 0, memory = updatedMemory(noun = 12, verb = 2)))
+val ic = IntCode.opCode(
+  IntCode(pointer = 0, memory = updatedMemory(noun = 12, verb = 2))
+)
 val answer = ic.memory(0)
 
 println(s"Answer Part A: $answer")
@@ -111,11 +128,16 @@ println(s"Answer Part A: $answer")
 // Answer Part A: 2890696
 
 // part B
-val answer2 = (for {noun <- Range.inclusive(0, 99)
-                    verb <- Range.inclusive(0, 99)
-                    candidate: Int = IntCode.opCode(IntCode(pointer = 0, memory = updatedMemory(noun = noun, verb = verb))).memory(0)
-                    if candidate == 19690720
-                    } yield (100 * noun) + verb).head
+val answer2 = (for {
+  noun <- Range.inclusive(0, 99)
+  verb <- Range.inclusive(0, 99)
+  candidate: Int = IntCode
+    .opCode(
+      IntCode(pointer = 0, memory = updatedMemory(noun = noun, verb = verb))
+    )
+    .memory(0)
+  if candidate == 19690720
+} yield (100 * noun) + verb).head
 
 println(s"Answer Part B: $answer2")
 

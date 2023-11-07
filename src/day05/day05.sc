@@ -10,8 +10,7 @@ type Instruction = Map[Char, Int]
 def makeMemory(file: FilePath): Memory = {
   val bufferedSource = Source.fromFile(file)
   val intArray = {
-    bufferedSource
-      .mkString
+    bufferedSource.mkString
       .split(",")
       .map(_.trim)
       .map(_.toInt)
@@ -53,7 +52,11 @@ object IntCode {
 
   def bParam(instruction: Instruction, intcode: IntCode): Int = {
     instruction('b') match {
-      case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetB), 0) // b-p-r
+      case 0 =>
+        intcode.memory.getOrElse(
+          intcode.memory(intcode.pointer + offsetB),
+          0
+        ) // b-p-r
       case 1 => intcode.memory(intcode.pointer + offsetB) // b-i-r
     }
   }
@@ -66,19 +69,26 @@ object IntCode {
         }
       case _ =>
         instruction('c') match {
-          case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC), 0) // c-p-r
+          case 0 =>
+            intcode.memory.getOrElse(
+              intcode.memory(intcode.pointer + offsetC),
+              0
+            ) // c-p-r
           case 1 => intcode.memory(intcode.pointer + offsetC) // c-i-r
         }
     }
   }
-
 
   def actionAdd(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
       output = intCode.output,
       pointer = intCode.pointer + 4,
-      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode)))
+      memory = intCode.memory.updated(
+        aParam(instruction, intCode),
+        cParam(instruction, intCode) + bParam(instruction, intCode)
+      )
+    )
   }
 
   def actionMultiply(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -86,7 +96,11 @@ object IntCode {
       input = intCode.input,
       output = intCode.output,
       pointer = intCode.pointer + 4,
-      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode)))
+      memory = intCode.memory.updated(
+        aParam(instruction, intCode),
+        cParam(instruction, intCode) * bParam(instruction, intCode)
+      )
+    )
   }
 
   def actionInput(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -94,7 +108,9 @@ object IntCode {
       input = intCode.input,
       output = intCode.output,
       pointer = intCode.pointer + 2,
-      memory = intCode.memory.updated(cParam(instruction, intCode), intCode.input))
+      memory =
+        intCode.memory.updated(cParam(instruction, intCode), intCode.input)
+    )
   }
 
   def actionOutput(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -102,7 +118,8 @@ object IntCode {
       input = intCode.input,
       output = cParam(instruction, intCode),
       pointer = intCode.pointer + 2,
-      memory = intCode.memory)
+      memory = intCode.memory
+    )
   }
 
   def actionJumpIfTrue(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -114,7 +131,8 @@ object IntCode {
       } else {
         intCode.pointer + 3
       },
-      memory = intCode.memory)
+      memory = intCode.memory
+    )
   }
 
   def actionJumpIfFalse(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -126,7 +144,8 @@ object IntCode {
       } else {
         intCode.pointer + 3
       },
-      memory = intCode.memory)
+      memory = intCode.memory
+    )
   }
 
   def actionLessThan(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -134,11 +153,13 @@ object IntCode {
       input = intCode.input,
       output = intCode.output,
       pointer = intCode.pointer + 4,
-      memory = if (cParam(instruction, intCode) < bParam(instruction, intCode)) {
-        intCode.memory.updated(aParam(instruction, intCode), 1)
-      } else {
-        intCode.memory.updated(aParam(instruction, intCode), 0)
-      })
+      memory =
+        if (cParam(instruction, intCode) < bParam(instruction, intCode)) {
+          intCode.memory.updated(aParam(instruction, intCode), 1)
+        } else {
+          intCode.memory.updated(aParam(instruction, intCode), 0)
+        }
+    )
   }
 
   def actionEquals(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -146,11 +167,13 @@ object IntCode {
       input = intCode.input,
       output = intCode.output,
       pointer = intCode.pointer + 4,
-      memory = if (cParam(instruction, intCode) == bParam(instruction, intCode)) {
-        intCode.memory.updated(aParam(instruction, intCode), 1)
-      } else {
-        intCode.memory.updated(aParam(instruction, intCode), 0)
-      })
+      memory =
+        if (cParam(instruction, intCode) == bParam(instruction, intCode)) {
+          intCode.memory.updated(aParam(instruction, intCode), 1)
+        } else {
+          intCode.memory.updated(aParam(instruction, intCode), 0)
+        }
+    )
   }
 
   def opCode(intCode: IntCode): IntCode = {
@@ -188,14 +211,16 @@ object IntCode {
 // part A
 val memory = makeMemory("day05.csv")
 
-val ic: IntCode = IntCode.opCode(IntCode(input = 1, output = 0, pointer = 0, memory = memory))
+val ic: IntCode =
+  IntCode.opCode(IntCode(input = 1, output = 0, pointer = 0, memory = memory))
 val answer: Int = ic.output
 println(s"Answer Part A: $answer")
 
 // Answer Part A: 9025675
 
 // part B
-val ic2: IntCode = IntCode.opCode(IntCode(input = 5, output = 0, pointer = 0, memory = memory))
+val ic2: IntCode =
+  IntCode.opCode(IntCode(input = 5, output = 0, pointer = 0, memory = memory))
 val answer2: Int = ic2.output
 println(s"Answer Part B: $answer2")
 
