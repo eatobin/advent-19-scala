@@ -8,9 +8,9 @@ object Day01:
     @tailrec
     def fuelAccumulator(m: Int, accum: Int): Int =
       val newGas: Int = fuel(m)
-      if newGas > 0
-      then fuelAccumulator(m = newGas, accum = accum + newGas)
-      else accum
+      if newGas <= 0
+      then accum
+      else fuelAccumulator(m = newGas, accum = accum + newGas)
     fuelAccumulator(m = mass, accum = 0)
 
   def part1(input: Seq[Int]): Int = input.map(fuel).sum
