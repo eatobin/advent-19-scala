@@ -7,12 +7,12 @@ private def fuel(mass: Int): Int = (mass / 3) - 2
 
 private def fuelPlusFuel(mass: Int): Int =
   @tailrec
-  def fuelAccumulator(m: Int, accum: Int): Int =
+  def loop(m: Int, accum: Int): Int =
     val newGas: Int = fuel(m)
     if newGas <= 0
     then accum
-    else fuelAccumulator(m = newGas, accum = accum + newGas)
-  fuelAccumulator(m = mass, accum = 0)
+    else loop(m = newGas, accum = accum + newGas)
+  loop(m = mass, accum = 0)
 
 def part1(input: Seq[Int]): Int = input.map(fuel).sum
 
