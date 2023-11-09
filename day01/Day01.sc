@@ -4,6 +4,7 @@
 import scala.annotation.tailrec
 
 private def fuel(mass: Int): Int = (mass / 3) - 2
+
 private def fuelPlusFuel(mass: Int): Int =
   @tailrec
   def fuelAccumulator(m: Int, accum: Int): Int =
@@ -14,6 +15,7 @@ private def fuelPlusFuel(mass: Int): Int =
   fuelAccumulator(m = mass, accum = 0)
 
 def part1(input: Seq[Int]): Int = input.map(fuel).sum
+
 def part2(input: Seq[Int]): Int = input.map(fuelPlusFuel).sum
 
 val data = io.Source
