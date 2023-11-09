@@ -1,4 +1,5 @@
 // [eric@linux-epth day01]$ scala-cli Day01.sc
+// Yay! Git works here!!
 
 import scala.annotation.tailrec
 
