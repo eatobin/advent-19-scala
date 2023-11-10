@@ -14,6 +14,7 @@ object Day01Scala:
       if newGas <= 0
       then accum
       else loop(m = newGas, accum = accum + newGas)
+
     loop(m = mass, accum = 0)
 
   def part1(input: Seq[Int]): Int = input.map(fuel).sum
