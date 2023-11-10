@@ -1,7 +1,9 @@
-// [eric@linux-epth day01]$ scala-cli Day01.sc
+// [eric@linux-epth day01]$ scala-cli Day01Sc.sc
 // Yay! Git works here!!
 
 import scala.annotation.tailrec
+import scala.io.BufferedSource
+import scala.io.Source
 
 private def fuel(mass: Int): Int = (mass / 3) - 2
 
@@ -18,11 +20,13 @@ def part1(input: Seq[Int]): Int = input.map(fuel).sum
 
 def part2(input: Seq[Int]): Int = input.map(fuelPlusFuel).sum
 
-val data = io.Source
-  .fromFile("Day01.txt")
+val bufferedSource: BufferedSource = scala.io.Source.fromFile("Day01.txt")
+
+val data = bufferedSource
   .getLines()
   .map(_.toInt)
   .toSeq
+bufferedSource.close()
 
 println(part1(data)) // 3337766
 println(part2(data)) // 5003788
