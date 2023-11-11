@@ -5,9 +5,9 @@ import scala.io.BufferedSource
 import scala.io.Source
 
 object Day01Scala:
-  private def fuel(mass: Int): Int = (mass / 3) - 2
+  def fuel(mass: Int): Int = (mass / 3) - 2
 
-  private def fuelPlusFuel(mass: Int): Int =
+  def fuelPlusFuel(mass: Int): Int =
     @tailrec
     def loop(m: Int, accum: Int): Int =
       val newGas: Int = fuel(m)

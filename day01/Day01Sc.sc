@@ -1,13 +1,14 @@
-// [eric@linux-epth day01]$ scala-cli Day01Sc.sc
-// Yay! Git works here!!
+/* [eric@linux-epth day01]$ scala-cli Day01Sc.sc
+ * amm --predef Day01Sc.sc
+ * Yay! Git works here!! */
 
 import scala.annotation.tailrec
 import scala.io.BufferedSource
 import scala.io.Source
 
-private def fuel(mass: Int): Int = (mass / 3) - 2
+def fuel(mass: Int): Int = (mass / 3) - 2
 
-private def fuelPlusFuel(mass: Int): Int =
+def fuelPlusFuel(mass: Int): Int =
   @tailrec
   def loop(m: Int, accum: Int): Int =
     val newGas: Int = fuel(m)
