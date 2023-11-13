@@ -24,7 +24,7 @@ def part2(input: Seq[Int]): Int = input.map(fuelPlusFuel).sum
 
 val bufferedSource: BufferedSource = scala.io.Source.fromFile("Day01.txt")
 
-val data = bufferedSource
+val data: Seq[Int] = bufferedSource
   .getLines()
   .map(_.toInt)
   .toSeq
