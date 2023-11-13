@@ -37,9 +37,9 @@ def pad5(op: Int): Instruction =
 final case class IntCode(pointer: Int, memory: Memory)
 
 object IntCode:
-  private val offsetC: Int = 1
-  private val offsetB: Int = 2
-  private val offsetA: Int = 3
+  val offsetC: Int = 1
+  val offsetB: Int = 2
+  val offsetA: Int = 3
 
   def aParam(instruction: Instruction, intcode: IntCode): Int =
     instruction('a') match
