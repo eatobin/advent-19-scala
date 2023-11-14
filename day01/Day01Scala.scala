@@ -22,12 +22,12 @@ object Day01Scala:
   def part2(input: Seq[Int]): Int = input.map(fuelPlusFuel).sum
 
   @main def run(): Unit =
-    val bufferedSourcs: BufferedSource = scala.io.Source.fromFile("Day01.txt")
-    val data: Seq[Int] = bufferedSourcs
+    val bufferedSource: BufferedSource = scala.io.Source.fromFile("Day01.txt")
+    val data: Seq[Int] = bufferedSource
       .getLines()
       .map(_.toInt)
       .toSeq
-    bufferedSourcs.close()
+    bufferedSource.close()
 
     println(part1(data)) // 3337766
     println(part2(data)) // 5003788
