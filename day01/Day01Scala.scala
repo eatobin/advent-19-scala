@@ -17,16 +17,16 @@ object day01:
 
     loop(m = mass, accum = 0)
 
-  def part1(input: Seq[Int]): Int = input.map(fuel).sum
+  def part1(input: List[Int]): Int = input.map(fuel).sum
 
-  def part2(input: Seq[Int]): Int = input.map(fuelPlusFuel).sum
+  def part2(input: List[Int]): Int = input.map(fuelPlusFuel).sum
 
   @main def run(): Unit =
     val bufferedSource: BufferedSource = scala.io.Source.fromFile("Day01.txt")
-    val data: Seq[Int] = bufferedSource
+    val data: List[Int] = bufferedSource
       .getLines()
       .map(_.toInt)
-      .toSeq
+      .toList
     bufferedSource.close()
 
     println(part1(data)) // 3337766
