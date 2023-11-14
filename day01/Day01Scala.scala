@@ -4,7 +4,7 @@ import scala.annotation.tailrec
 import scala.io.BufferedSource
 import scala.io.Source
 
-object Day01Scala:
+object day01:
   def fuel(mass: Int): Int = (mass / 3) - 2
 
   def fuelPlusFuel(mass: Int): Int =
