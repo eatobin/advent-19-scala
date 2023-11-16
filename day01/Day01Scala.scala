@@ -21,7 +21,8 @@ object day01:
 
   def part2(input: List[Int]): Int = input.map(fuelPlusFuel).sum
 
-  @main def run(): Unit =
+  @main
+  def run(): Unit =
     val bufferedSource: BufferedSource = scala.io.Source.fromFile("Day01.txt")
     val data: List[Int] = bufferedSource
       .getLines()
