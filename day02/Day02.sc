@@ -17,9 +17,10 @@ def makeMemory(file: FilePath): Memory =
       .map(_.toInt)
   bufferedSource.close
   Iterator.from(0).zip(intArray).toMap
+end makeMemory
 
 def charToInt(aChar: Byte): Int =
-  if (aChar < 48 || aChar > 57)
+  if aChar < 48 || aChar > 57
   then throw new Exception("Char is not an integer")
   else aChar - 48
 
@@ -92,8 +93,12 @@ object IntCode:
           intCode
         case _ =>
           throw new Exception("Unknown opCode")
+      end match
+    end loop
 
     loop(intCode)
+  end opCode
+end IntCode
 
 // part A
 val memory = makeMemory("Day02.csv")
