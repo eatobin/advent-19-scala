@@ -6,7 +6,7 @@
 import org.scalatest.funsuite.AnyFunSuite
 
 class Day01Suite extends AnyFunSuite:
-  val sample: Seq[Int] = Seq(100756)
+  val sample: List[Int] = List(100756)
 
   test("Part 1 should handle sample input correctly") {
     assert(Day01Scala.part1(sample) == 33_583)
@@ -15,3 +15,4 @@ class Day01Suite extends AnyFunSuite:
   test("Part 2 should handle sample input correctly") {
     assert(Day01Scala.part2(sample) == 50_346)
   }
+end Day01Suite

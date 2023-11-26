@@ -15,8 +15,9 @@ def fuelPlusFuel(mass: Int): Int =
     if newGas <= 0
     then accum
     else loop(m = newGas, accum = accum + newGas)
-
+  end loop
   loop(m = mass, accum = 0)
+end fuelPlusFuel
 
 def part1(input: List[Int]): Int = input.map(fuel).sum
 
@@ -27,7 +28,7 @@ val bufferedSource: BufferedSource = scala.io.Source.fromFile("Day01.txt")
 val data: List[Int] = bufferedSource
   .getLines()
   .map(_.toInt)
-  .toSeq
+  .toList
 bufferedSource.close()
 
 println(part1(data)) // 3337766
