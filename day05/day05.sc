@@ -1,3 +1,4 @@
+// scala-cli run day05.sc
 //$ amm --predef day05.sc
 
 import scala.annotation.tailrec
@@ -19,7 +20,8 @@ def makeMemory(file: FilePath): Memory = {
 }
 
 def charToInt(aChar: Byte): Int = {
-  if aChar < 48 || aChar > 57 then throw new Exception("Char is not an integer")
+  if aChar < 48 || aChar > 57
+  then throw new Exception("Char is not an integer")
   else aChar - 48
 }
 
@@ -80,7 +82,7 @@ object IntCode {
     }
   }
 
-  def actionAdd(instruction: Instruction, intCode: IntCode): IntCode =
+  def actionAdd(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
       output = intCode.output,
@@ -90,8 +92,9 @@ object IntCode {
         cParam(instruction, intCode) + bParam(instruction, intCode)
       )
     )
+  }
 
-  def actionMultiply(instruction: Instruction, intCode: IntCode): IntCode =
+  def actionMultiply(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
       output = intCode.output,
@@ -101,8 +104,9 @@ object IntCode {
         cParam(instruction, intCode) * bParam(instruction, intCode)
       )
     )
+  }
 
-  def actionInput(instruction: Instruction, intCode: IntCode): IntCode =
+  def actionInput(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
       output = intCode.output,
@@ -110,16 +114,18 @@ object IntCode {
       memory =
         intCode.memory.updated(cParam(instruction, intCode), intCode.input)
     )
+  }
 
-  def actionOutput(instruction: Instruction, intCode: IntCode): IntCode =
+  def actionOutput(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
       output = cParam(instruction, intCode),
       pointer = intCode.pointer + 2,
       memory = intCode.memory
     )
+  }
 
-  def actionJumpIfTrue(instruction: Instruction, intCode: IntCode): IntCode =
+  def actionJumpIfTrue(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
       output = intCode.output,
@@ -128,8 +134,9 @@ object IntCode {
         else intCode.pointer + 3,
       memory = intCode.memory
     )
+  }
 
-  def actionJumpIfFalse(instruction: Instruction, intCode: IntCode): IntCode =
+  def actionJumpIfFalse(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
       output = intCode.output,
@@ -138,8 +145,9 @@ object IntCode {
         else intCode.pointer + 3,
       memory = intCode.memory
     )
+  }
 
-  def actionLessThan(instruction: Instruction, intCode: IntCode): IntCode =
+  def actionLessThan(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
       output = intCode.output,
@@ -149,8 +157,9 @@ object IntCode {
           intCode.memory.updated(aParam(instruction, intCode), 1)
         else intCode.memory.updated(aParam(instruction, intCode), 0)
     )
+  }
 
-  def actionEquals(instruction: Instruction, intCode: IntCode): IntCode =
+  def actionEquals(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
       input = intCode.input,
       output = intCode.output,
@@ -160,37 +169,27 @@ object IntCode {
           intCode.memory.updated(aParam(instruction, intCode), 1)
         else intCode.memory.updated(aParam(instruction, intCode), 0)
     )
+  }
 
-  def opCode(intCode: IntCode): IntCode =
+  def opCode(intCode: IntCode): IntCode = {
     @tailrec
-    def loop(intCode: IntCode): IntCode =
+    def loop(intCode: IntCode): IntCode = {
       val instruction = pad5(intCode.memory(intCode.pointer))
-      instruction('e') match
-        case 1 =>
-          loop(actionAdd(instruction, intCode))
-        case 2 =>
-          loop(actionMultiply(instruction, intCode))
-        case 3 =>
-          loop(actionInput(instruction, intCode))
-        case 4 =>
-          loop(actionOutput(instruction, intCode))
-        case 5 =>
-          loop(actionJumpIfTrue(instruction, intCode))
-        case 6 =>
-          loop(actionJumpIfFalse(instruction, intCode))
-        case 7 =>
-          loop(actionLessThan(instruction, intCode))
-        case 8 =>
-          loop(actionEquals(instruction, intCode))
-        case 9 =>
-          intCode
-        case _ =>
-          throw new Exception("Unknown opCode")
-      end match
-    end loop
-
+      instruction('e') match {
+        case 1 => { loop(actionAdd(instruction, intCode)) }
+        case 2 => { loop(actionMultiply(instruction, intCode)) }
+        case 3 => { loop(actionInput(instruction, intCode)) }
+        case 4 => { loop(actionOutput(instruction, intCode)) }
+        case 5 => { loop(actionJumpIfTrue(instruction, intCode)) }
+        case 6 => { loop(actionJumpIfFalse(instruction, intCode)) }
+        case 7 => { loop(actionLessThan(instruction, intCode)) }
+        case 8 => { loop(actionEquals(instruction, intCode)) }
+        case 9 => { intCode }
+        case _ => { throw new Exception("Unknown opCode") }
+      }
+    }
     loop(intCode)
-  end opCode
+  }
 }
 
 // part A
