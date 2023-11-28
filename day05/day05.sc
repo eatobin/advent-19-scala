@@ -7,7 +7,7 @@ type FilePath = String
 type Memory = Map[Int, Int]
 type Instruction = Map[Char, Int]
 
-def makeMemory(file: FilePath): Memory =
+def makeMemory(file: FilePath): Memory = {
   val bufferedSource = Source.fromFile(file)
   val intArray =
     bufferedSource.mkString
@@ -16,15 +16,17 @@ def makeMemory(file: FilePath): Memory =
       .map(_.toInt)
   bufferedSource.close
   Iterator.from(0).zip(intArray).toMap
-end makeMemory
+}
 
-def charToInt(aChar: Byte): Int =
+def charToInt(aChar: Byte): Int = {
   if aChar < 48 || aChar > 57 then throw new Exception("Char is not an integer")
   else aChar - 48
+}
 
-def pad5(op: Int): Instruction =
+def pad5(op: Int): Instruction = {
   val inInts = "%05d".format(op).getBytes.map(charToInt)
   Array('a', 'b', 'c', 'd', 'e').zip(inInts).toMap
+}
 
 // ABCDE
 // 01002
@@ -35,37 +37,48 @@ def pad5(op: Int): Instruction =
 
 final case class IntCode(input: Int, output: Int, pointer: Int, memory: Memory)
 
-object IntCode:
+object IntCode {
   private val offsetC: Int = 1
   private val offsetB: Int = 2
   private val offsetA: Int = 3
 
-  def aParam(instruction: Instruction, intcode: IntCode): Int =
-    instruction('a') match
-      case 0 => intcode.memory(intcode.pointer + offsetA) // a-p-w
+  def aParam(instruction: Instruction, intcode: IntCode): Int = {
+    instruction('a') match {
+      case 0 => { intcode.memory(intcode.pointer + offsetA) } // a-p-w
+    }
+  }
 
   def bParam(instruction: Instruction, intcode: IntCode): Int =
-    instruction('b') match
-      case 0 =>
+    instruction('b') match {
+      case 0 => {
         intcode.memory.getOrElse(
           intcode.memory(intcode.pointer + offsetB),
           0
-        ) // b-p-r
-      case 1 => intcode.memory(intcode.pointer + offsetB) // b-i-r
+        )
+      } // b-p-r
+      case 1 => { intcode.memory(intcode.pointer + offsetB) } // b-i-r
+    }
 
-  def cParam(instruction: Instruction, intcode: IntCode): Int =
-    instruction('e') match
-      case 3 =>
-        instruction('c') match
-          case 0 => intcode.memory(intcode.pointer + offsetC) // c-p-w
-      case _ =>
-        instruction('c') match
-          case 0 =>
+  def cParam(instruction: Instruction, intcode: IntCode): Int = {
+    instruction('e') match {
+      case 3 => {
+        instruction('c') match {
+          case 0 => { intcode.memory(intcode.pointer + offsetC) } // c-p-w
+        }
+      }
+      case _ => {
+        instruction('c') match {
+          case 0 => {
             intcode.memory.getOrElse(
               intcode.memory(intcode.pointer + offsetC),
               0
-            ) // c-p-r
-          case 1 => intcode.memory(intcode.pointer + offsetC) // c-i-r
+            )
+          } // c-p-r
+          case 1 => { intcode.memory(intcode.pointer + offsetC) } // c-i-r
+        }
+      }
+    }
+  }
 
   def actionAdd(instruction: Instruction, intCode: IntCode): IntCode =
     IntCode(
@@ -178,7 +191,7 @@ object IntCode:
 
     loop(intCode)
   end opCode
-end IntCode
+}
 
 // part A
 val memory = makeMemory("day05.csv")
