@@ -12,8 +12,7 @@ type Instruction = Map[Char, Int]
 def makeMemory(file: FilePath): Memory = {
   val bufferedSource = Source.fromFile(file)
   val intArray = {
-    bufferedSource
-      .mkString
+    bufferedSource.mkString
       .split(",")
       .map(_.trim)
       .map(_.toInt)
@@ -24,7 +23,7 @@ def makeMemory(file: FilePath): Memory = {
 
 def charToInt(aChar: Byte): Int = {
   if (aChar < 48 || aChar > 57)
-    throw new Exception("Char is not an integer")
+  then throw new Exception("Char is not an integer")
   else aChar - 48
 }
 
@@ -40,7 +39,15 @@ def pad5(op: Int): Instruction = {
 // P I or R = position, immediate or relative mode
 // r or w = read or write
 
-final case class IntCode(input: Int, output: Int, phase: Int, pointer: Int, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
+final case class IntCode(
+    input: Int,
+    output: Int,
+    phase: Int,
+    pointer: Int,
+    memory: Memory,
+    isStopped: Boolean,
+    doesRecur: Boolean
+)
 
 object IntCode {
   private val offsetC: Int = 1
@@ -49,31 +56,42 @@ object IntCode {
 
   def aParam(instruction: Instruction, intcode: IntCode): Int = {
     instruction('a') match {
-      case 0 => intcode.memory(intcode.pointer + offsetA) // a-p-w
+      case 0 => { intcode.memory(intcode.pointer + offsetA) } // a-p-w
     }
   }
 
   def bParam(instruction: Instruction, intcode: IntCode): Int = {
     instruction('b') match {
-      case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetB), 0) // b-p-r
-      case 1 => intcode.memory(intcode.pointer + offsetB) // b-i-r
+      case 0 => {
+        intcode.memory.getOrElse(
+          intcode.memory(intcode.pointer + offsetB),
+          0
+        )
+      } // b-p-r
+      case 1 => { intcode.memory(intcode.pointer + offsetB) } // b-i-r
     }
   }
 
   def cParam(instruction: Instruction, intcode: IntCode): Int = {
     instruction('e') match {
-      case 3 =>
+      case 3 => {
         instruction('c') match {
-          case 0 => intcode.memory(intcode.pointer + offsetC) // c-p-w
+          case 0 => { intcode.memory(intcode.pointer + offsetC) } // c-p-w
         }
-      case _ =>
+      }
+      case _ => {
         instruction('c') match {
-          case 0 => intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC), 0) // c-p-r
-          case 1 => intcode.memory(intcode.pointer + offsetC) // c-i-r
+          case 0 => {
+            intcode.memory.getOrElse(
+              intcode.memory(intcode.pointer + offsetC),
+              0
+            )
+          } // c-p-r
+          case 1 => { intcode.memory(intcode.pointer + offsetC) } // c-i-r
         }
+      }
     }
   }
-
 
   def actionAdd(instruction: Instruction, intCode: IntCode): IntCode = {
     IntCode(
@@ -81,9 +99,13 @@ object IntCode {
       output = intCode.output,
       phase = intCode.phase,
       pointer = intCode.pointer + 4,
-      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode)),
+      memory = intCode.memory.updated(
+        aParam(instruction, intCode),
+        cParam(instruction, intCode) + bParam(instruction, intCode)
+      ),
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionMultiply(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -92,9 +114,13 @@ object IntCode {
       output = intCode.output,
       phase = intCode.phase,
       pointer = intCode.pointer + 4,
-      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode)),
+      memory = intCode.memory.updated(
+        aParam(instruction, intCode),
+        cParam(instruction, intCode) * bParam(instruction, intCode)
+      ),
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionInput(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -103,18 +129,18 @@ object IntCode {
       output = intCode.output,
       phase = intCode.phase,
       pointer = intCode.pointer + 2,
-      memory =
-        if (intCode.phase >= 0 && intCode.phase <= 9) {
-          if (intCode.pointer == 0) {
-            intCode.memory.updated(cParam(instruction, intCode), intCode.phase)
-          } else {
-            intCode.memory.updated(cParam(instruction, intCode), intCode.input)
-          }
+      memory = if (intCode.phase >= 0 && intCode.phase <= 9) {
+        if (intCode.pointer == 0) {
+          intCode.memory.updated(cParam(instruction, intCode), intCode.phase)
         } else {
           intCode.memory.updated(cParam(instruction, intCode), intCode.input)
-        },
+        }
+      } else {
+        intCode.memory.updated(cParam(instruction, intCode), intCode.input)
+      },
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionOutput(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -125,7 +151,8 @@ object IntCode {
       pointer = intCode.pointer + 2,
       memory = intCode.memory,
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionJumpIfTrue(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -140,7 +167,8 @@ object IntCode {
       },
       memory = intCode.memory,
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionJumpIfFalse(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -155,7 +183,8 @@ object IntCode {
       },
       memory = intCode.memory,
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionLessThan(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -164,13 +193,15 @@ object IntCode {
       output = intCode.output,
       phase = intCode.phase,
       pointer = intCode.pointer + 4,
-      memory = if (cParam(instruction, intCode) < bParam(instruction, intCode)) {
-        intCode.memory.updated(aParam(instruction, intCode), 1)
-      } else {
-        intCode.memory.updated(aParam(instruction, intCode), 0)
-      },
+      memory =
+        if (cParam(instruction, intCode) < bParam(instruction, intCode)) {
+          intCode.memory.updated(aParam(instruction, intCode), 1)
+        } else {
+          intCode.memory.updated(aParam(instruction, intCode), 0)
+        },
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionEquals(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -179,13 +210,15 @@ object IntCode {
       output = intCode.output,
       phase = intCode.phase,
       pointer = intCode.pointer + 4,
-      memory = if (cParam(instruction, intCode) == bParam(instruction, intCode)) {
-        intCode.memory.updated(aParam(instruction, intCode), 1)
-      } else {
-        intCode.memory.updated(aParam(instruction, intCode), 0)
-      },
+      memory =
+        if (cParam(instruction, intCode) == bParam(instruction, intCode)) {
+          intCode.memory.updated(aParam(instruction, intCode), 1)
+        } else {
+          intCode.memory.updated(aParam(instruction, intCode), 0)
+        },
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionHalt(intCode: IntCode): IntCode = {
@@ -196,7 +229,8 @@ object IntCode {
       pointer = intCode.pointer,
       memory = intCode.memory,
       isStopped = true,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def opCode(intCode: IntCode): IntCode = {
@@ -247,51 +281,84 @@ object IntCode {
 val memory = makeMemory("day07.csv")
 
 val possibilities: Seq[TreeMap[Char, Int]] =
-  for (a <- 0 to 4;
-       b <- 0 to 4;
-       c <- 0 to 4;
-       d <- 0 to 4;
-       e <- 0 to 4
-       if List(a, b, c, d, e).distinct.size == List(a, b, c, d, e).size)
-  yield TreeMap[Char, Int]() ++ (List('a', 'b', 'c', 'd', 'e') zip List(a, b, c, d, e)).toMap
+  for (
+    a <- 0 to 4;
+    b <- 0 to 4;
+    c <- 0 to 4;
+    d <- 0 to 4;
+    e <- 0 to 4
+    if List(a, b, c, d, e).distinct.size == List(a, b, c, d, e).size
+  )
+    yield TreeMap[Char, Int]() ++ (List('a', 'b', 'c', 'd', 'e') zip List(
+      a,
+      b,
+      c,
+      d,
+      e
+    )).toMap
 
 def pass(possible: TreeMap[Char, Int])(memory: Memory): Int = {
-  IntCode.opCode(IntCode(
-    input = IntCode.opCode(IntCode(
-      input = IntCode.opCode(IntCode(
-        input = IntCode.opCode(IntCode(
-          input = IntCode.opCode(IntCode(
-            input = 0,
-            output = 0,
-            phase = possible('a'),
-            pointer = 0,
-            memory = memory,
-            isStopped = false,
-            doesRecur = true)).output,
-          output = 0,
-          phase = possible('b'),
-          pointer = 0,
-          memory = memory,
-          isStopped = false,
-          doesRecur = true)).output,
+  IntCode
+    .opCode(
+      IntCode(
+        input = IntCode
+          .opCode(
+            IntCode(
+              input = IntCode
+                .opCode(
+                  IntCode(
+                    input = IntCode
+                      .opCode(
+                        IntCode(
+                          input = IntCode
+                            .opCode(
+                              IntCode(
+                                input = 0,
+                                output = 0,
+                                phase = possible('a'),
+                                pointer = 0,
+                                memory = memory,
+                                isStopped = false,
+                                doesRecur = true
+                              )
+                            )
+                            .output,
+                          output = 0,
+                          phase = possible('b'),
+                          pointer = 0,
+                          memory = memory,
+                          isStopped = false,
+                          doesRecur = true
+                        )
+                      )
+                      .output,
+                    output = 0,
+                    phase = possible('c'),
+                    pointer = 0,
+                    memory = memory,
+                    isStopped = false,
+                    doesRecur = true
+                  )
+                )
+                .output,
+              output = 0,
+              phase = possible('d'),
+              pointer = 0,
+              memory = memory,
+              isStopped = false,
+              doesRecur = true
+            )
+          )
+          .output,
         output = 0,
-        phase = possible('c'),
+        phase = possible('e'),
         pointer = 0,
         memory = memory,
         isStopped = false,
-        doesRecur = true)).output,
-      output = 0,
-      phase = possible('d'),
-      pointer = 0,
-      memory = memory,
-      isStopped = false,
-      doesRecur = true)).output,
-    output = 0,
-    phase = possible('e'),
-    pointer = 0,
-    memory = memory,
-    isStopped = false,
-    doesRecur = true)).output
+        doesRecur = true
+      )
+    )
+    .output
 }
 
 def passes(memory: Memory): Seq[Int] = possibilities.map(pass(_)(memory))
@@ -304,38 +371,98 @@ println(s"Answer Part A: $answer")
 
 // part B
 val possibilities2: Seq[TreeMap[Char, Int]] =
-  for (a <- 5 to 9;
-       b <- 5 to 9;
-       c <- 5 to 9;
-       d <- 5 to 9;
-       e <- 5 to 9
-       if List(a, b, c, d, e).distinct.size == List(a, b, c, d, e).size)
-  yield TreeMap[Char, Int]() ++ (List('a', 'b', 'c', 'd', 'e') zip List(a, b, c, d, e)).toMap
+  for (
+    a <- 5 to 9;
+    b <- 5 to 9;
+    c <- 5 to 9;
+    d <- 5 to 9;
+    e <- 5 to 9
+    if List(a, b, c, d, e).distinct.size == List(a, b, c, d, e).size
+  )
+    yield TreeMap[Char, Int]() ++ (List('a', 'b', 'c', 'd', 'e') zip List(
+      a,
+      b,
+      c,
+      d,
+      e
+    )).toMap
 
-def makeAnAmpPass(possibility: TreeMap[Char, Int])(memory: Memory): mutable.Map[Int, IntCode] = {
+def makeAnAmpPass(
+    possibility: TreeMap[Char, Int]
+)(memory: Memory): mutable.Map[Int, IntCode] = {
   val fiveAmps: mutable.Map[Int, IntCode] = mutable.Map(
-    1 -> IntCode(input = 0, output = 0, phase = possibility('a'), pointer = 0, memory = memory, isStopped = false, doesRecur = false),
-    2 -> IntCode(input = 0, output = 0, phase = possibility('b'), pointer = 0, memory = memory, isStopped = false, doesRecur = false),
-    3 -> IntCode(input = 0, output = 0, phase = possibility('c'), pointer = 0, memory = memory, isStopped = false, doesRecur = false),
-    4 -> IntCode(input = 0, output = 0, phase = possibility('d'), pointer = 0, memory = memory, isStopped = false, doesRecur = false),
-    5 -> IntCode(input = 0, output = 0, phase = possibility('e'), pointer = 0, memory = memory, isStopped = false, doesRecur = false)
+    1 -> IntCode(
+      input = 0,
+      output = 0,
+      phase = possibility('a'),
+      pointer = 0,
+      memory = memory,
+      isStopped = false,
+      doesRecur = false
+    ),
+    2 -> IntCode(
+      input = 0,
+      output = 0,
+      phase = possibility('b'),
+      pointer = 0,
+      memory = memory,
+      isStopped = false,
+      doesRecur = false
+    ),
+    3 -> IntCode(
+      input = 0,
+      output = 0,
+      phase = possibility('c'),
+      pointer = 0,
+      memory = memory,
+      isStopped = false,
+      doesRecur = false
+    ),
+    4 -> IntCode(
+      input = 0,
+      output = 0,
+      phase = possibility('d'),
+      pointer = 0,
+      memory = memory,
+      isStopped = false,
+      doesRecur = false
+    ),
+    5 -> IntCode(
+      input = 0,
+      output = 0,
+      phase = possibility('e'),
+      pointer = 0,
+      memory = memory,
+      isStopped = false,
+      doesRecur = false
+    )
   )
   fiveAmps
 }
 
-def toAmpsList(possibilitiesList: Seq[TreeMap[Char, Int]])(memory: Memory): Seq[mutable.Map[Int, IntCode]] = {
+def toAmpsList(
+    possibilitiesList: Seq[TreeMap[Char, Int]]
+)(memory: Memory): Seq[mutable.Map[Int, IntCode]] = {
   possibilitiesList.map(makeAnAmpPass(_)(memory))
 }
 
 def runner(fiveAmps: mutable.Map[Int, IntCode]): Int = {
   @tailrec
-  def loop(amps: mutable.Map[Int, IntCode], currentAmpNo: Int, nextAmpNo: Int): Int = {
+  def loop(
+      amps: mutable.Map[Int, IntCode],
+      currentAmpNo: Int,
+      nextAmpNo: Int
+  ): Int = {
     if (currentAmpNo == 5 && amps(currentAmpNo).isStopped) {
       amps(currentAmpNo).output
     } else {
       amps(currentAmpNo) = IntCode.opCode(amps(currentAmpNo))
       amps(nextAmpNo) = amps(nextAmpNo).copy(input = amps(currentAmpNo).output)
-      loop(amps = amps, currentAmpNo = nextAmpNo, nextAmpNo = (nextAmpNo % 5) + 1)
+      loop(
+        amps = amps,
+        currentAmpNo = nextAmpNo,
+        nextAmpNo = (nextAmpNo % 5) + 1
+      )
     }
   }
 
