@@ -245,8 +245,7 @@ object IntCode {
       } else {
         val instruction: Instruction = pad5(intCode.memory(intCode.pointer))
         instruction('e') match {
-          case 1 =>
-            loop(actionAdd(instruction, intCode))
+          case 1 => { loop(actionAdd(instruction, intCode)) }
           case 2 =>
             loop(actionMultiply(instruction, intCode))
           case 3 =>
