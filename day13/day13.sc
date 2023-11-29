@@ -69,7 +69,8 @@ object IntCode {
   }
 
   def cParam(instruction: Instruction, intcode: IntCode): Long = {
-    if (instruction('e') == 3) {
+    if (instruction('e') == 3)
+    then {
       instruction('c') match {
         case 0 => intcode.memory(intcode.pointer + offsetC) // c-p-w
         case 2 => intcode.memory(intcode.pointer + offsetC) + intcode.relativeBase // c-r-w
