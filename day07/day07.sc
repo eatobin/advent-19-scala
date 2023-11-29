@@ -129,15 +129,18 @@ object IntCode {
       output = intCode.output,
       phase = intCode.phase,
       pointer = intCode.pointer + 2,
-      memory = if (intCode.phase >= 0 && intCode.phase <= 9) {
-        if (intCode.pointer == 0) {
-          intCode.memory.updated(cParam(instruction, intCode), intCode.phase)
+      memory =
+        if intCode.phase >= 0 && intCode.phase <= 9
+        then {
+          if intCode.pointer == 0
+          then {
+            intCode.memory.updated(cParam(instruction, intCode), intCode.phase)
+          } else {
+            intCode.memory.updated(cParam(instruction, intCode), intCode.input)
+          }
         } else {
           intCode.memory.updated(cParam(instruction, intCode), intCode.input)
-        }
-      } else {
-        intCode.memory.updated(cParam(instruction, intCode), intCode.input)
-      },
+        },
       isStopped = intCode.isStopped,
       doesRecur = intCode.doesRecur
     )
@@ -160,11 +163,13 @@ object IntCode {
       input = intCode.input,
       output = intCode.output,
       phase = intCode.phase,
-      pointer = if (cParam(instruction, intCode) != 0) {
-        bParam(instruction, intCode)
-      } else {
-        intCode.pointer + 3
-      },
+      pointer =
+        if cParam(instruction, intCode) != 0
+        then {
+          bParam(instruction, intCode)
+        } else {
+          intCode.pointer + 3
+        },
       memory = intCode.memory,
       isStopped = intCode.isStopped,
       doesRecur = intCode.doesRecur
@@ -176,11 +181,13 @@ object IntCode {
       input = intCode.input,
       output = intCode.output,
       phase = intCode.phase,
-      pointer = if (cParam(instruction, intCode) == 0) {
-        bParam(instruction, intCode)
-      } else {
-        intCode.pointer + 3
-      },
+      pointer =
+        if cParam(instruction, intCode) == 0
+        then {
+          bParam(instruction, intCode)
+        } else {
+          intCode.pointer + 3
+        },
       memory = intCode.memory,
       isStopped = intCode.isStopped,
       doesRecur = intCode.doesRecur
@@ -194,7 +201,8 @@ object IntCode {
       phase = intCode.phase,
       pointer = intCode.pointer + 4,
       memory =
-        if (cParam(instruction, intCode) < bParam(instruction, intCode)) {
+        if cParam(instruction, intCode) < bParam(instruction, intCode)
+        then {
           intCode.memory.updated(aParam(instruction, intCode), 1)
         } else {
           intCode.memory.updated(aParam(instruction, intCode), 0)
@@ -211,7 +219,8 @@ object IntCode {
       phase = intCode.phase,
       pointer = intCode.pointer + 4,
       memory =
-        if (cParam(instruction, intCode) == bParam(instruction, intCode)) {
+        if cParam(instruction, intCode) == bParam(instruction, intCode)
+        then {
           intCode.memory.updated(aParam(instruction, intCode), 1)
         } else {
           intCode.memory.updated(aParam(instruction, intCode), 0)
