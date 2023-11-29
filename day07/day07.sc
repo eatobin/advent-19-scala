@@ -250,38 +250,33 @@ object IntCode {
       } else {
         val instruction = pad5(intCode.memory(intCode.pointer))
         instruction('e') match {
-          case 9 =>
-            if (instruction('d') == 9) {
+          case 9 => {
+            if instruction('d') == 9
+            then {
               actionHalt(intCode)
             } else {
               actionHalt(intCode)
             }
-          case 1 =>
-            loop(actionAdd(instruction, intCode))
-          case 2 =>
-            loop(actionMultiply(instruction, intCode))
-          case 3 =>
-            loop(actionInput(instruction, intCode))
-          case 4 =>
-            if (intCode.doesRecur) {
-              loop(actionOutput(instruction, intCode))
+          }
+          case 1 => { loop(actionAdd(instruction, intCode)) }
+          case 2 => { loop(actionMultiply(instruction, intCode)) }
+          case 3 => { loop(actionInput(instruction, intCode)) }
+          case 4 => {
+            if intCode.doesRecur
+            then {
+              { loop(actionOutput(instruction, intCode)) }
             } else {
-              actionOutput(instruction, intCode)
+              { actionOutput(instruction, intCode) }
             }
-          case 5 =>
-            loop(actionJumpIfTrue(instruction, intCode))
-          case 6 =>
-            loop(actionJumpIfFalse(instruction, intCode))
-          case 7 =>
-            loop(actionLessThan(instruction, intCode))
-          case 8 =>
-            loop(actionEquals(instruction, intCode))
-          case _ =>
-            throw new Exception("Unknown opCode")
+          }
+          case 5 => { loop(actionJumpIfTrue(instruction, intCode)) }
+          case 6 => { loop(actionJumpIfFalse(instruction, intCode)) }
+          case 7 => { loop(actionLessThan(instruction, intCode)) }
+          case 8 => { loop(actionEquals(instruction, intCode)) }
+          case _ => { throw new Exception("Unknown opCode") }
         }
       }
     }
-
     loop(intCode)
   }
 }
@@ -474,7 +469,6 @@ def runner(fiveAmps: mutable.Map[Int, IntCode]): Int = {
       )
     }
   }
-
   loop(amps = fiveAmps, currentAmpNo = 1, nextAmpNo = 2)
 }
 
