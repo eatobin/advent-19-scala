@@ -252,7 +252,8 @@ object IntCode {
   def opCode(intCode: IntCode): IntCode = {
     @tailrec
     def loop(intCode: IntCode): IntCode = {
-      if (intCode.isStopped) {
+      if intCode.isStopped
+      then {
         intCode
       } else {
         val instruction: Instruction = pad5(intCode.memory(intCode.pointer))
@@ -287,7 +288,7 @@ object IntCode {
 }
 
 def isBlock(v: Vector[Long]): Int =
-  if (v(2) == 2) 1 else 0
+  if v(2) == 2 then 1 else 0
 
 // part A
 val memory: Memory = makeMemory("day13.csv")
