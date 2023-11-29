@@ -10,8 +10,7 @@ type Instruction = Map[Char, Int]
 def makeMemory(file: FilePath): Memory = {
   val bufferedSource = Source.fromFile(file)
   val longArray: Array[Long] = {
-    bufferedSource
-      .mkString
+    bufferedSource.mkString
       .split(",")
       .map(_.trim)
       .map(_.toLong)
@@ -21,8 +20,8 @@ def makeMemory(file: FilePath): Memory = {
 }
 
 def charToInt(aChar: Byte): Int = {
-  if (aChar < 48 || aChar > 57)
-    throw new Exception("Char is not an integer")
+  if aChar < 48 || aChar > 57
+  then throw new Exception("Char is not an integer")
   else aChar - 48
 }
 
@@ -38,7 +37,16 @@ def pad5(op: Long): Instruction = {
 // P I or R = position, immediate or relative mode
 // r or w = read or write
 
-final case class IntCode(input: Long, output: Vector[Long], phase: Long, pointer: Long, relativeBase: Long, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
+final case class IntCode(
+    input: Long,
+    output: Vector[Long],
+    phase: Long,
+    pointer: Long,
+    relativeBase: Long,
+    memory: Memory,
+    isStopped: Boolean,
+    doesRecur: Boolean
+)
 
 object IntCode {
   private val offsetC: Long = 1
@@ -84,7 +92,8 @@ object IntCode {
       relativeBase = intCode.relativeBase,
       memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode)),
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionMultiply(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -96,7 +105,8 @@ object IntCode {
       relativeBase = intCode.relativeBase,
       memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode)),
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionInput(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -107,8 +117,10 @@ object IntCode {
       pointer = intCode.pointer + 2,
       relativeBase = intCode.relativeBase,
       memory =
-        if (intCode.phase >= 0 && intCode.phase <= 9) {
-          if (intCode.pointer == 0) {
+        if intCode.phase >= 0 && intCode.phase <= 9
+        then {
+          if intCode.pointer == 0
+          then {
             intCode.memory.updated(cParam(instruction, intCode), intCode.phase)
           } else {
             intCode.memory.updated(cParam(instruction, intCode), intCode.input)
@@ -117,7 +129,8 @@ object IntCode {
           intCode.memory.updated(cParam(instruction, intCode), intCode.input)
         },
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionOutput(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -129,7 +142,8 @@ object IntCode {
       relativeBase = intCode.relativeBase,
       memory = intCode.memory,
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionJumpIfTrue(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -137,15 +151,18 @@ object IntCode {
       input = intCode.input,
       output = intCode.output,
       phase = intCode.phase,
-      pointer = if (cParam(instruction, intCode) != 0) {
-        bParam(instruction, intCode)
-      } else {
-        intCode.pointer + 3
-      },
+      pointer =
+        if cParam(instruction, intCode) != 0
+        then {
+          bParam(instruction, intCode)
+        } else {
+          intCode.pointer + 3
+        },
       relativeBase = intCode.relativeBase,
       memory = intCode.memory,
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionJumpIfFalse(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -153,15 +170,18 @@ object IntCode {
       input = intCode.input,
       output = intCode.output,
       phase = intCode.phase,
-      pointer = if (cParam(instruction, intCode) == 0) {
-        bParam(instruction, intCode)
-      } else {
-        intCode.pointer + 3
-      },
+      pointer =
+        if cParam(instruction, intCode) == 0
+        then {
+          bParam(instruction, intCode)
+        } else {
+          intCode.pointer + 3
+        },
       relativeBase = intCode.relativeBase,
       memory = intCode.memory,
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionLessThan(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -171,13 +191,16 @@ object IntCode {
       phase = intCode.phase,
       pointer = intCode.pointer + 4,
       relativeBase = intCode.relativeBase,
-      memory = if (cParam(instruction, intCode) < bParam(instruction, intCode)) {
-        intCode.memory.updated(aParam(instruction, intCode), 1)
-      } else {
-        intCode.memory.updated(aParam(instruction, intCode), 0)
-      },
+      memory =
+        if cParam(instruction, intCode) < bParam(instruction, intCode)
+        then {
+          intCode.memory.updated(aParam(instruction, intCode), 1)
+        } else {
+          intCode.memory.updated(aParam(instruction, intCode), 0)
+        },
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionEquals(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -187,13 +210,16 @@ object IntCode {
       phase = intCode.phase,
       pointer = intCode.pointer + 4,
       relativeBase = intCode.relativeBase,
-      memory = if (cParam(instruction, intCode) == bParam(instruction, intCode)) {
-        intCode.memory.updated(aParam(instruction, intCode), 1)
-      } else {
-        intCode.memory.updated(aParam(instruction, intCode), 0)
-      },
+      memory =
+        if cParam(instruction, intCode) == bParam(instruction, intCode)
+        then {
+          intCode.memory.updated(aParam(instruction, intCode), 1)
+        } else {
+          intCode.memory.updated(aParam(instruction, intCode), 0)
+        },
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionHalt(intCode: IntCode): IntCode = {
@@ -205,7 +231,8 @@ object IntCode {
       relativeBase = intCode.relativeBase,
       memory = intCode.memory,
       isStopped = true,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionRelativeBase(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -217,7 +244,8 @@ object IntCode {
       relativeBase = cParam(instruction, intCode) + intCode.relativeBase,
       memory = intCode.memory,
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def opCode(intCode: IntCode): IntCode = {
@@ -228,38 +256,31 @@ object IntCode {
       } else {
         val instruction: Instruction = pad5(intCode.memory(intCode.pointer))
         instruction('e') match {
-          case 1 =>
-            loop(actionAdd(instruction, intCode))
-          case 2 =>
-            loop(actionMultiply(instruction, intCode))
-          case 3 =>
-            loop(actionInput(instruction, intCode))
+          case 1 => loop(actionAdd(instruction, intCode))
+          case 2 => loop(actionMultiply(instruction, intCode))
+          case 3 => loop(actionInput(instruction, intCode))
           case 4 =>
-            if (intCode.doesRecur) {
+            if intCode.doesRecur
+            then {
               loop(actionOutput(instruction, intCode))
             } else {
               actionOutput(instruction, intCode)
             }
-          case 5 =>
-            loop(actionJumpIfTrue(instruction, intCode))
-          case 6 =>
-            loop(actionJumpIfFalse(instruction, intCode))
-          case 7 =>
-            loop(actionLessThan(instruction, intCode))
-          case 8 =>
-            loop(actionEquals(instruction, intCode))
+          case 5 => loop(actionJumpIfTrue(instruction, intCode))
+          case 6 => loop(actionJumpIfFalse(instruction, intCode))
+          case 7 => loop(actionLessThan(instruction, intCode))
+          case 8 => loop(actionEquals(instruction, intCode))
           case 9 =>
-            if (instruction('d') == 9) {
+            if instruction('d') == 9
+            then {
               loop(actionHalt(intCode))
             } else {
               loop(actionRelativeBase(instruction, intCode))
             }
-          case _ =>
-            throw new Exception("Unknown opCode")
+          case _ => throw new Exception("Unknown opCode")
         }
       }
     }
-
     loop(intCode)
   }
 }
@@ -270,7 +291,9 @@ def isBlock(v: Vector[Long]): Int =
 // part A
 val memory: Memory = makeMemory("day13.csv")
 
-val ic: IntCode = IntCode.opCode(IntCode(input = 0, output = Vector(), phase = 999, pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = true))
+val ic: IntCode = IntCode.opCode(
+  IntCode(input = 0, output = Vector(), phase = 999, pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = true)
+)
 val blocks: Vector[Vector[Long]] = ic.output.grouped(3).toVector
 val answer: Int = blocks.map(isBlock).sum
 println(s"Answer Part A: $answer")
