@@ -62,12 +62,7 @@ object IntCode {
 
   def bParam(instruction: Instruction, intcode: IntCode): Int = {
     instruction('b') match {
-      case 0 => {
-        intcode.memory.getOrElse(
-          intcode.memory(intcode.pointer + offsetB),
-          0
-        )
-      } // b-p-r
+      case 0 => { intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetB), 0) } // b-p-r
       case 1 => { intcode.memory(intcode.pointer + offsetB) } // b-i-r
     }
   }
@@ -81,12 +76,7 @@ object IntCode {
       }
       case _ => {
         instruction('c') match {
-          case 0 => {
-            intcode.memory.getOrElse(
-              intcode.memory(intcode.pointer + offsetC),
-              0
-            )
-          } // c-p-r
+          case 0 => { intcode.memory.getOrElse(intcode.memory(intcode.pointer + offsetC), 0) } // c-p-r
           case 1 => { intcode.memory(intcode.pointer + offsetC) } // c-i-r
         }
       }
@@ -99,10 +89,7 @@ object IntCode {
       output = intCode.output,
       phase = intCode.phase,
       pointer = intCode.pointer + 4,
-      memory = intCode.memory.updated(
-        aParam(instruction, intCode),
-        cParam(instruction, intCode) + bParam(instruction, intCode)
-      ),
+      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode)),
       isStopped = intCode.isStopped,
       doesRecur = intCode.doesRecur
     )
@@ -114,10 +101,7 @@ object IntCode {
       output = intCode.output,
       phase = intCode.phase,
       pointer = intCode.pointer + 4,
-      memory = intCode.memory.updated(
-        aParam(instruction, intCode),
-        cParam(instruction, intCode) * bParam(instruction, intCode)
-      ),
+      memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode)),
       isStopped = intCode.isStopped,
       doesRecur = intCode.doesRecur
     )

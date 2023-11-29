@@ -10,8 +10,7 @@ type Instruction = Map[Char, Int]
 def makeMemory(file: FilePath): Memory = {
   val bufferedSource = Source.fromFile(file)
   val longArray: Array[Long] = {
-    bufferedSource
-      .mkString
+    bufferedSource.mkString
       .split(",")
       .map(_.trim)
       .map(_.toLong)
@@ -38,7 +37,16 @@ def pad5(op: Long): Instruction = {
 // P I or R = position, immediate or relative mode
 // r or w = read or write
 
-final case class IntCode(input: Long, output: Vector[Long], phase: Long, pointer: Long, relativeBase: Long, memory: Memory, isStopped: Boolean, doesRecur: Boolean)
+final case class IntCode(
+    input: Long,
+    output: Vector[Long],
+    phase: Long,
+    pointer: Long,
+    relativeBase: Long,
+    memory: Memory,
+    isStopped: Boolean,
+    doesRecur: Boolean
+)
 
 object IntCode {
   private val offsetC: Long = 1
@@ -84,7 +92,8 @@ object IntCode {
       relativeBase = intCode.relativeBase,
       memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) + bParam(instruction, intCode)),
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionMultiply(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -96,7 +105,8 @@ object IntCode {
       relativeBase = intCode.relativeBase,
       memory = intCode.memory.updated(aParam(instruction, intCode), cParam(instruction, intCode) * bParam(instruction, intCode)),
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionInput(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -106,18 +116,18 @@ object IntCode {
       phase = intCode.phase,
       pointer = intCode.pointer + 2,
       relativeBase = intCode.relativeBase,
-      memory =
-        if (intCode.phase >= 0 && intCode.phase <= 9) {
-          if (intCode.pointer == 0) {
-            intCode.memory.updated(cParam(instruction, intCode), intCode.phase)
-          } else {
-            intCode.memory.updated(cParam(instruction, intCode), intCode.input)
-          }
+      memory = if (intCode.phase >= 0 && intCode.phase <= 9) {
+        if (intCode.pointer == 0) {
+          intCode.memory.updated(cParam(instruction, intCode), intCode.phase)
         } else {
           intCode.memory.updated(cParam(instruction, intCode), intCode.input)
-        },
+        }
+      } else {
+        intCode.memory.updated(cParam(instruction, intCode), intCode.input)
+      },
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionOutput(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -129,7 +139,8 @@ object IntCode {
       relativeBase = intCode.relativeBase,
       memory = intCode.memory,
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionJumpIfTrue(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -145,7 +156,8 @@ object IntCode {
       relativeBase = intCode.relativeBase,
       memory = intCode.memory,
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionJumpIfFalse(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -161,7 +173,8 @@ object IntCode {
       relativeBase = intCode.relativeBase,
       memory = intCode.memory,
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionLessThan(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -177,7 +190,8 @@ object IntCode {
         intCode.memory.updated(aParam(instruction, intCode), 0)
       },
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionEquals(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -193,7 +207,8 @@ object IntCode {
         intCode.memory.updated(aParam(instruction, intCode), 0)
       },
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionHalt(intCode: IntCode): IntCode = {
@@ -205,7 +220,8 @@ object IntCode {
       relativeBase = intCode.relativeBase,
       memory = intCode.memory,
       isStopped = true,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def actionRelativeBase(instruction: Instruction, intCode: IntCode): IntCode = {
@@ -217,7 +233,8 @@ object IntCode {
       relativeBase = cParam(instruction, intCode) + intCode.relativeBase,
       memory = intCode.memory,
       isStopped = intCode.isStopped,
-      doesRecur = intCode.doesRecur)
+      doesRecur = intCode.doesRecur
+    )
   }
 
   def opCode(intCode: IntCode): IntCode = {
@@ -267,14 +284,18 @@ object IntCode {
 // part A
 val memory = makeMemory("day09.csv")
 
-val ic = IntCode.opCode(IntCode(input = 1, output = Vector(), phase = 999, pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = true))
+val ic = IntCode.opCode(
+  IntCode(input = 1, output = Vector(), phase = 999, pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = true)
+)
 val answer = ic.output
 println(s"Answer Part A: $answer")
 
 // Answer Part A: 3780860499
 
 // part B
-val ic2 = IntCode.opCode(IntCode(input = 2, output = Vector(), phase = 999, pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = true))
+val ic2 = IntCode.opCode(
+  IntCode(input = 2, output = Vector(), phase = 999, pointer = 0, relativeBase = 0, memory = memory, isStopped = false, doesRecur = true)
+)
 val answer2 = ic2.output
 println(s"Answer Part B: $answer2")
 
