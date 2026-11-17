@@ -1,11 +1,11 @@
-// [eric@linux-epth day01]$ scala-cli test Day01Suite.test.scala
+// [eric@linux-epth day01]$ scala-cli test Day01ScalaTest.test.scala
 
-//> using test.dep org.scalatest::scalatest-flatspec::3.2.17
+//> using test.dep org.scalatest::scalatest-flatspec::3.2.20
 //> using file Day01Scala.scala
 
 import org.scalatest.flatspec.AnyFlatSpec
 
-class Day01Suite extends AnyFlatSpec {
+class Day01ScalaTest extends AnyFlatSpec {
   val sample: List[Int] = List(100756)
 
   "Part 1" should "handle sample input correctly" in {
